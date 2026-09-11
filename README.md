@@ -1,17 +1,34 @@
-# lumen
+# Lumen
 
-A new Flutter project.
+Local life OS — calendar, tasks, habits, routine, finance, nutrition, workouts.
 
-## Getting Started
+**iOS-first** Flutter app (also Android + web). All data local, with `.lumen` backup.
 
-This project is a starting point for a Flutter application.
+## Docs in this repo
 
-A few resources to get you started if this is your first Flutter project:
+| File | What |
+|---|---|
+| [docs/PLAN.md](docs/PLAN.md) | Product plan, modules, stack, build order |
+| [docs/STYLE.md](docs/STYLE.md) | Design tokens, motion, navigation |
+| [docs/TODOS.md](docs/TODOS.md) | Implementation checklist |
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+## Start on Mac
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```bash
+# Install Flutter + Xcode, then:
+cd /path/to/app
+flutter create --org com.lumen --project-name lumen --platforms=ios,android,web .
+# Keep docs/ and README.md; merge carefully if flutter create overwrites README.
+```
+
+Then open this folder in Cursor and continue from `docs/PLAN.md` step 1 (design system).
+
+## Decisions locked in
+
+- Name: **Lumen**
+- Stack: **Flutter**
+- Audience: personal + friends (no store yet)
+- Language: **EN default**, RU available
+- v1 live: shell + **Calendar** (Google two-way) + **Finance**
+- Motion: quiet premium + liquid-glass gestures
+- Theme: charcoal / red / blue
