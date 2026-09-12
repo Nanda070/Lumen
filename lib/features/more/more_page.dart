@@ -5,6 +5,7 @@ import '../../data/app_database.dart';
 import '../../design_system/design_system.dart';
 import '../../l10n/app_localizations.dart';
 import '../../shell/module_scaffold.dart';
+import '../calendar/google_sync_card.dart';
 import '../today/today_widgets_sheet.dart';
 
 class MorePage extends StatelessWidget {
@@ -149,6 +150,13 @@ class MorePage extends StatelessWidget {
               ],
             ),
           ),
+          const SizedBox(height: LumenSpacing.md),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Text(l10n.googleCalendarTitle, style: theme.titleLarge),
+          ),
+          const SizedBox(height: LumenSpacing.sm),
+          GoogleSyncCard(database: database),
           const SizedBox(height: LumenSpacing.xl),
           Align(
             alignment: Alignment.centerLeft,

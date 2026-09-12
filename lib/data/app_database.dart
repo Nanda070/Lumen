@@ -27,6 +27,8 @@ typedef TxWithMeta = ({
     CategoryAllocations,
     FinanceTransactions,
     TodayPreferences,
+    Tasks,
+    GoogleSyncState,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -34,7 +36,7 @@ class AppDatabase extends _$AppDatabase {
       : super(executor ?? _openExecutor());
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 5;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -60,6 +62,15 @@ class AppDatabase extends _$AppDatabase {
           }
           if (from < 4) {
             await m.addColumn(todayPreferences, todayPreferences.layoutJson);
+          }
+          if (from < 5) {
+            await m.addColumn(calendars, calendars.googleCalendarId);
+            await m.addColumn(calendars, calendars.googleSyncToken);
+            await m.addColumn(events, events.googleEventId);
+            await m.addColumn(events, events.googleEtag);
+            await m.addColumn(events, events.dirty);
+            await m.createTable(tasks);
+            await m.createTable(googleSyncState);
           }
         },
         beforeOpen: (details) async {
@@ -184,6 +195,7 @@ class AppDatabase extends _$AppDatabase {
         startsAt: startsAt,
         endsAt: endsAt,
         calendarId: calendarId,
+        dirty: const Value(true),
         createdAt: now,
         updatedAt: now,
       ),
@@ -203,6 +215,7 @@ class AppDatabase extends _$AppDatabase {
         startsAt: Value(startsAt),
         endsAt: Value(endsAt),
         calendarId: Value(calendarId),
+        dirty: const Value(true),
         updatedAt: Value(DateTime.now().toUtc()),
       ),
     );
@@ -769,6 +782,246 @@ class AppDatabase extends _$AppDatabase {
 
   Future<void> saveDashboardLayoutJson(String json) {
     return updateTodayPreferences(layoutJson: json);
+  }
+
+  // ── Tasks ────────────────────────────────────────────────────────────────
+
+  Stream<List<Task>> watchTasks({bool? done, DateTime? dueOn}) {
+    final query = select(tasks)
+      ..orderBy([
+        (t) => OrderingTerm.asc(t.isDone),
+        (t) => OrderingTerm.asc(t.sortOrder),
+        (t) => OrderingTerm.desc(t.createdAt),
+      ]);
+    if (done != null) {
+      query.where((t) => t.isDone.equals(done));
+    }
+    if (dueOn != null) {
+      final start = DateTime(dueOn.year, dueOn.month, dueOn.day);
+      final end = start.add(const Duration(days: 1));
+      query.where(
+        (t) => t.dueDate.isBiggerOrEqualValue(start) &
+            t.dueDate.isSmallerThanValue(end),
+      );
+    }
+    return query.watch();
+  }
+
+  Stream<List<Task>> watchInboxTasks() {
+    final query = select(tasks)
+      ..where((t) => t.isDone.equals(false))
+      ..orderBy([
+        (t) => OrderingTerm.asc(t.sortOrder),
+        (t) => OrderingTerm.desc(t.createdAt),
+      ]);
+    return query.watch();
+  }
+
+  Stream<List<Task>> watchTodayTasks() {
+    final now = DateTime.now();
+    final start = DateTime(now.year, now.month, now.day);
+    final end = start.add(const Duration(days: 1));
+    return (select(tasks)
+          ..where(
+            (t) =>
+                t.isDone.equals(false) &
+                t.dueDate.isNotNull() &
+                t.dueDate.isSmallerThanValue(end),
+          )
+          ..orderBy([
+            (t) => OrderingTerm.asc(t.dueDate),
+            (t) => OrderingTerm.asc(t.sortOrder),
+          ]))
+        .watch();
+  }
+
+  Future<int> insertTask({
+    required String title,
+    DateTime? dueDate,
+    String notes = '',
+  }) async {
+    final now = DateTime.now().toUtc();
+    final maxOrder = await (selectOnly(tasks)
+          ..addColumns([tasks.sortOrder.max()]))
+        .map((row) => row.read(tasks.sortOrder.max()) ?? -1)
+        .getSingle();
+    return into(tasks).insert(
+      TasksCompanion.insert(
+        title: title.trim(),
+        dueDate: Value(dueDate),
+        notes: Value(notes),
+        sortOrder: Value(maxOrder + 1),
+        createdAt: now,
+        updatedAt: now,
+      ),
+    );
+  }
+
+  Future<bool> updateTask({
+    required int id,
+    required String title,
+    DateTime? dueDate,
+    String notes = '',
+    bool clearDue = false,
+  }) async {
+    final rows = await (update(tasks)..where((t) => t.id.equals(id))).write(
+      TasksCompanion(
+        title: Value(title.trim()),
+        dueDate: clearDue ? const Value(null) : Value(dueDate),
+        notes: Value(notes),
+        updatedAt: Value(DateTime.now().toUtc()),
+      ),
+    );
+    return rows > 0;
+  }
+
+  Future<bool> setTaskDone(int id, bool done) async {
+    final rows = await (update(tasks)..where((t) => t.id.equals(id))).write(
+      TasksCompanion(
+        isDone: Value(done),
+        updatedAt: Value(DateTime.now().toUtc()),
+      ),
+    );
+    return rows > 0;
+  }
+
+  Future<bool> deleteTask(int id) async {
+    final rows = await (delete(tasks)..where((t) => t.id.equals(id))).go();
+    return rows > 0;
+  }
+
+  // ── Google sync state ────────────────────────────────────────────────────
+
+  Stream<GoogleSyncStateData?> watchGoogleSyncState() {
+    return (select(googleSyncState)..limit(1)).watchSingleOrNull();
+  }
+
+  Future<GoogleSyncStateData> getOrCreateGoogleSyncState() async {
+    final existing =
+        await (select(googleSyncState)..limit(1)).getSingleOrNull();
+    if (existing != null) return existing;
+    final id = await into(googleSyncState).insert(
+      GoogleSyncStateCompanion.insert(),
+    );
+    return (select(googleSyncState)..where((t) => t.id.equals(id))).getSingle();
+  }
+
+  Future<void> setGoogleConnected({
+    required bool connected,
+    String? email,
+    String? error,
+  }) async {
+    final row = await getOrCreateGoogleSyncState();
+    await (update(googleSyncState)..where((t) => t.id.equals(row.id))).write(
+      GoogleSyncStateCompanion(
+        connected: Value(connected),
+        accountEmail: Value(email),
+        lastError: Value(error),
+        lastSyncAt: connected
+            ? Value(DateTime.now().toUtc())
+            : const Value.absent(),
+      ),
+    );
+  }
+
+  Future<void> markGoogleSynced({String? error}) async {
+    final row = await getOrCreateGoogleSyncState();
+    await (update(googleSyncState)..where((t) => t.id.equals(row.id))).write(
+      GoogleSyncStateCompanion(
+        lastSyncAt: Value(DateTime.now().toUtc()),
+        lastError: Value(error),
+      ),
+    );
+  }
+
+  Future<List<Event>> dirtyEvents() {
+    return (select(events)..where((t) => t.dirty.equals(true))).get();
+  }
+
+  Future<void> markEventSynced({
+    required int id,
+    required String googleEventId,
+    String? etag,
+  }) async {
+    await (update(events)..where((t) => t.id.equals(id))).write(
+      EventsCompanion(
+        googleEventId: Value(googleEventId),
+        googleEtag: Value(etag),
+        dirty: const Value(false),
+        updatedAt: Value(DateTime.now().toUtc()),
+      ),
+    );
+  }
+
+  Future<Event?> eventByGoogleId(String googleEventId) {
+    return (select(events)
+          ..where((t) => t.googleEventId.equals(googleEventId))
+          ..limit(1))
+        .getSingleOrNull();
+  }
+
+  Future<Calendar?> calendarByGoogleId(String googleCalendarId) {
+    return (select(calendars)
+          ..where((t) => t.googleCalendarId.equals(googleCalendarId))
+          ..limit(1))
+        .getSingleOrNull();
+  }
+
+  Future<int> ensureGoogleCalendar({
+    required String googleCalendarId,
+    required String name,
+    required int colorArgb,
+  }) async {
+    final existing = await calendarByGoogleId(googleCalendarId);
+    if (existing != null) return existing.id;
+    return into(calendars).insert(
+      CalendarsCompanion.insert(
+        name: name,
+        colorArgb: colorArgb,
+        googleCalendarId: Value(googleCalendarId),
+        sortOrder: const Value(100),
+      ),
+    );
+  }
+
+  Future<void> upsertGoogleEvent({
+    required int calendarId,
+    required String googleEventId,
+    required String title,
+    required DateTime startsAt,
+    required DateTime endsAt,
+    String? etag,
+  }) async {
+    final existing = await eventByGoogleId(googleEventId);
+    final now = DateTime.now().toUtc();
+    if (existing == null) {
+      await into(events).insert(
+        EventsCompanion.insert(
+          title: title,
+          startsAt: startsAt,
+          endsAt: endsAt,
+          calendarId: calendarId,
+          googleEventId: Value(googleEventId),
+          googleEtag: Value(etag),
+          dirty: const Value(false),
+          createdAt: now,
+          updatedAt: now,
+        ),
+      );
+      return;
+    }
+    // Last-write-wins: remote wins when not dirty locally.
+    if (existing.dirty) return;
+    await (update(events)..where((t) => t.id.equals(existing.id))).write(
+      EventsCompanion(
+        title: Value(title),
+        startsAt: Value(startsAt),
+        endsAt: Value(endsAt),
+        calendarId: Value(calendarId),
+        googleEtag: Value(etag),
+        updatedAt: Value(now),
+      ),
+    );
   }
 
   // ── Seed / bootstrap ─────────────────────────────────────────────────────

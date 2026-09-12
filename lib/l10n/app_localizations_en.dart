@@ -43,6 +43,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get todayEmptyEvents => 'No events today — add one in Calendar.';
 
   @override
+  String todayEventsMore(int count) {
+    return '+$count more';
+  }
+
+  @override
   String get todaySampleEvent => 'Morning focus';
 
   @override
@@ -621,4 +626,66 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get financeEqualSplit => 'Equal split';
+
+  @override
+  String get googleCalendarTitle => 'Google Calendar';
+
+  @override
+  String get googleConnect => 'Connect';
+
+  @override
+  String get googleDisconnect => 'Disconnect';
+
+  @override
+  String get googleSyncNow => 'Sync now';
+
+  @override
+  String get googleConnected => 'Connected';
+
+  @override
+  String get googleDisconnected => 'Not connected';
+
+  @override
+  String get googleNeedsConfig =>
+      'Add OAuth client IDs in GoogleConfig (see TECHNICAL.md).';
+
+  @override
+  String get googleSyncOk => 'Google Calendar synced.';
+
+  @override
+  String get googleSyncError =>
+      'Sync failed. Check connection and OAuth setup.';
+
+  @override
+  String get tasksInbox => 'Inbox';
+
+  @override
+  String get tasksToday => 'Today';
+
+  @override
+  String get tasksDone => 'Done';
+
+  @override
+  String get tasksEmpty => 'No tasks here yet.';
+
+  @override
+  String get tasksNew => 'New task';
+
+  @override
+  String get tasksEdit => 'Edit task';
+
+  @override
+  String get tasksTitleHint => 'What needs doing?';
+
+  @override
+  String get tasksNotesHint => 'Notes';
+
+  @override
+  String get tasksTitleRequired => 'Add a title.';
+
+  @override
+  String get tasksDue => 'Due date';
+
+  @override
+  String get tasksClearDue => 'Clear';
 }

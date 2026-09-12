@@ -22,9 +22,9 @@
 
 ## Product
 
-**Lumen** — локальный life OS: календарь и финансы живые первыми, остальные модули — «комнаты». Без сервера Lumen, без аккаунта: источник правды — SQLite на устройстве.
+**Lumen** — локальный life OS: календарь, финансы и задачи живые; Habits/Routine/Nutrition/Training — комнаты. Без сервера Lumen: источник правды — SQLite на устройстве. Google Calendar — опциональный linked sync.
 
-Аудитория: Nanda и близкие (TestFlight / IPA / APK / Flutter Web). Язык: EN по умолчанию, RU в онбординге и More.
+Аудитория: Nanda и близкие. Язык: EN по умолчанию, RU в онбординге и More.
 
 ---
 
@@ -35,16 +35,14 @@
 | UI | Flutter (iOS-first, Android + Web) |
 | Local DB | Drift + SQLite (`drift`, `drift_flutter`) |
 | Web SQLite | `web/sqlite3.wasm` + `web/drift_worker.js` |
-| Charts | `fl_chart` — budget ring, interactive donut, smooth cashflow line, weekly bars |
+| Charts | `fl_chart` — budget ring, donut, cashflow line, weekly bars |
 | Dashboard | `dashboard` ^0.0.4 — drag/resize Today widgets |
+| Google | `google_sign_in` ^7, `googleapis`, `extension_google_sign_in_as_googleapis_auth`, `http` |
 | i18n | `flutter gen-l10n` — `lib/l10n/app_en.arb` / `app_ru.arb` |
 | Fonts | `google_fonts` → Outfit |
 | Icons | `phosphor_icons` |
-| Paths | `path_provider` (native; web via drift_flutter) |
 
 Dev: `drift_dev`, `build_runner`, `flutter_lints`, `flutter_test`.
-
-Нет: Riverpod/Provider, SharedPreferences (пока), Google Sign-In (позже).
 
 ---
 
@@ -52,26 +50,24 @@ Dev: `drift_dev`, `build_runner`, `flutter_lints`, `flutter_test`.
 
 ```
 lib/
-  main.dart
-  app.dart
+  main.dart / app.dart
   core/
+    google_config.dart      # OAuth client ID placeholders
     region_options.dart
     world_currencies.dart
   data/
-    tables.dart             # Drift tables (schema v4)
-    app_database.dart       # CRUD + seed + migrations + month summary + dashboard layout
-    app_database.g.dart
+    tables.dart             # schema v5
+    app_database.dart
   design_system/
   features/
     onboarding/
-    today/                  # dashboard grid + tiles + add-widget sheet
-    calendar/
-    finance/                # Overview/Plan/Insights/Ledger + premium charts
-    tasks/ more/
+    today/                  # compact dashboard (layout v2)
+    calendar/               # local + google_calendar_sync + GoogleSyncCard
+    finance/                # denser Overview/Plan/Insights/Ledger
+    tasks/                  # live Inbox / Today / Done
+    more/                   # settings + Google + About
   shell/
   l10n/
-docs/
-web/
 ```
 
 ---
@@ -79,134 +75,114 @@ web/
 ## Architecture
 
 1. **`LumenApp`** opens `AppDatabase`, loads profile.
-2. No profile → **`OnboardingFlow`** → seed calendars / categories / Cash account / Today prefs.
-3. Profile exists → **`AppShell`**: phone floating glass tabs / wide left rail.
-4. Today, Calendar, Finance, More receive `AppDatabase` for live streams.
-5. Amounts stored as **minor units** (cents); account balance updated on tx insert/update/delete.
+2. No profile → **`OnboardingFlow`** → seed.
+3. Profile → **`AppShell`** (phone glass tabs / wide rail).
+4. Live modules: Today, Calendar, **Tasks**, Finance, More — all get `AppDatabase`.
+5. Money in **minor units**. Local events mark `dirty` for Google push.
+
+### Density / depth
+
+Средний баланс (не простыня, не «зажато»):
+- Headers: Calendar/Finance/Tasks top air = `lg` + `pagePadding` 24; `ModuleScaffold` = `md`.
+- Today: `slotHeight` **104**, gutters **12**; layout JSON **v:3** — `events_list` height/minHeight **2** (до 2 upcoming, без inner scroll).
+- Finance: hero ring ~204px (max side ~164); insights charts ~205–220px.
+- Tasks: full-width GlassSurface pill filters (как Calendar/Finance).
+- Budget ring: center text clipped (`LayoutBuilder` + `ClipOval` + `FittedBox`).
+- Today tile tap (не edit): finance-виджеты → Finance tab; events → Calendar; spend_today → add tx sheet.
 
 ### Safe area
 
-- Phone: `AppShell` wraps body in `SafeArea(bottom: false)` — top clears Dynamic Island/status bar; bottom left for floating tab bar.
-- Wide: `SafeArea` around rail + content.
-- Onboarding / loading / error: own `SafeArea`.
-- Module titles use `LumenSpacing.lg` air **after** SafeArea.
+Phone `SafeArea(bottom: false)` on shell content; titles after SafeArea.
 
 ---
 
 ## Database
 
-**Schema version:** 3  
-**Name:** `lumen` (Drift / sqlite)
+**Schema version:** **5**  
+**Name:** `lumen`
 
 | Table | Purpose |
 |---|---|
-| `profiles` | displayName, localeCode, countryCode, currencyCode, createdAt |
-| `calendars` | Named calendars + colorArgb; seed Personal / Lumen |
-| `events` | title, startsAt, endsAt, calendarId, createdAt, updatedAt |
-| `finance_categories` | nameKey, displayName?, kind expense\|income, color, isSystem, isArchived |
-| `finance_accounts` | name, balanceMinor, currencyCode, sortOrder, isArchived |
-| `monthly_budgets` | year, month, totalLimitMinor |
-| `category_allocations` | year, month, categoryId, allocatedMinor |
-| `finance_transactions` | amountMinor, kind, categoryId, accountId, occurredAt, note |
-| `today_preferences` | legacy toggles + `widgetOrder` + **`layoutJson`** (dashboard grid) |
-
-**Seed** (onboarding + `beforeOpen` bootstrap for upgrades): Personal/Lumen calendars, default expense/income categories, one **Cash** account in profile currency, default Today prefs (all on).
+| `profiles` | name, locale, country, currency |
+| `calendars` | + `googleCalendarId`, `googleSyncToken` |
+| `events` | + `googleEventId`, `googleEtag`, `dirty` |
+| `google_sync_state` | connected, accountEmail, lastSyncAt, lastError |
+| `tasks` | title, isDone, dueDate?, notes, sortOrder |
+| `finance_*` | categories, accounts, budgets, allocations, transactions |
+| `today_preferences` | legacy toggles + `layoutJson` (`{v, "2":…, "4":…}`) |
 
 **Migration**
 
-- &lt;2 → create `events`
-- &lt;3 → add category columns; create accounts / budgets / allocations / transactions / today_preferences; mark seeded categories `is_system`
-- &lt;4 → add `today_preferences.layout_json` for drag/resize dashboard layouts
-
-**Storage:** native SQLite via `driftDatabase(name: 'lumen')`; web Wasm + IndexedDb.
-
----
-
-## Finance (shipped)
-
-Tabs: **Overview · Plan · Insights · Ledger**
-
-- Overview: month switcher, budget hero ring, spent/remaining/income/budget/net metrics, accounts strip, status chip.
-- Plan: total budget editor CTA, envelope rows with progress + leftover/over, equal-split, link to category manager.
-- Insights: interactive donut, smooth cashflow line (area gradient + tooltip), weekly bars.
-- Ledger: filters + transaction list.
-- Shared sheets: budget / transaction / category / account managers.
-- Overflow-safe: FittedBox + ellipsis on metric/allocation rows.
+- &lt;2 → `events`
+- &lt;3 → finance tables + category columns
+- &lt;4 → `layout_json`
+- &lt;5 → Google columns on calendars/events; `tasks`; `google_sync_state`
 
 ---
 
-## Today (shipped)
+## Google Calendar sync
 
-Custom **dashboard** grid (`package:dashboard`) with drag + resize:
+**Config:** `lib/core/google_config.dart` — paste OAuth client IDs (`iosClientId`, `androidClientId`, `webClientId`).
 
-- Phone `slotCount: 2`, wide (`width > 700`) `slotCount: 4`; `slotHeight ≈ 108`.
-- Layout persisted in `today_preferences.layoutJson` (map of slotCount → item layouts).
-- Default tiles: budget ring, spent, remaining, spend today, events count, events list, category donut, cashflow.
-- Catalog extras: accounts.
-- Edit mode: long-press, violet grid lines, trash on tiles; Add sheet for missing widgets.
-- Configure: Today Edit/Add, or More → Settings → Widgets (catalog persists into `layoutJson`).
+**Cloud setup**
 
----
+1. Google Cloud → enable **Calendar API**.
+2. OAuth consent + clients (iOS / Android / Web).
+3. iOS: set `GIDClientID` + URL scheme in `ios/Runner/Info.plist` (placeholders present).
+4. Rebuild.
 
-## Calendar (shipped)
+**Engine:** `GoogleCalendarSync` — connect / disconnect / syncNow; pull primary (30d back / 90d forward); push `dirty` local events; last-write-wins (skip remote overwrite if local dirty).
 
-- Day / Week / Month, now-line, cream Quick Add, CRUD sheet.
-- No Google sync in this layer.
+**UI:** `GoogleSyncCard` on **More**. Without client IDs → snackbar «нужен Cloud / GoogleConfig».
 
----
-
-## Navigation & i18n
-
-Tabs: Today · Calendar · Tasks · Finance · More.  
-Locale from profile; switch in More. ARB → `AppLocalizations` (category labels + finance/today strings EN/RU).
+Local calendar works without Google.
 
 ---
 
-## Design system
+## Tasks
 
-Tokens in `lib/design_system/` per STYLE.md: charcoal, violet bloom, glass, glow cards, gradient metrics, Outfit, Phosphor.
+Live tab: full-width filters **Inbox / Today / Done** (тот же chrome/`pagePadding`, что Calendar/Finance), CRUD sheet, due date optional. Today = incomplete with due ≤ end of today (includes overdue).
 
 ---
 
-## Platforms & run
+## Today dashboard
+
+- Drag/resize via `dashboard`; Edit + Add.
+- Layout version **3** (`events_list` taller for 2 upcoming cards).
+- Tap (outside edit): finance tiles → Finance; events → Calendar; spend_today → transaction sheet.
+- Tiles: budget_ring, spent, remaining, spend_today, events_count, events_list (+ catalog: donut, cashflow, accounts).
+- `events_list`: до **2** следующих upcoming (title+time), без nested scroll.
+
+---
+
+## Finance
+
+Tabs Overview · Plan · Insights · Ledger. `BudgetHeroRing` clips center text (`LayoutBuilder` + `ClipOval` + `FittedBox`; compact uses `—` not long «Бюджет не задан»).
+
+---
+
+## Run
 
 ```bash
 flutter pub get
-dart run build_runner build   # after Drift schema changes
-flutter gen-l10n              # after ARB changes
-flutter analyze
-flutter test
-
+dart run build_runner build
 flutter run -d chrome
-flutter run -d <ios-simulator-id>   # e.g. iPhone 17
+flutter run -d <ios-simulator>
 ```
 
-After features: stop old `flutter run`, restart **web + iOS**, update this file (see `.cursor/rules/`).
+After feature work: restart **web + iOS**, update this file + TODOS.
 
 ---
 
-## Implemented vs stubs
+## Implemented vs stub
 
 | Area | Status |
 |---|---|
-| Design system + shell | Live |
-| Onboarding + profile + seed | Live |
-| Base currency (154 ISO, searchable) | Live |
-| Calendar local Day/Week/Month + CRUD | Live |
-| Finance core (accounts, budget, txs, charts) | Live — Overview/Plan/Insights/Ledger + premium charts |
-| Today hub widgets + prefs | Live — drag/resize dashboard + layoutJson |
-| Tasks / Habits / Routine / Nutrition / Training | Stub rooms |
-| Google Calendar sync | Not started |
-| `.lumen` backup | Not started |
-
----
-
-## Key decisions
-
-- Local-first SQLite over cloud account.
-- Money as integer minor units; profile currency on accounts.
-- Custom calendar canvas (not `table_calendar` as final UI).
-- EN default; RU first-class ARB.
-- Premium charcoal/violet language intentional (STYLE over generic anti-purple rules).
-- Full ISO currency list + search.
-- Contacts stay human-facing (docs + More), bundle id unchanged.
+| Design system / shell / onboarding | shipped |
+| Calendar local | shipped |
+| Google Calendar sync | shipped (needs your OAuth IDs) |
+| Finance premium | shipped (denser) |
+| Today dashboard | shipped (compact v2) |
+| Tasks | shipped |
+| Backup `.lumen` | stub |
+| Habits / Routine / Nutrition / Training | rooms |

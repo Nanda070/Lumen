@@ -18,6 +18,7 @@ class TodayWidgetTile extends StatelessWidget {
     required this.database,
     required this.currencyCode,
     this.isEditing = false,
+    this.onTap,
     this.onDelete,
   });
 
@@ -25,12 +26,15 @@ class TodayWidgetTile extends StatelessWidget {
   final AppDatabase database;
   final String currencyCode;
   final bool isEditing;
+  final VoidCallback? onTap;
   final VoidCallback? onDelete;
 
   @override
   Widget build(BuildContext context) {
     final now = DateTime.now();
     final today = CalendarDateUtils.dateOnly(now);
+    // Only wire tile-level navigation outside edit mode.
+    final tileTap = isEditing ? null : onTap;
 
     Widget body;
     switch (identifier) {
@@ -59,6 +63,7 @@ class TodayWidgetTile extends StatelessWidget {
               suffix: currencyCode,
               gradient: LumenColors.gradEmber,
               compact: true,
+              onTap: tileTap,
             );
           },
         );
@@ -75,6 +80,7 @@ class TodayWidgetTile extends StatelessWidget {
               suffix: rem == null ? null : currencyCode,
               gradient: LumenColors.gradDusk,
               compact: true,
+              onTap: tileTap,
             );
           },
         );
@@ -89,6 +95,7 @@ class TodayWidgetTile extends StatelessWidget {
               suffix: currencyCode,
               gradient: LumenColors.gradEmber,
               compact: true,
+              onTap: tileTap,
             );
           },
         );
@@ -103,11 +110,16 @@ class TodayWidgetTile extends StatelessWidget {
               value: '$count',
               gradient: LumenColors.gradDusk,
               compact: true,
+              onTap: tileTap,
             );
           },
         );
       case TodayWidgetIds.eventsList:
-        body = _EventsListTile(database: database, today: today);
+        body = _EventsListTile(
+          database: database,
+          today: today,
+          onOpenCalendar: tileTap,
+        );
       case TodayWidgetIds.categoryDonut:
         body = StreamBuilder<MonthFinanceSummary>(
           stream: database.watchMonthSummary(now.year, now.month),
@@ -217,10 +229,25 @@ class TodayWidgetTile extends StatelessWidget {
         );
     }
 
+    final needsOuterTap = tileTap != null &&
+        identifier != TodayWidgetIds.spent &&
+        identifier != TodayWidgetIds.remaining &&
+        identifier != TodayWidgetIds.spendToday &&
+        identifier != TodayWidgetIds.eventsCount &&
+        identifier != TodayWidgetIds.eventsList;
+
     return Stack(
       clipBehavior: Clip.none,
       children: [
-        Positioned.fill(child: body),
+        Positioned.fill(
+          child: needsOuterTap
+              ? GestureDetector(
+                  onTap: tileTap,
+                  behavior: HitTestBehavior.opaque,
+                  child: body,
+                )
+              : body,
+        ),
         if (isEditing && onDelete != null)
           Positioned(
             top: 4,
@@ -247,11 +274,19 @@ class TodayWidgetTile extends StatelessWidget {
   }
 }
 
+/// Upcoming: up to **2** next events, fully visible, no nested scroll.
 class _EventsListTile extends StatelessWidget {
-  const _EventsListTile({required this.database, required this.today});
+  const _EventsListTile({
+    required this.database,
+    required this.today,
+    this.onOpenCalendar,
+  });
 
   final AppDatabase database;
   final DateTime today;
+  final VoidCallback? onOpenCalendar;
+
+  static const _maxEvents = 2;
 
   @override
   Widget build(BuildContext context) {
@@ -264,14 +299,18 @@ class _EventsListTile extends StatelessWidget {
         final events = snap.data ?? const [];
         final upcoming = events
             .where((e) => e.event.endsAt.isAfter(DateTime.now()))
-            .toList();
-        final display = upcoming.isNotEmpty ? upcoming : events;
+            .toList()
+          ..sort(
+            (a, b) => a.event.startsAt.compareTo(b.event.startsAt),
+          );
+        final visible = upcoming.take(_maxEvents).toList();
 
         return GlowCard(
           violetEdge: true,
+          onTap: onOpenCalendar,
           padding: const EdgeInsets.all(LumenSpacing.sm),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
                 l10n.todayUpcoming,
@@ -280,43 +319,111 @@ class _EventsListTile extends StatelessWidget {
                 style: theme.titleSmall,
               ),
               const SizedBox(height: LumenSpacing.xs),
-              Expanded(
-                child: display.isEmpty
-                    ? Text(
-                        l10n.todayEmptyEvents,
-                        maxLines: 3,
-                        overflow: TextOverflow.ellipsis,
-                        style: theme.bodySmall?.copyWith(
-                          color: LumenColors.textMuted,
+              if (visible.isEmpty)
+                Expanded(
+                  child: Text(
+                    l10n.todayEmptyEvents,
+                    maxLines: 4,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.bodySmall?.copyWith(
+                      color: LumenColors.textMuted,
+                    ),
+                  ),
+                )
+              else
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      for (var i = 0; i < visible.length; i++) ...[
+                        if (i > 0)
+                          const SizedBox(height: LumenSpacing.xs),
+                        Expanded(
+                          child: _UpcomingEventCard(
+                            item: visible[i],
+                            database: database,
+                          ),
                         ),
-                      )
-                    : ListView.separated(
-                        padding: EdgeInsets.zero,
-                        itemCount: display.length,
-                        separatorBuilder: (_, _) =>
-                            const SizedBox(height: LumenSpacing.xs),
-                        itemBuilder: (context, i) {
-                          final item = display[i];
-                          return EventCard(
-                            title: item.event.title,
-                            timeLabel: CalendarDateUtils.formatTimeRange(
-                              item.event.startsAt,
-                              item.event.endsAt,
-                            ),
-                            accent: Color(item.calendar.colorArgb),
-                            onTap: () => showEventEditorSheet(
-                              context: context,
-                              database: database,
-                              existing: item,
-                            ),
-                          );
-                        },
-                      ),
-              ),
+                      ],
+                    ],
+                  ),
+                ),
             ],
           ),
         );
       },
+    );
+  }
+}
+
+class _UpcomingEventCard extends StatelessWidget {
+  const _UpcomingEventCard({required this.item, required this.database});
+
+  final EventWithCalendar item;
+  final AppDatabase database;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context).textTheme;
+    final accent = Color(item.calendar.colorArgb);
+
+    return Material(
+      color: LumenColors.surfaceRaised.withValues(alpha: 0.55),
+      borderRadius: BorderRadius.circular(LumenRadii.sm),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(LumenRadii.sm),
+        onTap: () => showEventEditorSheet(
+          context: context,
+          database: database,
+          existing: item,
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Container(
+              width: 3,
+              decoration: BoxDecoration(
+                color: accent,
+                borderRadius: const BorderRadius.horizontal(
+                  left: Radius.circular(LumenRadii.sm),
+                ),
+              ),
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: LumenSpacing.sm,
+                  vertical: LumenSpacing.xs,
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      item.event.title,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.titleSmall,
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      CalendarDateUtils.formatTimeRange(
+                        item.event.startsAt,
+                        item.event.endsAt,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.bodySmall?.copyWith(
+                        color: LumenColors.textMuted,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

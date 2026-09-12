@@ -398,7 +398,7 @@ class _OverviewTab extends StatelessWidget {
         _MonthSwitcher(title: monthTitle, onPrev: onPrev, onNext: onNext),
         const SizedBox(height: LumenSpacing.md),
         SizedBox(
-          height: 220,
+          height: 204,
           child: BudgetHeroRing(
             summary: summary,
             currencyCode: currency,
@@ -688,7 +688,7 @@ class _InsightsTab extends StatelessWidget {
       ),
       children: [
         SizedBox(
-          height: 240,
+          height: 220,
           child: FinanceDonutChart(
             summary: summary,
             categories: categories,
@@ -697,7 +697,7 @@ class _InsightsTab extends StatelessWidget {
         ),
         const SizedBox(height: LumenSpacing.md),
         SizedBox(
-          height: 220,
+          height: 205,
           child: FinanceCashflowChart(
             summary: summary,
             currencyCode: currency,

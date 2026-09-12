@@ -10,22 +10,50 @@ class Profiles extends Table {
   DateTimeColumn get createdAt => dateTime()();
 }
 
-/// Local calendars (seeded Personal / Lumen; Google sync later).
+/// Local calendars (seeded Personal / Lumen; optional Google link).
 class Calendars extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get name => text().withLength(min: 1, max: 64)();
   IntColumn get colorArgb => integer()();
   BoolColumn get isSystem => boolean().withDefault(const Constant(false))();
   IntColumn get sortOrder => integer().withDefault(const Constant(0))();
+  /// Google Calendar id when linked (e.g. primary).
+  TextColumn get googleCalendarId => text().nullable()();
+  TextColumn get googleSyncToken => text().nullable()();
 }
 
-/// Local calendar events (no Google sync in this layer).
+/// Local calendar events (+ optional Google Event id).
 class Events extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get title => text().withLength(min: 1, max: 200)();
   DateTimeColumn get startsAt => dateTime()();
   DateTimeColumn get endsAt => dateTime()();
   IntColumn get calendarId => integer().references(Calendars, #id)();
+  TextColumn get googleEventId => text().nullable()();
+  /// Google ETag for last-write-wins.
+  TextColumn get googleEtag => text().nullable()();
+  BoolColumn get dirty => boolean().withDefault(const Constant(false))();
+  DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get updatedAt => dateTime()();
+}
+
+/// Google account link + sync status (at most one row).
+class GoogleSyncState extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get accountEmail => text().nullable()();
+  BoolColumn get connected => boolean().withDefault(const Constant(false))();
+  DateTimeColumn get lastSyncAt => dateTime().nullable()();
+  TextColumn get lastError => text().nullable()();
+}
+
+/// Tasks inbox / today.
+class Tasks extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get title => text().withLength(min: 1, max: 200)();
+  BoolColumn get isDone => boolean().withDefault(const Constant(false))();
+  DateTimeColumn get dueDate => dateTime().nullable()();
+  TextColumn get notes => text().withDefault(const Constant(''))();
+  IntColumn get sortOrder => integer().withDefault(const Constant(0))();
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get updatedAt => dateTime()();
 }
@@ -33,11 +61,8 @@ class Events extends Table {
 /// Money categories — seeded defaults + user-created.
 class FinanceCategories extends Table {
   IntColumn get id => integer().autoIncrement()();
-  /// Stable i18n key (e.g. food, salary) or `custom` for user-named.
   TextColumn get nameKey => text().withLength(min: 1, max: 48)();
-  /// Custom display name; when set, UI prefers this over i18n of [nameKey].
   TextColumn get displayName => text().nullable()();
-  /// `expense` | `income`
   TextColumn get kind => text().withLength(min: 1, max: 16)();
   IntColumn get colorArgb => integer()();
   IntColumn get sortOrder => integer().withDefault(const Constant(0))();
@@ -45,7 +70,6 @@ class FinanceCategories extends Table {
   BoolColumn get isArchived => boolean().withDefault(const Constant(false))();
 }
 
-/// Cash / bank / wallet accounts in the profile currency.
 class FinanceAccounts extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get name => text().withLength(min: 1, max: 64)();
@@ -56,7 +80,6 @@ class FinanceAccounts extends Table {
   DateTimeColumn get createdAt => dateTime()();
 }
 
-/// Month-level spending limit (one row per year+month).
 class MonthlyBudgets extends Table {
   IntColumn get id => integer().autoIncrement()();
   IntColumn get year => integer()();
@@ -65,7 +88,6 @@ class MonthlyBudgets extends Table {
   DateTimeColumn get updatedAt => dateTime()();
 }
 
-/// Per-category allocation inside a month's budget.
 class CategoryAllocations extends Table {
   IntColumn get id => integer().autoIncrement()();
   IntColumn get year => integer()();
@@ -75,12 +97,9 @@ class CategoryAllocations extends Table {
   IntColumn get allocatedMinor => integer()();
 }
 
-/// Ledger transactions.
 class FinanceTransactions extends Table {
   IntColumn get id => integer().autoIncrement()();
-  /// Always positive; sign comes from [kind].
   IntColumn get amountMinor => integer()();
-  /// `expense` | `income`
   TextColumn get kind => text().withLength(min: 1, max: 16)();
   IntColumn get categoryId =>
       integer().references(FinanceCategories, #id)();
@@ -91,7 +110,6 @@ class FinanceTransactions extends Table {
   DateTimeColumn get updatedAt => dateTime()();
 }
 
-/// Which Today hub widgets are visible / ordered (legacy toggles kept for migration).
 class TodayPreferences extends Table {
   IntColumn get id => integer().autoIncrement()();
   BoolColumn get showFinanceSummary =>
@@ -102,10 +120,8 @@ class TodayPreferences extends Table {
       boolean().withDefault(const Constant(true))();
   BoolColumn get showTodayEvents =>
       boolean().withDefault(const Constant(true))();
-  /// Comma-separated ids: finance,budget,spend,events (legacy)
   TextColumn get widgetOrder => text().withDefault(
         const Constant('finance,budget,spend,events'),
       )();
-  /// JSON map of slotCount → {identifier → DashboardItem.toMap()} for drag/resize grid.
   TextColumn get layoutJson => text().withDefault(const Constant(''))();
 }

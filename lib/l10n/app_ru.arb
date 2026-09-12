@@ -11,6 +11,12 @@
   "todayUpcoming": "Ближайшее",
   "todaySpend": "Расход за день",
   "todayEmptyEvents": "На сегодня пусто — добавьте в Календаре.",
+  "todayEventsMore": "ещё {count}",
+  "@todayEventsMore": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "todaySampleEvent": "Утренний фокус",
   "todaySampleTime": "09:00 – 10:30",
   "roomComingSoon": "Скоро",
@@ -230,5 +236,27 @@
   "financeOfBudget": "от бюджета",
   "financeLeft": "осталось",
   "financeNet": "Нетто",
-  "financeEqualSplit": "Поровну"
+  "financeEqualSplit": "Поровну",
+
+  "googleCalendarTitle": "Google Календарь",
+  "googleConnect": "Подключить",
+  "googleDisconnect": "Отключить",
+  "googleSyncNow": "Синхронизировать",
+  "googleConnected": "Подключено",
+  "googleDisconnected": "Не подключено",
+  "googleNeedsConfig": "Добавьте OAuth client ID в GoogleConfig (см. TECHNICAL.md).",
+  "googleSyncOk": "Google Календарь синхронизирован.",
+  "googleSyncError": "Синхронизация не удалась. Проверьте OAuth.",
+
+  "tasksInbox": "Inbox",
+  "tasksToday": "Сегодня",
+  "tasksDone": "Готово",
+  "tasksEmpty": "Пока пусто.",
+  "tasksNew": "Новая задача",
+  "tasksEdit": "Задача",
+  "tasksTitleHint": "Что сделать?",
+  "tasksNotesHint": "Заметки",
+  "tasksTitleRequired": "Добавьте название.",
+  "tasksDue": "Срок",
+  "tasksClearDue": "Сбросить"
 }

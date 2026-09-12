@@ -8,6 +8,7 @@ import '../features/more/more_page.dart';
 import '../features/tasks/tasks_page.dart';
 import '../features/today/today_page.dart';
 import '../l10n/app_localizations.dart';
+import 'lumen_tabs.dart';
 
 /// Adaptive shell: floating glass tabs on phone, left rail on wide layouts.
 class AppShell extends StatefulWidget {
@@ -45,13 +46,16 @@ class _AppShellState extends State<AppShell> {
       more: l10n.navMore,
     );
 
+    void goToTab(int i) => setState(() => _index = i);
+
     final pages = [
       TodayPage(
         database: widget.database,
         currencyCode: widget.currencyCode,
+        onNavigateToTab: goToTab,
       ),
       CalendarPage(database: widget.database),
-      const TasksPage(),
+      TasksPage(database: widget.database),
       FinancePage(
         database: widget.database,
         currencyCode: widget.currencyCode,
@@ -64,6 +68,7 @@ class _AppShellState extends State<AppShell> {
         currencyCode: widget.currencyCode,
       ),
     ];
+    assert(pages.length - 1 == LumenTabs.more);
 
     final content = AnimatedSwitcher(
       duration: LumenMotion.normal,

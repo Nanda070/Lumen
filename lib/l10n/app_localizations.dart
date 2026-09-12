@@ -164,6 +164,12 @@ abstract class AppLocalizations {
   /// **'No events today — add one in Calendar.'**
   String get todayEmptyEvents;
 
+  /// No description provided for @todayEventsMore.
+  ///
+  /// In en, this message translates to:
+  /// **'+{count} more'**
+  String todayEventsMore(int count);
+
   /// No description provided for @todaySampleEvent.
   ///
   /// In en, this message translates to:
@@ -1285,6 +1291,126 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Equal split'**
   String get financeEqualSplit;
+
+  /// No description provided for @googleCalendarTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Google Calendar'**
+  String get googleCalendarTitle;
+
+  /// No description provided for @googleConnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect'**
+  String get googleConnect;
+
+  /// No description provided for @googleDisconnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Disconnect'**
+  String get googleDisconnect;
+
+  /// No description provided for @googleSyncNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync now'**
+  String get googleSyncNow;
+
+  /// No description provided for @googleConnected.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected'**
+  String get googleConnected;
+
+  /// No description provided for @googleDisconnected.
+  ///
+  /// In en, this message translates to:
+  /// **'Not connected'**
+  String get googleDisconnected;
+
+  /// No description provided for @googleNeedsConfig.
+  ///
+  /// In en, this message translates to:
+  /// **'Add OAuth client IDs in GoogleConfig (see TECHNICAL.md).'**
+  String get googleNeedsConfig;
+
+  /// No description provided for @googleSyncOk.
+  ///
+  /// In en, this message translates to:
+  /// **'Google Calendar synced.'**
+  String get googleSyncOk;
+
+  /// No description provided for @googleSyncError.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync failed. Check connection and OAuth setup.'**
+  String get googleSyncError;
+
+  /// No description provided for @tasksInbox.
+  ///
+  /// In en, this message translates to:
+  /// **'Inbox'**
+  String get tasksInbox;
+
+  /// No description provided for @tasksToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get tasksToday;
+
+  /// No description provided for @tasksDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get tasksDone;
+
+  /// No description provided for @tasksEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No tasks here yet.'**
+  String get tasksEmpty;
+
+  /// No description provided for @tasksNew.
+  ///
+  /// In en, this message translates to:
+  /// **'New task'**
+  String get tasksNew;
+
+  /// No description provided for @tasksEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit task'**
+  String get tasksEdit;
+
+  /// No description provided for @tasksTitleHint.
+  ///
+  /// In en, this message translates to:
+  /// **'What needs doing?'**
+  String get tasksTitleHint;
+
+  /// No description provided for @tasksNotesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get tasksNotesHint;
+
+  /// No description provided for @tasksTitleRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a title.'**
+  String get tasksTitleRequired;
+
+  /// No description provided for @tasksDue.
+  ///
+  /// In en, this message translates to:
+  /// **'Due date'**
+  String get tasksDue;
+
+  /// No description provided for @tasksClearDue.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get tasksClearDue;
 }
 
 class _AppLocalizationsDelegate

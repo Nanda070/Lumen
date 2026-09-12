@@ -28,7 +28,7 @@ class GradientMetricCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context).textTheme;
     final glow = gradient.colors.first;
-    final valueSize = compact ? 22.0 : 28.0;
+    final valueSize = compact ? 24.0 : 28.0;
 
     return DecoratedBox(
       decoration: BoxDecoration(

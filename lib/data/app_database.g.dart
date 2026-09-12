@@ -511,6 +511,28 @@ class $CalendarsTable extends Calendars
     requiredDuringInsert: false,
     defaultValue: const Constant(0),
   );
+  static const VerificationMeta _googleCalendarIdMeta = const VerificationMeta(
+    'googleCalendarId',
+  );
+  @override
+  late final GeneratedColumn<String> googleCalendarId = GeneratedColumn<String>(
+    'google_calendar_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _googleSyncTokenMeta = const VerificationMeta(
+    'googleSyncToken',
+  );
+  @override
+  late final GeneratedColumn<String> googleSyncToken = GeneratedColumn<String>(
+    'google_sync_token',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -518,6 +540,8 @@ class $CalendarsTable extends Calendars
     colorArgb,
     isSystem,
     sortOrder,
+    googleCalendarId,
+    googleSyncToken,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -562,6 +586,24 @@ class $CalendarsTable extends Calendars
         sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
       );
     }
+    if (data.containsKey('google_calendar_id')) {
+      context.handle(
+        _googleCalendarIdMeta,
+        googleCalendarId.isAcceptableOrUnknown(
+          data['google_calendar_id']!,
+          _googleCalendarIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('google_sync_token')) {
+      context.handle(
+        _googleSyncTokenMeta,
+        googleSyncToken.isAcceptableOrUnknown(
+          data['google_sync_token']!,
+          _googleSyncTokenMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -591,6 +633,14 @@ class $CalendarsTable extends Calendars
         DriftSqlType.int,
         data['${effectivePrefix}sort_order'],
       )!,
+      googleCalendarId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}google_calendar_id'],
+      ),
+      googleSyncToken: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}google_sync_token'],
+      ),
     );
   }
 
@@ -606,12 +656,18 @@ class Calendar extends DataClass implements Insertable<Calendar> {
   final int colorArgb;
   final bool isSystem;
   final int sortOrder;
+
+  /// Google Calendar id when linked (e.g. primary).
+  final String? googleCalendarId;
+  final String? googleSyncToken;
   const Calendar({
     required this.id,
     required this.name,
     required this.colorArgb,
     required this.isSystem,
     required this.sortOrder,
+    this.googleCalendarId,
+    this.googleSyncToken,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -621,6 +677,12 @@ class Calendar extends DataClass implements Insertable<Calendar> {
     map['color_argb'] = Variable<int>(colorArgb);
     map['is_system'] = Variable<bool>(isSystem);
     map['sort_order'] = Variable<int>(sortOrder);
+    if (!nullToAbsent || googleCalendarId != null) {
+      map['google_calendar_id'] = Variable<String>(googleCalendarId);
+    }
+    if (!nullToAbsent || googleSyncToken != null) {
+      map['google_sync_token'] = Variable<String>(googleSyncToken);
+    }
     return map;
   }
 
@@ -631,6 +693,12 @@ class Calendar extends DataClass implements Insertable<Calendar> {
       colorArgb: Value(colorArgb),
       isSystem: Value(isSystem),
       sortOrder: Value(sortOrder),
+      googleCalendarId: googleCalendarId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(googleCalendarId),
+      googleSyncToken: googleSyncToken == null && nullToAbsent
+          ? const Value.absent()
+          : Value(googleSyncToken),
     );
   }
 
@@ -645,6 +713,8 @@ class Calendar extends DataClass implements Insertable<Calendar> {
       colorArgb: serializer.fromJson<int>(json['colorArgb']),
       isSystem: serializer.fromJson<bool>(json['isSystem']),
       sortOrder: serializer.fromJson<int>(json['sortOrder']),
+      googleCalendarId: serializer.fromJson<String?>(json['googleCalendarId']),
+      googleSyncToken: serializer.fromJson<String?>(json['googleSyncToken']),
     );
   }
   @override
@@ -656,6 +726,8 @@ class Calendar extends DataClass implements Insertable<Calendar> {
       'colorArgb': serializer.toJson<int>(colorArgb),
       'isSystem': serializer.toJson<bool>(isSystem),
       'sortOrder': serializer.toJson<int>(sortOrder),
+      'googleCalendarId': serializer.toJson<String?>(googleCalendarId),
+      'googleSyncToken': serializer.toJson<String?>(googleSyncToken),
     };
   }
 
@@ -665,12 +737,20 @@ class Calendar extends DataClass implements Insertable<Calendar> {
     int? colorArgb,
     bool? isSystem,
     int? sortOrder,
+    Value<String?> googleCalendarId = const Value.absent(),
+    Value<String?> googleSyncToken = const Value.absent(),
   }) => Calendar(
     id: id ?? this.id,
     name: name ?? this.name,
     colorArgb: colorArgb ?? this.colorArgb,
     isSystem: isSystem ?? this.isSystem,
     sortOrder: sortOrder ?? this.sortOrder,
+    googleCalendarId: googleCalendarId.present
+        ? googleCalendarId.value
+        : this.googleCalendarId,
+    googleSyncToken: googleSyncToken.present
+        ? googleSyncToken.value
+        : this.googleSyncToken,
   );
   Calendar copyWithCompanion(CalendarsCompanion data) {
     return Calendar(
@@ -679,6 +759,12 @@ class Calendar extends DataClass implements Insertable<Calendar> {
       colorArgb: data.colorArgb.present ? data.colorArgb.value : this.colorArgb,
       isSystem: data.isSystem.present ? data.isSystem.value : this.isSystem,
       sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+      googleCalendarId: data.googleCalendarId.present
+          ? data.googleCalendarId.value
+          : this.googleCalendarId,
+      googleSyncToken: data.googleSyncToken.present
+          ? data.googleSyncToken.value
+          : this.googleSyncToken,
     );
   }
 
@@ -689,13 +775,23 @@ class Calendar extends DataClass implements Insertable<Calendar> {
           ..write('name: $name, ')
           ..write('colorArgb: $colorArgb, ')
           ..write('isSystem: $isSystem, ')
-          ..write('sortOrder: $sortOrder')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('googleCalendarId: $googleCalendarId, ')
+          ..write('googleSyncToken: $googleSyncToken')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, name, colorArgb, isSystem, sortOrder);
+  int get hashCode => Object.hash(
+    id,
+    name,
+    colorArgb,
+    isSystem,
+    sortOrder,
+    googleCalendarId,
+    googleSyncToken,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -704,7 +800,9 @@ class Calendar extends DataClass implements Insertable<Calendar> {
           other.name == this.name &&
           other.colorArgb == this.colorArgb &&
           other.isSystem == this.isSystem &&
-          other.sortOrder == this.sortOrder);
+          other.sortOrder == this.sortOrder &&
+          other.googleCalendarId == this.googleCalendarId &&
+          other.googleSyncToken == this.googleSyncToken);
 }
 
 class CalendarsCompanion extends UpdateCompanion<Calendar> {
@@ -713,12 +811,16 @@ class CalendarsCompanion extends UpdateCompanion<Calendar> {
   final Value<int> colorArgb;
   final Value<bool> isSystem;
   final Value<int> sortOrder;
+  final Value<String?> googleCalendarId;
+  final Value<String?> googleSyncToken;
   const CalendarsCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.colorArgb = const Value.absent(),
     this.isSystem = const Value.absent(),
     this.sortOrder = const Value.absent(),
+    this.googleCalendarId = const Value.absent(),
+    this.googleSyncToken = const Value.absent(),
   });
   CalendarsCompanion.insert({
     this.id = const Value.absent(),
@@ -726,6 +828,8 @@ class CalendarsCompanion extends UpdateCompanion<Calendar> {
     required int colorArgb,
     this.isSystem = const Value.absent(),
     this.sortOrder = const Value.absent(),
+    this.googleCalendarId = const Value.absent(),
+    this.googleSyncToken = const Value.absent(),
   }) : name = Value(name),
        colorArgb = Value(colorArgb);
   static Insertable<Calendar> custom({
@@ -734,6 +838,8 @@ class CalendarsCompanion extends UpdateCompanion<Calendar> {
     Expression<int>? colorArgb,
     Expression<bool>? isSystem,
     Expression<int>? sortOrder,
+    Expression<String>? googleCalendarId,
+    Expression<String>? googleSyncToken,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -741,6 +847,8 @@ class CalendarsCompanion extends UpdateCompanion<Calendar> {
       if (colorArgb != null) 'color_argb': colorArgb,
       if (isSystem != null) 'is_system': isSystem,
       if (sortOrder != null) 'sort_order': sortOrder,
+      if (googleCalendarId != null) 'google_calendar_id': googleCalendarId,
+      if (googleSyncToken != null) 'google_sync_token': googleSyncToken,
     });
   }
 
@@ -750,6 +858,8 @@ class CalendarsCompanion extends UpdateCompanion<Calendar> {
     Value<int>? colorArgb,
     Value<bool>? isSystem,
     Value<int>? sortOrder,
+    Value<String?>? googleCalendarId,
+    Value<String?>? googleSyncToken,
   }) {
     return CalendarsCompanion(
       id: id ?? this.id,
@@ -757,6 +867,8 @@ class CalendarsCompanion extends UpdateCompanion<Calendar> {
       colorArgb: colorArgb ?? this.colorArgb,
       isSystem: isSystem ?? this.isSystem,
       sortOrder: sortOrder ?? this.sortOrder,
+      googleCalendarId: googleCalendarId ?? this.googleCalendarId,
+      googleSyncToken: googleSyncToken ?? this.googleSyncToken,
     );
   }
 
@@ -778,6 +890,12 @@ class CalendarsCompanion extends UpdateCompanion<Calendar> {
     if (sortOrder.present) {
       map['sort_order'] = Variable<int>(sortOrder.value);
     }
+    if (googleCalendarId.present) {
+      map['google_calendar_id'] = Variable<String>(googleCalendarId.value);
+    }
+    if (googleSyncToken.present) {
+      map['google_sync_token'] = Variable<String>(googleSyncToken.value);
+    }
     return map;
   }
 
@@ -788,7 +906,9 @@ class CalendarsCompanion extends UpdateCompanion<Calendar> {
           ..write('name: $name, ')
           ..write('colorArgb: $colorArgb, ')
           ..write('isSystem: $isSystem, ')
-          ..write('sortOrder: $sortOrder')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('googleCalendarId: $googleCalendarId, ')
+          ..write('googleSyncToken: $googleSyncToken')
           ..write(')'))
         .toString();
   }
@@ -1034,14 +1154,8 @@ class $FinanceCategoriesTable extends FinanceCategories
 
 class FinanceCategory extends DataClass implements Insertable<FinanceCategory> {
   final int id;
-
-  /// Stable i18n key (e.g. food, salary) or `custom` for user-named.
   final String nameKey;
-
-  /// Custom display name; when set, UI prefers this over i18n of [nameKey].
   final String? displayName;
-
-  /// `expense` | `income`
   final String kind;
   final int colorArgb;
   final int sortOrder;
@@ -1381,6 +1495,41 @@ class $EventsTable extends Events with TableInfo<$EventsTable, Event> {
       'REFERENCES calendars (id)',
     ),
   );
+  static const VerificationMeta _googleEventIdMeta = const VerificationMeta(
+    'googleEventId',
+  );
+  @override
+  late final GeneratedColumn<String> googleEventId = GeneratedColumn<String>(
+    'google_event_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _googleEtagMeta = const VerificationMeta(
+    'googleEtag',
+  );
+  @override
+  late final GeneratedColumn<String> googleEtag = GeneratedColumn<String>(
+    'google_etag',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _dirtyMeta = const VerificationMeta('dirty');
+  @override
+  late final GeneratedColumn<bool> dirty = GeneratedColumn<bool>(
+    'dirty',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("dirty" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
   );
@@ -1410,6 +1559,9 @@ class $EventsTable extends Events with TableInfo<$EventsTable, Event> {
     startsAt,
     endsAt,
     calendarId,
+    googleEventId,
+    googleEtag,
+    dirty,
     createdAt,
     updatedAt,
   ];
@@ -1460,6 +1612,27 @@ class $EventsTable extends Events with TableInfo<$EventsTable, Event> {
     } else if (isInserting) {
       context.missing(_calendarIdMeta);
     }
+    if (data.containsKey('google_event_id')) {
+      context.handle(
+        _googleEventIdMeta,
+        googleEventId.isAcceptableOrUnknown(
+          data['google_event_id']!,
+          _googleEventIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('google_etag')) {
+      context.handle(
+        _googleEtagMeta,
+        googleEtag.isAcceptableOrUnknown(data['google_etag']!, _googleEtagMeta),
+      );
+    }
+    if (data.containsKey('dirty')) {
+      context.handle(
+        _dirtyMeta,
+        dirty.isAcceptableOrUnknown(data['dirty']!, _dirtyMeta),
+      );
+    }
     if (data.containsKey('created_at')) {
       context.handle(
         _createdAtMeta,
@@ -1505,6 +1678,18 @@ class $EventsTable extends Events with TableInfo<$EventsTable, Event> {
         DriftSqlType.int,
         data['${effectivePrefix}calendar_id'],
       )!,
+      googleEventId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}google_event_id'],
+      ),
+      googleEtag: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}google_etag'],
+      ),
+      dirty: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}dirty'],
+      )!,
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
@@ -1528,6 +1713,11 @@ class Event extends DataClass implements Insertable<Event> {
   final DateTime startsAt;
   final DateTime endsAt;
   final int calendarId;
+  final String? googleEventId;
+
+  /// Google ETag for last-write-wins.
+  final String? googleEtag;
+  final bool dirty;
   final DateTime createdAt;
   final DateTime updatedAt;
   const Event({
@@ -1536,6 +1726,9 @@ class Event extends DataClass implements Insertable<Event> {
     required this.startsAt,
     required this.endsAt,
     required this.calendarId,
+    this.googleEventId,
+    this.googleEtag,
+    required this.dirty,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -1547,6 +1740,13 @@ class Event extends DataClass implements Insertable<Event> {
     map['starts_at'] = Variable<DateTime>(startsAt);
     map['ends_at'] = Variable<DateTime>(endsAt);
     map['calendar_id'] = Variable<int>(calendarId);
+    if (!nullToAbsent || googleEventId != null) {
+      map['google_event_id'] = Variable<String>(googleEventId);
+    }
+    if (!nullToAbsent || googleEtag != null) {
+      map['google_etag'] = Variable<String>(googleEtag);
+    }
+    map['dirty'] = Variable<bool>(dirty);
     map['created_at'] = Variable<DateTime>(createdAt);
     map['updated_at'] = Variable<DateTime>(updatedAt);
     return map;
@@ -1559,6 +1759,13 @@ class Event extends DataClass implements Insertable<Event> {
       startsAt: Value(startsAt),
       endsAt: Value(endsAt),
       calendarId: Value(calendarId),
+      googleEventId: googleEventId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(googleEventId),
+      googleEtag: googleEtag == null && nullToAbsent
+          ? const Value.absent()
+          : Value(googleEtag),
+      dirty: Value(dirty),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
     );
@@ -1575,6 +1782,9 @@ class Event extends DataClass implements Insertable<Event> {
       startsAt: serializer.fromJson<DateTime>(json['startsAt']),
       endsAt: serializer.fromJson<DateTime>(json['endsAt']),
       calendarId: serializer.fromJson<int>(json['calendarId']),
+      googleEventId: serializer.fromJson<String?>(json['googleEventId']),
+      googleEtag: serializer.fromJson<String?>(json['googleEtag']),
+      dirty: serializer.fromJson<bool>(json['dirty']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
     );
@@ -1588,6 +1798,9 @@ class Event extends DataClass implements Insertable<Event> {
       'startsAt': serializer.toJson<DateTime>(startsAt),
       'endsAt': serializer.toJson<DateTime>(endsAt),
       'calendarId': serializer.toJson<int>(calendarId),
+      'googleEventId': serializer.toJson<String?>(googleEventId),
+      'googleEtag': serializer.toJson<String?>(googleEtag),
+      'dirty': serializer.toJson<bool>(dirty),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
     };
@@ -1599,6 +1812,9 @@ class Event extends DataClass implements Insertable<Event> {
     DateTime? startsAt,
     DateTime? endsAt,
     int? calendarId,
+    Value<String?> googleEventId = const Value.absent(),
+    Value<String?> googleEtag = const Value.absent(),
+    bool? dirty,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) => Event(
@@ -1607,6 +1823,11 @@ class Event extends DataClass implements Insertable<Event> {
     startsAt: startsAt ?? this.startsAt,
     endsAt: endsAt ?? this.endsAt,
     calendarId: calendarId ?? this.calendarId,
+    googleEventId: googleEventId.present
+        ? googleEventId.value
+        : this.googleEventId,
+    googleEtag: googleEtag.present ? googleEtag.value : this.googleEtag,
+    dirty: dirty ?? this.dirty,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
   );
@@ -1619,6 +1840,13 @@ class Event extends DataClass implements Insertable<Event> {
       calendarId: data.calendarId.present
           ? data.calendarId.value
           : this.calendarId,
+      googleEventId: data.googleEventId.present
+          ? data.googleEventId.value
+          : this.googleEventId,
+      googleEtag: data.googleEtag.present
+          ? data.googleEtag.value
+          : this.googleEtag,
+      dirty: data.dirty.present ? data.dirty.value : this.dirty,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
     );
@@ -1632,6 +1860,9 @@ class Event extends DataClass implements Insertable<Event> {
           ..write('startsAt: $startsAt, ')
           ..write('endsAt: $endsAt, ')
           ..write('calendarId: $calendarId, ')
+          ..write('googleEventId: $googleEventId, ')
+          ..write('googleEtag: $googleEtag, ')
+          ..write('dirty: $dirty, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
@@ -1645,6 +1876,9 @@ class Event extends DataClass implements Insertable<Event> {
     startsAt,
     endsAt,
     calendarId,
+    googleEventId,
+    googleEtag,
+    dirty,
     createdAt,
     updatedAt,
   );
@@ -1657,6 +1891,9 @@ class Event extends DataClass implements Insertable<Event> {
           other.startsAt == this.startsAt &&
           other.endsAt == this.endsAt &&
           other.calendarId == this.calendarId &&
+          other.googleEventId == this.googleEventId &&
+          other.googleEtag == this.googleEtag &&
+          other.dirty == this.dirty &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
 }
@@ -1667,6 +1904,9 @@ class EventsCompanion extends UpdateCompanion<Event> {
   final Value<DateTime> startsAt;
   final Value<DateTime> endsAt;
   final Value<int> calendarId;
+  final Value<String?> googleEventId;
+  final Value<String?> googleEtag;
+  final Value<bool> dirty;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
   const EventsCompanion({
@@ -1675,6 +1915,9 @@ class EventsCompanion extends UpdateCompanion<Event> {
     this.startsAt = const Value.absent(),
     this.endsAt = const Value.absent(),
     this.calendarId = const Value.absent(),
+    this.googleEventId = const Value.absent(),
+    this.googleEtag = const Value.absent(),
+    this.dirty = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
   });
@@ -1684,6 +1927,9 @@ class EventsCompanion extends UpdateCompanion<Event> {
     required DateTime startsAt,
     required DateTime endsAt,
     required int calendarId,
+    this.googleEventId = const Value.absent(),
+    this.googleEtag = const Value.absent(),
+    this.dirty = const Value.absent(),
     required DateTime createdAt,
     required DateTime updatedAt,
   }) : title = Value(title),
@@ -1698,6 +1944,9 @@ class EventsCompanion extends UpdateCompanion<Event> {
     Expression<DateTime>? startsAt,
     Expression<DateTime>? endsAt,
     Expression<int>? calendarId,
+    Expression<String>? googleEventId,
+    Expression<String>? googleEtag,
+    Expression<bool>? dirty,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
   }) {
@@ -1707,6 +1956,9 @@ class EventsCompanion extends UpdateCompanion<Event> {
       if (startsAt != null) 'starts_at': startsAt,
       if (endsAt != null) 'ends_at': endsAt,
       if (calendarId != null) 'calendar_id': calendarId,
+      if (googleEventId != null) 'google_event_id': googleEventId,
+      if (googleEtag != null) 'google_etag': googleEtag,
+      if (dirty != null) 'dirty': dirty,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
     });
@@ -1718,6 +1970,9 @@ class EventsCompanion extends UpdateCompanion<Event> {
     Value<DateTime>? startsAt,
     Value<DateTime>? endsAt,
     Value<int>? calendarId,
+    Value<String?>? googleEventId,
+    Value<String?>? googleEtag,
+    Value<bool>? dirty,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
   }) {
@@ -1727,6 +1982,9 @@ class EventsCompanion extends UpdateCompanion<Event> {
       startsAt: startsAt ?? this.startsAt,
       endsAt: endsAt ?? this.endsAt,
       calendarId: calendarId ?? this.calendarId,
+      googleEventId: googleEventId ?? this.googleEventId,
+      googleEtag: googleEtag ?? this.googleEtag,
+      dirty: dirty ?? this.dirty,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -1750,6 +2008,15 @@ class EventsCompanion extends UpdateCompanion<Event> {
     if (calendarId.present) {
       map['calendar_id'] = Variable<int>(calendarId.value);
     }
+    if (googleEventId.present) {
+      map['google_event_id'] = Variable<String>(googleEventId.value);
+    }
+    if (googleEtag.present) {
+      map['google_etag'] = Variable<String>(googleEtag.value);
+    }
+    if (dirty.present) {
+      map['dirty'] = Variable<bool>(dirty.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
@@ -1767,6 +2034,9 @@ class EventsCompanion extends UpdateCompanion<Event> {
           ..write('startsAt: $startsAt, ')
           ..write('endsAt: $endsAt, ')
           ..write('calendarId: $calendarId, ')
+          ..write('googleEventId: $googleEventId, ')
+          ..write('googleEtag: $googleEtag, ')
+          ..write('dirty: $dirty, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
@@ -3218,11 +3488,7 @@ class $FinanceTransactionsTable extends FinanceTransactions
 class FinanceTransaction extends DataClass
     implements Insertable<FinanceTransaction> {
   final int id;
-
-  /// Always positive; sign comes from [kind].
   final int amountMinor;
-
-  /// `expense` | `income`
   final String kind;
   final int categoryId;
   final int accountId;
@@ -3753,11 +4019,7 @@ class TodayPreference extends DataClass implements Insertable<TodayPreference> {
   final bool showBudgetStatus;
   final bool showTodaySpend;
   final bool showTodayEvents;
-
-  /// Comma-separated ids: finance,budget,spend,events (legacy)
   final String widgetOrder;
-
-  /// JSON map of slotCount → {identifier → DashboardItem.toMap()} for drag/resize grid.
   final String layoutJson;
   const TodayPreference({
     required this.id,
@@ -4009,6 +4271,872 @@ class TodayPreferencesCompanion extends UpdateCompanion<TodayPreference> {
   }
 }
 
+class $TasksTable extends Tasks with TableInfo<$TasksTable, Task> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TasksTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'title',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 200,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _isDoneMeta = const VerificationMeta('isDone');
+  @override
+  late final GeneratedColumn<bool> isDone = GeneratedColumn<bool>(
+    'is_done',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_done" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _dueDateMeta = const VerificationMeta(
+    'dueDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> dueDate = GeneratedColumn<DateTime>(
+    'due_date',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+    'notes',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _sortOrderMeta = const VerificationMeta(
+    'sortOrder',
+  );
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+    'sort_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    title,
+    isDone,
+    dueDate,
+    notes,
+    sortOrder,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'tasks';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<Task> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('is_done')) {
+      context.handle(
+        _isDoneMeta,
+        isDone.isAcceptableOrUnknown(data['is_done']!, _isDoneMeta),
+      );
+    }
+    if (data.containsKey('due_date')) {
+      context.handle(
+        _dueDateMeta,
+        dueDate.isAcceptableOrUnknown(data['due_date']!, _dueDateMeta),
+      );
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+        _notesMeta,
+        notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+      );
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(
+        _sortOrderMeta,
+        sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Task map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Task(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
+      isDone: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_done'],
+      )!,
+      dueDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}due_date'],
+      ),
+      notes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}notes'],
+      )!,
+      sortOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sort_order'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $TasksTable createAlias(String alias) {
+    return $TasksTable(attachedDatabase, alias);
+  }
+}
+
+class Task extends DataClass implements Insertable<Task> {
+  final int id;
+  final String title;
+  final bool isDone;
+  final DateTime? dueDate;
+  final String notes;
+  final int sortOrder;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const Task({
+    required this.id,
+    required this.title,
+    required this.isDone,
+    this.dueDate,
+    required this.notes,
+    required this.sortOrder,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['title'] = Variable<String>(title);
+    map['is_done'] = Variable<bool>(isDone);
+    if (!nullToAbsent || dueDate != null) {
+      map['due_date'] = Variable<DateTime>(dueDate);
+    }
+    map['notes'] = Variable<String>(notes);
+    map['sort_order'] = Variable<int>(sortOrder);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  TasksCompanion toCompanion(bool nullToAbsent) {
+    return TasksCompanion(
+      id: Value(id),
+      title: Value(title),
+      isDone: Value(isDone),
+      dueDate: dueDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dueDate),
+      notes: Value(notes),
+      sortOrder: Value(sortOrder),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory Task.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Task(
+      id: serializer.fromJson<int>(json['id']),
+      title: serializer.fromJson<String>(json['title']),
+      isDone: serializer.fromJson<bool>(json['isDone']),
+      dueDate: serializer.fromJson<DateTime?>(json['dueDate']),
+      notes: serializer.fromJson<String>(json['notes']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'title': serializer.toJson<String>(title),
+      'isDone': serializer.toJson<bool>(isDone),
+      'dueDate': serializer.toJson<DateTime?>(dueDate),
+      'notes': serializer.toJson<String>(notes),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  Task copyWith({
+    int? id,
+    String? title,
+    bool? isDone,
+    Value<DateTime?> dueDate = const Value.absent(),
+    String? notes,
+    int? sortOrder,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => Task(
+    id: id ?? this.id,
+    title: title ?? this.title,
+    isDone: isDone ?? this.isDone,
+    dueDate: dueDate.present ? dueDate.value : this.dueDate,
+    notes: notes ?? this.notes,
+    sortOrder: sortOrder ?? this.sortOrder,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  Task copyWithCompanion(TasksCompanion data) {
+    return Task(
+      id: data.id.present ? data.id.value : this.id,
+      title: data.title.present ? data.title.value : this.title,
+      isDone: data.isDone.present ? data.isDone.value : this.isDone,
+      dueDate: data.dueDate.present ? data.dueDate.value : this.dueDate,
+      notes: data.notes.present ? data.notes.value : this.notes,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Task(')
+          ..write('id: $id, ')
+          ..write('title: $title, ')
+          ..write('isDone: $isDone, ')
+          ..write('dueDate: $dueDate, ')
+          ..write('notes: $notes, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    title,
+    isDone,
+    dueDate,
+    notes,
+    sortOrder,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Task &&
+          other.id == this.id &&
+          other.title == this.title &&
+          other.isDone == this.isDone &&
+          other.dueDate == this.dueDate &&
+          other.notes == this.notes &&
+          other.sortOrder == this.sortOrder &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class TasksCompanion extends UpdateCompanion<Task> {
+  final Value<int> id;
+  final Value<String> title;
+  final Value<bool> isDone;
+  final Value<DateTime?> dueDate;
+  final Value<String> notes;
+  final Value<int> sortOrder;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  const TasksCompanion({
+    this.id = const Value.absent(),
+    this.title = const Value.absent(),
+    this.isDone = const Value.absent(),
+    this.dueDate = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  });
+  TasksCompanion.insert({
+    this.id = const Value.absent(),
+    required String title,
+    this.isDone = const Value.absent(),
+    this.dueDate = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    required DateTime createdAt,
+    required DateTime updatedAt,
+  }) : title = Value(title),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<Task> custom({
+    Expression<int>? id,
+    Expression<String>? title,
+    Expression<bool>? isDone,
+    Expression<DateTime>? dueDate,
+    Expression<String>? notes,
+    Expression<int>? sortOrder,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (title != null) 'title': title,
+      if (isDone != null) 'is_done': isDone,
+      if (dueDate != null) 'due_date': dueDate,
+      if (notes != null) 'notes': notes,
+      if (sortOrder != null) 'sort_order': sortOrder,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+    });
+  }
+
+  TasksCompanion copyWith({
+    Value<int>? id,
+    Value<String>? title,
+    Value<bool>? isDone,
+    Value<DateTime?>? dueDate,
+    Value<String>? notes,
+    Value<int>? sortOrder,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+  }) {
+    return TasksCompanion(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      isDone: isDone ?? this.isDone,
+      dueDate: dueDate ?? this.dueDate,
+      notes: notes ?? this.notes,
+      sortOrder: sortOrder ?? this.sortOrder,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (isDone.present) {
+      map['is_done'] = Variable<bool>(isDone.value);
+    }
+    if (dueDate.present) {
+      map['due_date'] = Variable<DateTime>(dueDate.value);
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TasksCompanion(')
+          ..write('id: $id, ')
+          ..write('title: $title, ')
+          ..write('isDone: $isDone, ')
+          ..write('dueDate: $dueDate, ')
+          ..write('notes: $notes, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $GoogleSyncStateTable extends GoogleSyncState
+    with TableInfo<$GoogleSyncStateTable, GoogleSyncStateData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $GoogleSyncStateTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _accountEmailMeta = const VerificationMeta(
+    'accountEmail',
+  );
+  @override
+  late final GeneratedColumn<String> accountEmail = GeneratedColumn<String>(
+    'account_email',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _connectedMeta = const VerificationMeta(
+    'connected',
+  );
+  @override
+  late final GeneratedColumn<bool> connected = GeneratedColumn<bool>(
+    'connected',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("connected" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _lastSyncAtMeta = const VerificationMeta(
+    'lastSyncAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastSyncAt = GeneratedColumn<DateTime>(
+    'last_sync_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _lastErrorMeta = const VerificationMeta(
+    'lastError',
+  );
+  @override
+  late final GeneratedColumn<String> lastError = GeneratedColumn<String>(
+    'last_error',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    accountEmail,
+    connected,
+    lastSyncAt,
+    lastError,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'google_sync_state';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<GoogleSyncStateData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('account_email')) {
+      context.handle(
+        _accountEmailMeta,
+        accountEmail.isAcceptableOrUnknown(
+          data['account_email']!,
+          _accountEmailMeta,
+        ),
+      );
+    }
+    if (data.containsKey('connected')) {
+      context.handle(
+        _connectedMeta,
+        connected.isAcceptableOrUnknown(data['connected']!, _connectedMeta),
+      );
+    }
+    if (data.containsKey('last_sync_at')) {
+      context.handle(
+        _lastSyncAtMeta,
+        lastSyncAt.isAcceptableOrUnknown(
+          data['last_sync_at']!,
+          _lastSyncAtMeta,
+        ),
+      );
+    }
+    if (data.containsKey('last_error')) {
+      context.handle(
+        _lastErrorMeta,
+        lastError.isAcceptableOrUnknown(data['last_error']!, _lastErrorMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  GoogleSyncStateData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return GoogleSyncStateData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      accountEmail: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}account_email'],
+      ),
+      connected: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}connected'],
+      )!,
+      lastSyncAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_sync_at'],
+      ),
+      lastError: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}last_error'],
+      ),
+    );
+  }
+
+  @override
+  $GoogleSyncStateTable createAlias(String alias) {
+    return $GoogleSyncStateTable(attachedDatabase, alias);
+  }
+}
+
+class GoogleSyncStateData extends DataClass
+    implements Insertable<GoogleSyncStateData> {
+  final int id;
+  final String? accountEmail;
+  final bool connected;
+  final DateTime? lastSyncAt;
+  final String? lastError;
+  const GoogleSyncStateData({
+    required this.id,
+    this.accountEmail,
+    required this.connected,
+    this.lastSyncAt,
+    this.lastError,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    if (!nullToAbsent || accountEmail != null) {
+      map['account_email'] = Variable<String>(accountEmail);
+    }
+    map['connected'] = Variable<bool>(connected);
+    if (!nullToAbsent || lastSyncAt != null) {
+      map['last_sync_at'] = Variable<DateTime>(lastSyncAt);
+    }
+    if (!nullToAbsent || lastError != null) {
+      map['last_error'] = Variable<String>(lastError);
+    }
+    return map;
+  }
+
+  GoogleSyncStateCompanion toCompanion(bool nullToAbsent) {
+    return GoogleSyncStateCompanion(
+      id: Value(id),
+      accountEmail: accountEmail == null && nullToAbsent
+          ? const Value.absent()
+          : Value(accountEmail),
+      connected: Value(connected),
+      lastSyncAt: lastSyncAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastSyncAt),
+      lastError: lastError == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastError),
+    );
+  }
+
+  factory GoogleSyncStateData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return GoogleSyncStateData(
+      id: serializer.fromJson<int>(json['id']),
+      accountEmail: serializer.fromJson<String?>(json['accountEmail']),
+      connected: serializer.fromJson<bool>(json['connected']),
+      lastSyncAt: serializer.fromJson<DateTime?>(json['lastSyncAt']),
+      lastError: serializer.fromJson<String?>(json['lastError']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'accountEmail': serializer.toJson<String?>(accountEmail),
+      'connected': serializer.toJson<bool>(connected),
+      'lastSyncAt': serializer.toJson<DateTime?>(lastSyncAt),
+      'lastError': serializer.toJson<String?>(lastError),
+    };
+  }
+
+  GoogleSyncStateData copyWith({
+    int? id,
+    Value<String?> accountEmail = const Value.absent(),
+    bool? connected,
+    Value<DateTime?> lastSyncAt = const Value.absent(),
+    Value<String?> lastError = const Value.absent(),
+  }) => GoogleSyncStateData(
+    id: id ?? this.id,
+    accountEmail: accountEmail.present ? accountEmail.value : this.accountEmail,
+    connected: connected ?? this.connected,
+    lastSyncAt: lastSyncAt.present ? lastSyncAt.value : this.lastSyncAt,
+    lastError: lastError.present ? lastError.value : this.lastError,
+  );
+  GoogleSyncStateData copyWithCompanion(GoogleSyncStateCompanion data) {
+    return GoogleSyncStateData(
+      id: data.id.present ? data.id.value : this.id,
+      accountEmail: data.accountEmail.present
+          ? data.accountEmail.value
+          : this.accountEmail,
+      connected: data.connected.present ? data.connected.value : this.connected,
+      lastSyncAt: data.lastSyncAt.present
+          ? data.lastSyncAt.value
+          : this.lastSyncAt,
+      lastError: data.lastError.present ? data.lastError.value : this.lastError,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('GoogleSyncStateData(')
+          ..write('id: $id, ')
+          ..write('accountEmail: $accountEmail, ')
+          ..write('connected: $connected, ')
+          ..write('lastSyncAt: $lastSyncAt, ')
+          ..write('lastError: $lastError')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, accountEmail, connected, lastSyncAt, lastError);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is GoogleSyncStateData &&
+          other.id == this.id &&
+          other.accountEmail == this.accountEmail &&
+          other.connected == this.connected &&
+          other.lastSyncAt == this.lastSyncAt &&
+          other.lastError == this.lastError);
+}
+
+class GoogleSyncStateCompanion extends UpdateCompanion<GoogleSyncStateData> {
+  final Value<int> id;
+  final Value<String?> accountEmail;
+  final Value<bool> connected;
+  final Value<DateTime?> lastSyncAt;
+  final Value<String?> lastError;
+  const GoogleSyncStateCompanion({
+    this.id = const Value.absent(),
+    this.accountEmail = const Value.absent(),
+    this.connected = const Value.absent(),
+    this.lastSyncAt = const Value.absent(),
+    this.lastError = const Value.absent(),
+  });
+  GoogleSyncStateCompanion.insert({
+    this.id = const Value.absent(),
+    this.accountEmail = const Value.absent(),
+    this.connected = const Value.absent(),
+    this.lastSyncAt = const Value.absent(),
+    this.lastError = const Value.absent(),
+  });
+  static Insertable<GoogleSyncStateData> custom({
+    Expression<int>? id,
+    Expression<String>? accountEmail,
+    Expression<bool>? connected,
+    Expression<DateTime>? lastSyncAt,
+    Expression<String>? lastError,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (accountEmail != null) 'account_email': accountEmail,
+      if (connected != null) 'connected': connected,
+      if (lastSyncAt != null) 'last_sync_at': lastSyncAt,
+      if (lastError != null) 'last_error': lastError,
+    });
+  }
+
+  GoogleSyncStateCompanion copyWith({
+    Value<int>? id,
+    Value<String?>? accountEmail,
+    Value<bool>? connected,
+    Value<DateTime?>? lastSyncAt,
+    Value<String?>? lastError,
+  }) {
+    return GoogleSyncStateCompanion(
+      id: id ?? this.id,
+      accountEmail: accountEmail ?? this.accountEmail,
+      connected: connected ?? this.connected,
+      lastSyncAt: lastSyncAt ?? this.lastSyncAt,
+      lastError: lastError ?? this.lastError,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (accountEmail.present) {
+      map['account_email'] = Variable<String>(accountEmail.value);
+    }
+    if (connected.present) {
+      map['connected'] = Variable<bool>(connected.value);
+    }
+    if (lastSyncAt.present) {
+      map['last_sync_at'] = Variable<DateTime>(lastSyncAt.value);
+    }
+    if (lastError.present) {
+      map['last_error'] = Variable<String>(lastError.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('GoogleSyncStateCompanion(')
+          ..write('id: $id, ')
+          ..write('accountEmail: $accountEmail, ')
+          ..write('connected: $connected, ')
+          ..write('lastSyncAt: $lastSyncAt, ')
+          ..write('lastError: $lastError')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -4028,6 +5156,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $TodayPreferencesTable todayPreferences = $TodayPreferencesTable(
     this,
   );
+  late final $TasksTable tasks = $TasksTable(this);
+  late final $GoogleSyncStateTable googleSyncState = $GoogleSyncStateTable(
+    this,
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -4042,6 +5174,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     categoryAllocations,
     financeTransactions,
     todayPreferences,
+    tasks,
+    googleSyncState,
   ];
 }
 
@@ -4273,6 +5407,8 @@ typedef $$CalendarsTableCreateCompanionBuilder = CalendarsCompanion Function({
   required int colorArgb,
   Value<bool> isSystem,
   Value<int> sortOrder,
+  Value<String?> googleCalendarId,
+  Value<String?> googleSyncToken,
 });
 typedef $$CalendarsTableUpdateCompanionBuilder = CalendarsCompanion Function({
   Value<int> id,
@@ -4280,6 +5416,8 @@ typedef $$CalendarsTableUpdateCompanionBuilder = CalendarsCompanion Function({
   Value<int> colorArgb,
   Value<bool> isSystem,
   Value<int> sortOrder,
+  Value<String?> googleCalendarId,
+  Value<String?> googleSyncToken,
 });
 
 final class $$CalendarsTableReferences
@@ -4337,6 +5475,16 @@ class $$CalendarsTableFilterComposer
 
   ColumnFilters<int> get sortOrder => $composableBuilder(
     column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get googleCalendarId => $composableBuilder(
+    column: $table.googleCalendarId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get googleSyncToken => $composableBuilder(
+    column: $table.googleSyncToken,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -4399,6 +5547,16 @@ class $$CalendarsTableOrderingComposer
     column: $table.sortOrder,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get googleCalendarId => $composableBuilder(
+    column: $table.googleCalendarId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get googleSyncToken => $composableBuilder(
+    column: $table.googleSyncToken,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$CalendarsTableAnnotationComposer
@@ -4424,6 +5582,16 @@ class $$CalendarsTableAnnotationComposer
 
   GeneratedColumn<int> get sortOrder =>
       $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+
+  GeneratedColumn<String> get googleCalendarId => $composableBuilder(
+    column: $table.googleCalendarId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get googleSyncToken => $composableBuilder(
+    column: $table.googleSyncToken,
+    builder: (column) => column,
+  );
 
   Expression<T> eventsRefs<T extends Object>(
     Expression<T> Function($$EventsTableAnnotationComposer a) f,
@@ -4484,12 +5652,16 @@ class $$CalendarsTableTableManager
                 Value<int> colorArgb = const Value.absent(),
                 Value<bool> isSystem = const Value.absent(),
                 Value<int> sortOrder = const Value.absent(),
+                Value<String?> googleCalendarId = const Value.absent(),
+                Value<String?> googleSyncToken = const Value.absent(),
               }) => CalendarsCompanion(
                 id: id,
                 name: name,
                 colorArgb: colorArgb,
                 isSystem: isSystem,
                 sortOrder: sortOrder,
+                googleCalendarId: googleCalendarId,
+                googleSyncToken: googleSyncToken,
               ),
           createCompanionCallback:
               ({
@@ -4498,12 +5670,16 @@ class $$CalendarsTableTableManager
                 required int colorArgb,
                 Value<bool> isSystem = const Value.absent(),
                 Value<int> sortOrder = const Value.absent(),
+                Value<String?> googleCalendarId = const Value.absent(),
+                Value<String?> googleSyncToken = const Value.absent(),
               }) => CalendarsCompanion.insert(
                 id: id,
                 name: name,
                 colorArgb: colorArgb,
                 isSystem: isSystem,
                 sortOrder: sortOrder,
+                googleCalendarId: googleCalendarId,
+                googleSyncToken: googleSyncToken,
               ),
           withReferenceMapper: (p0) => p0
               .map(
@@ -5047,6 +6223,9 @@ typedef $$EventsTableCreateCompanionBuilder = EventsCompanion Function({
   required DateTime startsAt,
   required DateTime endsAt,
   required int calendarId,
+  Value<String?> googleEventId,
+  Value<String?> googleEtag,
+  Value<bool> dirty,
   required DateTime createdAt,
   required DateTime updatedAt,
 });
@@ -5056,6 +6235,9 @@ typedef $$EventsTableUpdateCompanionBuilder = EventsCompanion Function({
   Value<DateTime> startsAt,
   Value<DateTime> endsAt,
   Value<int> calendarId,
+  Value<String?> googleEventId,
+  Value<String?> googleEtag,
+  Value<bool> dirty,
   Value<DateTime> createdAt,
   Value<DateTime> updatedAt,
 });
@@ -5108,6 +6290,21 @@ class $$EventsTableFilterComposer
 
   ColumnFilters<DateTime> get endsAt => $composableBuilder(
     column: $table.endsAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get googleEventId => $composableBuilder(
+    column: $table.googleEventId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get googleEtag => $composableBuilder(
+    column: $table.googleEtag,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get dirty => $composableBuilder(
+    column: $table.dirty,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -5174,6 +6371,21 @@ class $$EventsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get googleEventId => $composableBuilder(
+    column: $table.googleEventId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get googleEtag => $composableBuilder(
+    column: $table.googleEtag,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get dirty => $composableBuilder(
+    column: $table.dirty,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
@@ -5228,6 +6440,19 @@ class $$EventsTableAnnotationComposer
 
   GeneratedColumn<DateTime> get endsAt =>
       $composableBuilder(column: $table.endsAt, builder: (column) => column);
+
+  GeneratedColumn<String> get googleEventId => $composableBuilder(
+    column: $table.googleEventId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get googleEtag => $composableBuilder(
+    column: $table.googleEtag,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get dirty =>
+      $composableBuilder(column: $table.dirty, builder: (column) => column);
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
@@ -5292,6 +6517,9 @@ class $$EventsTableTableManager
                 Value<DateTime> startsAt = const Value.absent(),
                 Value<DateTime> endsAt = const Value.absent(),
                 Value<int> calendarId = const Value.absent(),
+                Value<String?> googleEventId = const Value.absent(),
+                Value<String?> googleEtag = const Value.absent(),
+                Value<bool> dirty = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
               }) => EventsCompanion(
@@ -5300,6 +6528,9 @@ class $$EventsTableTableManager
                 startsAt: startsAt,
                 endsAt: endsAt,
                 calendarId: calendarId,
+                googleEventId: googleEventId,
+                googleEtag: googleEtag,
+                dirty: dirty,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
               ),
@@ -5310,6 +6541,9 @@ class $$EventsTableTableManager
                 required DateTime startsAt,
                 required DateTime endsAt,
                 required int calendarId,
+                Value<String?> googleEventId = const Value.absent(),
+                Value<String?> googleEtag = const Value.absent(),
+                Value<bool> dirty = const Value.absent(),
                 required DateTime createdAt,
                 required DateTime updatedAt,
               }) => EventsCompanion.insert(
@@ -5318,6 +6552,9 @@ class $$EventsTableTableManager
                 startsAt: startsAt,
                 endsAt: endsAt,
                 calendarId: calendarId,
+                googleEventId: googleEventId,
+                googleEtag: googleEtag,
+                dirty: dirty,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
               ),
@@ -7034,6 +8271,476 @@ typedef $$TodayPreferencesTableProcessedTableManager =
       TodayPreference,
       PrefetchHooks Function()
     >;
+typedef $$TasksTableCreateCompanionBuilder = TasksCompanion Function({
+  Value<int> id,
+  required String title,
+  Value<bool> isDone,
+  Value<DateTime?> dueDate,
+  Value<String> notes,
+  Value<int> sortOrder,
+  required DateTime createdAt,
+  required DateTime updatedAt,
+});
+typedef $$TasksTableUpdateCompanionBuilder = TasksCompanion Function({
+  Value<int> id,
+  Value<String> title,
+  Value<bool> isDone,
+  Value<DateTime?> dueDate,
+  Value<String> notes,
+  Value<int> sortOrder,
+  Value<DateTime> createdAt,
+  Value<DateTime> updatedAt,
+});
+
+class $$TasksTableFilterComposer extends Composer<_$AppDatabase, $TasksTable> {
+  $$TasksTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isDone => $composableBuilder(
+    column: $table.isDone,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get dueDate => $composableBuilder(
+    column: $table.dueDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$TasksTableOrderingComposer
+    extends Composer<_$AppDatabase, $TasksTable> {
+  $$TasksTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isDone => $composableBuilder(
+    column: $table.isDone,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get dueDate => $composableBuilder(
+    column: $table.dueDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$TasksTableAnnotationComposer
+    extends Composer<_$AppDatabase, $TasksTable> {
+  $$TasksTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<bool> get isDone =>
+      $composableBuilder(column: $table.isDone, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get dueDate =>
+      $composableBuilder(column: $table.dueDate, builder: (column) => column);
+
+  GeneratedColumn<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => column);
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$TasksTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $TasksTable,
+          Task,
+          $$TasksTableFilterComposer,
+          $$TasksTableOrderingComposer,
+          $$TasksTableAnnotationComposer,
+          $$TasksTableCreateCompanionBuilder,
+          $$TasksTableUpdateCompanionBuilder,
+          (Task, BaseReferences<_$AppDatabase, $TasksTable, Task>),
+          Task,
+          PrefetchHooks Function()
+        > {
+  $$TasksTableTableManager(_$AppDatabase db, $TasksTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$TasksTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$TasksTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$TasksTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                Value<bool> isDone = const Value.absent(),
+                Value<DateTime?> dueDate = const Value.absent(),
+                Value<String> notes = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+              }) => TasksCompanion(
+                id: id,
+                title: title,
+                isDone: isDone,
+                dueDate: dueDate,
+                notes: notes,
+                sortOrder: sortOrder,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String title,
+                Value<bool> isDone = const Value.absent(),
+                Value<DateTime?> dueDate = const Value.absent(),
+                Value<String> notes = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                required DateTime createdAt,
+                required DateTime updatedAt,
+              }) => TasksCompanion.insert(
+                id: id,
+                title: title,
+                isDone: isDone,
+                dueDate: dueDate,
+                notes: notes,
+                sortOrder: sortOrder,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$TasksTable, Task>(table),
+                  BaseReferences<_$AppDatabase, $TasksTable, Task>(
+                    db,
+                    table,
+                    e,
+                  ),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$TasksTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $TasksTable,
+      Task,
+      $$TasksTableFilterComposer,
+      $$TasksTableOrderingComposer,
+      $$TasksTableAnnotationComposer,
+      $$TasksTableCreateCompanionBuilder,
+      $$TasksTableUpdateCompanionBuilder,
+      (Task, BaseReferences<_$AppDatabase, $TasksTable, Task>),
+      Task,
+      PrefetchHooks Function()
+    >;
+typedef $$GoogleSyncStateTableCreateCompanionBuilder =
+    GoogleSyncStateCompanion Function({
+      Value<int> id,
+      Value<String?> accountEmail,
+      Value<bool> connected,
+      Value<DateTime?> lastSyncAt,
+      Value<String?> lastError,
+    });
+typedef $$GoogleSyncStateTableUpdateCompanionBuilder =
+    GoogleSyncStateCompanion Function({
+      Value<int> id,
+      Value<String?> accountEmail,
+      Value<bool> connected,
+      Value<DateTime?> lastSyncAt,
+      Value<String?> lastError,
+    });
+
+class $$GoogleSyncStateTableFilterComposer
+    extends Composer<_$AppDatabase, $GoogleSyncStateTable> {
+  $$GoogleSyncStateTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get accountEmail => $composableBuilder(
+    column: $table.accountEmail,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get connected => $composableBuilder(
+    column: $table.connected,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastSyncAt => $composableBuilder(
+    column: $table.lastSyncAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get lastError => $composableBuilder(
+    column: $table.lastError,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$GoogleSyncStateTableOrderingComposer
+    extends Composer<_$AppDatabase, $GoogleSyncStateTable> {
+  $$GoogleSyncStateTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get accountEmail => $composableBuilder(
+    column: $table.accountEmail,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get connected => $composableBuilder(
+    column: $table.connected,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lastSyncAt => $composableBuilder(
+    column: $table.lastSyncAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get lastError => $composableBuilder(
+    column: $table.lastError,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$GoogleSyncStateTableAnnotationComposer
+    extends Composer<_$AppDatabase, $GoogleSyncStateTable> {
+  $$GoogleSyncStateTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get accountEmail => $composableBuilder(
+    column: $table.accountEmail,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get connected =>
+      $composableBuilder(column: $table.connected, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get lastSyncAt => $composableBuilder(
+    column: $table.lastSyncAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get lastError =>
+      $composableBuilder(column: $table.lastError, builder: (column) => column);
+}
+
+class $$GoogleSyncStateTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $GoogleSyncStateTable,
+          GoogleSyncStateData,
+          $$GoogleSyncStateTableFilterComposer,
+          $$GoogleSyncStateTableOrderingComposer,
+          $$GoogleSyncStateTableAnnotationComposer,
+          $$GoogleSyncStateTableCreateCompanionBuilder,
+          $$GoogleSyncStateTableUpdateCompanionBuilder,
+          (
+            GoogleSyncStateData,
+            BaseReferences<
+              _$AppDatabase,
+              $GoogleSyncStateTable,
+              GoogleSyncStateData
+            >,
+          ),
+          GoogleSyncStateData,
+          PrefetchHooks Function()
+        > {
+  $$GoogleSyncStateTableTableManager(
+    _$AppDatabase db,
+    $GoogleSyncStateTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$GoogleSyncStateTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$GoogleSyncStateTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$GoogleSyncStateTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String?> accountEmail = const Value.absent(),
+                Value<bool> connected = const Value.absent(),
+                Value<DateTime?> lastSyncAt = const Value.absent(),
+                Value<String?> lastError = const Value.absent(),
+              }) => GoogleSyncStateCompanion(
+                id: id,
+                accountEmail: accountEmail,
+                connected: connected,
+                lastSyncAt: lastSyncAt,
+                lastError: lastError,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String?> accountEmail = const Value.absent(),
+                Value<bool> connected = const Value.absent(),
+                Value<DateTime?> lastSyncAt = const Value.absent(),
+                Value<String?> lastError = const Value.absent(),
+              }) => GoogleSyncStateCompanion.insert(
+                id: id,
+                accountEmail: accountEmail,
+                connected: connected,
+                lastSyncAt: lastSyncAt,
+                lastError: lastError,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$GoogleSyncStateTable, GoogleSyncStateData>(
+                    table,
+                  ),
+                  BaseReferences<
+                    _$AppDatabase,
+                    $GoogleSyncStateTable,
+                    GoogleSyncStateData
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$GoogleSyncStateTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $GoogleSyncStateTable,
+      GoogleSyncStateData,
+      $$GoogleSyncStateTableFilterComposer,
+      $$GoogleSyncStateTableOrderingComposer,
+      $$GoogleSyncStateTableAnnotationComposer,
+      $$GoogleSyncStateTableCreateCompanionBuilder,
+      $$GoogleSyncStateTableUpdateCompanionBuilder,
+      (
+        GoogleSyncStateData,
+        BaseReferences<
+          _$AppDatabase,
+          $GoogleSyncStateTable,
+          GoogleSyncStateData
+        >,
+      ),
+      GoogleSyncStateData,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -7056,4 +8763,8 @@ class $AppDatabaseManager {
       $$FinanceTransactionsTableTableManager(_db, _db.financeTransactions);
   $$TodayPreferencesTableTableManager get todayPreferences =>
       $$TodayPreferencesTableTableManager(_db, _db.todayPreferences);
+  $$TasksTableTableManager get tasks =>
+      $$TasksTableTableManager(_db, _db.tasks);
+  $$GoogleSyncStateTableTableManager get googleSyncState =>
+      $$GoogleSyncStateTableTableManager(_db, _db.googleSyncState);
 }

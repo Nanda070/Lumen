@@ -18,7 +18,7 @@ Color _statusColor(String status) {
   };
 }
 
-/// Large (or compact) budget progress ring with center remaining/spent.
+/// Budget progress ring — center copy always clipped inside the arc.
 class BudgetHeroRing extends StatelessWidget {
   const BudgetHeroRing({
     super.key,
@@ -40,14 +40,11 @@ class BudgetHeroRing extends StatelessWidget {
         ? 0.0
         : (summary.spentMinor / summary.budgetLimitMinor).clamp(0.0, 1.0);
     final remaining = summary.remainingMinor;
-    final size = compact ? 120.0 : 168.0;
-    final stroke = compact ? 10.0 : 14.0;
 
     return GlassSurface(
       glowColor: color,
       padding: EdgeInsets.all(compact ? LumenSpacing.sm : LumenSpacing.lg),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           if (!compact) ...[
             Row(
@@ -66,66 +63,107 @@ class BudgetHeroRing extends StatelessWidget {
             const SizedBox(height: LumenSpacing.md),
           ],
           Expanded(
-            child: Center(
-              child: SizedBox(
-                width: size,
-                height: size,
-                child: CustomPaint(
-                  painter: _RingPainter(
-                    progress: ratio,
-                    color: color,
-                    trackColor: LumenColors.surface,
-                    strokeWidth: stroke,
-                  ),
-                  child: Center(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          FittedBox(
-                            fit: BoxFit.scaleDown,
-                            child: Text(
-                              remaining == null
-                                  ? '—'
-                                  : MoneyFormat.formatCard(remaining),
-                              style: theme.headlineMedium?.copyWith(
-                                fontSize: compact ? 20 : 28,
-                                fontFeatures: const [
-                                  FontFeature.tabularFigures(),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final maxSide = math.min(
+                  constraints.maxWidth,
+                  constraints.maxHeight,
+                );
+                final side = math.max(
+                  72.0,
+                  math.min(maxSide, compact ? 124.0 : 164.0) - 4,
+                );
+                final stroke = compact
+                    ? (side < 100 ? 8.0 : 10.0)
+                    : 14.0;
+                final inner = math.max(40.0, side - stroke * 2 - 8);
+                final centerLabel = remaining == null
+                    ? (compact ? '—' : l10n.financeNoBudget)
+                    : l10n.financeLeft;
+
+                return Center(
+                  child: SizedBox(
+                    width: side,
+                    height: side,
+                    child: CustomPaint(
+                      painter: _RingPainter(
+                        progress: ratio,
+                        color: color,
+                        trackColor: LumenColors.surface,
+                        strokeWidth: stroke,
+                      ),
+                      child: Center(
+                        child: SizedBox(
+                          width: inner,
+                          height: inner,
+                          child: ClipOval(
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: compact ? 6 : 10,
+                                vertical: compact ? 4 : 8,
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Flexible(
+                                    child: FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      child: Text(
+                                        remaining == null
+                                            ? '—'
+                                            : MoneyFormat.formatCard(
+                                                remaining,
+                                              ),
+                                        textAlign: TextAlign.center,
+                                        maxLines: 1,
+                                        style:
+                                            theme.headlineMedium?.copyWith(
+                                          fontSize: compact ? 20 : 26,
+                                          height: 1.0,
+                                          fontFeatures: const [
+                                            FontFeature.tabularFigures(),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    centerLabel,
+                                    textAlign: TextAlign.center,
+                                    maxLines: compact ? 1 : 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: theme.labelMedium?.copyWith(
+                                      color: LumenColors.textMuted,
+                                      fontSize: compact ? 10 : 11,
+                                      height: 1.1,
+                                    ),
+                                  ),
+                                  if (!compact &&
+                                      summary.budgetLimitMinor > 0) ...[
+                                    const SizedBox(height: 2),
+                                    FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      child: Text(
+                                        '${MoneyFormat.formatCard(summary.spentMinor)} / ${MoneyFormat.formatCard(summary.budgetLimitMinor)}',
+                                        maxLines: 1,
+                                        style: theme.labelSmall?.copyWith(
+                                          color: LumenColors.textMuted,
+                                          fontSize: 10,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ],
                               ),
                             ),
                           ),
-                          Text(
-                            remaining == null
-                                ? l10n.financeNoBudget
-                                : l10n.financeLeft,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: theme.labelMedium?.copyWith(
-                              color: LumenColors.textMuted,
-                              fontSize: compact ? 10 : 12,
-                            ),
-                          ),
-                          if (!compact && summary.budgetLimitMinor > 0) ...[
-                            const SizedBox(height: 4),
-                            FittedBox(
-                              fit: BoxFit.scaleDown,
-                              child: Text(
-                                '${MoneyFormat.formatCard(summary.spentMinor)} / ${MoneyFormat.formatCard(summary.budgetLimitMinor)} $currencyCode',
-                                style: theme.labelMedium?.copyWith(
-                                  color: LumenColors.textMuted,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ),
+                );
+              },
             ),
           ),
         ],
@@ -560,7 +598,6 @@ class _FinanceCashflowChartState extends State<FinanceCashflowChart> {
                         },
                         touchTooltipData: LineTouchTooltipData(
                           getTooltipColor: (_) => LumenColors.surfaceRaised,
-                          tooltipBorderRadius: BorderRadius.circular(12),
                           tooltipPadding: const EdgeInsets.symmetric(
                             horizontal: 10,
                             vertical: 6,

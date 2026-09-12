@@ -32,13 +32,14 @@ abstract final class TodayWidgetIds {
 
 /// Persists dashboard layouts in [TodayPreferences.layoutJson].
 ///
-/// JSON shape: `{ "2": { "budget_ring": {item.toMap()}, ... }, "4": {...} }`
+/// JSON: `{ "v": 3, "2": { id: itemMap }, "4": { ... } }`
 class DashboardStorage extends DashboardItemStorageDelegate<DashboardItem> {
   DashboardStorage(this.database);
 
   final AppDatabase database;
 
   static const slotCounts = [2, 4];
+  static const layoutVersion = 3;
 
   @override
   bool get cacheItems => true;
@@ -56,13 +57,27 @@ class DashboardStorage extends DashboardItemStorageDelegate<DashboardItem> {
       try {
         final decoded = jsonDecode(raw);
         if (decoded is! Map) return defaultLayout(slotCount);
-        final slotKey = '$slotCount';
-        final slotMap = decoded[slotKey];
+        final root = Map<String, dynamic>.from(decoded);
+        final v = root['v'];
+        if (v is! int || v < layoutVersion) {
+          final fresh = defaultLayout(slotCount);
+          await _persistSlot(
+            slotCount,
+            {for (final i in fresh) i.identifier: i},
+            version: layoutVersion,
+          );
+          return fresh;
+        }
+        final slotMap = root['$slotCount'];
         if (slotMap is! Map || slotMap.isEmpty) {
           return defaultLayout(slotCount);
         }
         return slotMap.values
-            .map((v) => DashboardItem.fromMap(Map<String, dynamic>.from(v as Map)))
+            .map(
+              (value) => DashboardItem.fromMap(
+                Map<String, dynamic>.from(value as Map),
+              ),
+            )
             .toList();
       } catch (_) {
         return defaultLayout(slotCount);
@@ -71,7 +86,10 @@ class DashboardStorage extends DashboardItemStorageDelegate<DashboardItem> {
   }
 
   @override
-  FutureOr<void> onItemsUpdated(List<DashboardItem> items, int slotCount) async {
+  FutureOr<void> onItemsUpdated(
+    List<DashboardItem> items,
+    int slotCount,
+  ) async {
     final current = Map<String, DashboardItem>.from(itemsFor(slotCount) ?? {});
     for (final item in items) {
       current[item.identifier] = item;
@@ -80,7 +98,10 @@ class DashboardStorage extends DashboardItemStorageDelegate<DashboardItem> {
   }
 
   @override
-  FutureOr<void> onItemsAdded(List<DashboardItem> items, int slotCount) async {
+  FutureOr<void> onItemsAdded(
+    List<DashboardItem> items,
+    int slotCount,
+  ) async {
     for (final sc in slotCounts) {
       final current = Map<String, DashboardItem>.from(
         itemsFor(sc) ??
@@ -94,7 +115,10 @@ class DashboardStorage extends DashboardItemStorageDelegate<DashboardItem> {
   }
 
   @override
-  FutureOr<void> onItemsDeleted(List<DashboardItem> items, int slotCount) async {
+  FutureOr<void> onItemsDeleted(
+    List<DashboardItem> items,
+    int slotCount,
+  ) async {
     final ids = items.map((e) => e.identifier).toSet();
     for (final sc in slotCounts) {
       final current = Map<String, DashboardItem>.from(
@@ -106,14 +130,19 @@ class DashboardStorage extends DashboardItemStorageDelegate<DashboardItem> {
     }
   }
 
-  Future<void> _persistSlot(int slotCount, Map<String, DashboardItem> items) async {
+  Future<void> _persistSlot(
+    int slotCount,
+    Map<String, DashboardItem> items, {
+    int version = layoutVersion,
+  }) async {
     final raw = await database.getDashboardLayoutJson();
-    Map<String, dynamic> root = {};
+    Map<String, dynamic> root = {'v': version};
     if (raw.trim().isNotEmpty) {
       try {
         final decoded = jsonDecode(raw);
         if (decoded is Map) {
           root = Map<String, dynamic>.from(decoded);
+          root['v'] = version;
         }
       } catch (_) {}
     }
@@ -121,7 +150,7 @@ class DashboardStorage extends DashboardItemStorageDelegate<DashboardItem> {
     await database.saveDashboardLayoutJson(jsonEncode(root));
   }
 
-  /// Default board for phone (2) and wide (4).
+  /// Compact defaults — fewer tall tiles, less scroll depth.
   static List<DashboardItem> defaultLayout(int slotCount) {
     if (slotCount >= 4) {
       return [
@@ -131,8 +160,8 @@ class DashboardStorage extends DashboardItemStorageDelegate<DashboardItem> {
           height: 2,
           startX: 0,
           startY: 0,
-          minWidth: 2,
-          minHeight: 2,
+          minWidth: 1,
+          minHeight: 1,
         ),
         DashboardItem(
           identifier: TodayWidgetIds.spent,
@@ -164,35 +193,16 @@ class DashboardStorage extends DashboardItemStorageDelegate<DashboardItem> {
         ),
         DashboardItem(
           identifier: TodayWidgetIds.eventsList,
-          width: 2,
-          height: 2,
-          startX: 0,
-          startY: 2,
-          minWidth: 2,
-          minHeight: 2,
-        ),
-        DashboardItem(
-          identifier: TodayWidgetIds.categoryDonut,
-          width: 2,
-          height: 2,
-          startX: 2,
-          startY: 2,
-          minWidth: 2,
-          minHeight: 2,
-        ),
-        DashboardItem(
-          identifier: TodayWidgetIds.cashflow,
           width: 4,
           height: 2,
           startX: 0,
-          startY: 4,
+          startY: 2,
           minWidth: 2,
           minHeight: 2,
         ),
       ];
     }
 
-    // Phone: slotCount 2
     return [
       DashboardItem(
         identifier: TodayWidgetIds.budgetRing,
@@ -200,8 +210,8 @@ class DashboardStorage extends DashboardItemStorageDelegate<DashboardItem> {
         height: 2,
         startX: 0,
         startY: 0,
-        minWidth: 2,
-        minHeight: 2,
+        minWidth: 1,
+        minHeight: 1,
       ),
       DashboardItem(
         identifier: TodayWidgetIds.spent,
@@ -237,41 +247,36 @@ class DashboardStorage extends DashboardItemStorageDelegate<DashboardItem> {
         height: 2,
         startX: 0,
         startY: 4,
-        minWidth: 2,
-        minHeight: 2,
-      ),
-      DashboardItem(
-        identifier: TodayWidgetIds.categoryDonut,
-        width: 2,
-        height: 2,
-        startX: 0,
-        startY: 6,
-        minWidth: 2,
-        minHeight: 2,
-      ),
-      DashboardItem(
-        identifier: TodayWidgetIds.cashflow,
-        width: 2,
-        height: 2,
-        startX: 0,
-        startY: 8,
-        minWidth: 2,
+        minWidth: 1,
         minHeight: 2,
       ),
     ];
   }
 
-  /// Factory for catalog adds (auto-placed by dashboard).
   static DashboardItem newItem(String id, int slotCount) {
     final w = slotCount.clamp(2, 4);
     switch (id) {
       case TodayWidgetIds.budgetRing:
-      case TodayWidgetIds.eventsList:
+        return DashboardItem(
+          identifier: id,
+          width: 2,
+          height: 2,
+          minWidth: 1,
+          minHeight: 1,
+        );
       case TodayWidgetIds.categoryDonut:
       case TodayWidgetIds.cashflow:
         return DashboardItem(
           identifier: id,
-          width: w >= 4 ? 2 : 2,
+          width: 2,
+          height: 2,
+          minWidth: 1,
+          minHeight: 1,
+        );
+      case TodayWidgetIds.eventsList:
+        return DashboardItem(
+          identifier: id,
+          width: w,
           height: 2,
           minWidth: 1,
           minHeight: 2,

@@ -5,6 +5,8 @@ import 'package:phosphor_icons/phosphor_icons.dart';
 import '../../data/app_database.dart';
 import '../../design_system/design_system.dart';
 import '../../l10n/app_localizations.dart';
+import '../../shell/lumen_tabs.dart';
+import '../finance/transaction_editor_sheet.dart';
 import 'dashboard_storage.dart';
 import 'today_widget_tiles.dart';
 import 'today_widgets_sheet.dart';
@@ -14,10 +16,12 @@ class TodayPage extends StatefulWidget {
     super.key,
     required this.database,
     this.currencyCode = 'USD',
+    this.onNavigateToTab,
   });
 
   final AppDatabase database;
   final String currencyCode;
+  final ValueChanged<int>? onNavigateToTab;
 
   @override
   State<TodayPage> createState() => _TodayPageState();
@@ -52,6 +56,32 @@ class _TodayPageState extends State<TodayPage> {
     });
   }
 
+  Future<void> _onWidgetTap(String id) async {
+    if (_editing) return;
+    switch (id) {
+      case TodayWidgetIds.eventsList:
+      case TodayWidgetIds.eventsCount:
+        widget.onNavigateToTab?.call(LumenTabs.calendar);
+        return;
+      case TodayWidgetIds.spendToday:
+        await showTransactionEditorSheet(
+          context: context,
+          database: widget.database,
+          currencyCode: widget.currencyCode,
+          initialDate: DateTime.now(),
+        );
+        return;
+      case TodayWidgetIds.budgetRing:
+      case TodayWidgetIds.spent:
+      case TodayWidgetIds.remaining:
+      case TodayWidgetIds.categoryDonut:
+      case TodayWidgetIds.cashflow:
+      case TodayWidgetIds.accounts:
+        widget.onNavigateToTab?.call(LumenTabs.finance);
+        return;
+    }
+  }
+
   Future<void> _openAddSheet() async {
     Set<String> present = {};
     try {
@@ -80,7 +110,7 @@ class _TodayPageState extends State<TodayPage> {
     final slotCount = _slotCount(context);
 
     return Padding(
-      padding: const EdgeInsets.only(top: LumenSpacing.lg),
+      padding: const EdgeInsets.only(top: LumenSpacing.md),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -152,13 +182,13 @@ class _TodayPageState extends State<TodayPage> {
               key: ValueKey('dash-$slotCount'),
               dashboardItemController: _controller,
               slotCount: slotCount,
-              slotHeight: 108,
+              slotHeight: 104,
               padding: const EdgeInsets.symmetric(
                 horizontal: LumenSpacing.pagePadding,
-                vertical: LumenSpacing.xs,
+                vertical: LumenSpacing.sm,
               ),
-              horizontalSpace: 8,
-              verticalSpace: 8,
+              horizontalSpace: 12,
+              verticalSpace: 12,
               shrinkToPlace: true,
               slideToTop: false,
               absorbPointer: false,
@@ -197,6 +227,9 @@ class _TodayPageState extends State<TodayPage> {
                   database: widget.database,
                   currencyCode: widget.currencyCode,
                   isEditing: _editing,
+                  onTap: _editing
+                      ? null
+                      : () => _onWidgetTap(item.identifier),
                   onDelete: _editing
                       ? () {
                           _controller.delete(item.identifier);

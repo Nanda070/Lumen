@@ -11,6 +11,12 @@
   "todayUpcoming": "Upcoming",
   "todaySpend": "Spent today",
   "todayEmptyEvents": "No events today — add one in Calendar.",
+  "todayEventsMore": "+{count} more",
+  "@todayEventsMore": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "todaySampleEvent": "Morning focus",
   "todaySampleTime": "09:00 – 10:30",
   "roomComingSoon": "Coming soon",
@@ -230,5 +236,27 @@
   "financeOfBudget": "of budget",
   "financeLeft": "left",
   "financeNet": "Net",
-  "financeEqualSplit": "Equal split"
+  "financeEqualSplit": "Equal split",
+
+  "googleCalendarTitle": "Google Calendar",
+  "googleConnect": "Connect",
+  "googleDisconnect": "Disconnect",
+  "googleSyncNow": "Sync now",
+  "googleConnected": "Connected",
+  "googleDisconnected": "Not connected",
+  "googleNeedsConfig": "Add OAuth client IDs in GoogleConfig (see TECHNICAL.md).",
+  "googleSyncOk": "Google Calendar synced.",
+  "googleSyncError": "Sync failed. Check connection and OAuth setup.",
+
+  "tasksInbox": "Inbox",
+  "tasksToday": "Today",
+  "tasksDone": "Done",
+  "tasksEmpty": "No tasks here yet.",
+  "tasksNew": "New task",
+  "tasksEdit": "Edit task",
+  "tasksTitleHint": "What needs doing?",
+  "tasksNotesHint": "Notes",
+  "tasksTitleRequired": "Add a title.",
+  "tasksDue": "Due date",
+  "tasksClearDue": "Clear"
 }

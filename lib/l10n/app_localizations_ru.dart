@@ -43,6 +43,11 @@ class AppLocalizationsRu extends AppLocalizations {
   String get todayEmptyEvents => 'На сегодня пусто — добавьте в Календаре.';
 
   @override
+  String todayEventsMore(int count) {
+    return 'ещё $count';
+  }
+
+  @override
   String get todaySampleEvent => 'Утренний фокус';
 
   @override
@@ -624,4 +629,65 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get financeEqualSplit => 'Поровну';
+
+  @override
+  String get googleCalendarTitle => 'Google Календарь';
+
+  @override
+  String get googleConnect => 'Подключить';
+
+  @override
+  String get googleDisconnect => 'Отключить';
+
+  @override
+  String get googleSyncNow => 'Синхронизировать';
+
+  @override
+  String get googleConnected => 'Подключено';
+
+  @override
+  String get googleDisconnected => 'Не подключено';
+
+  @override
+  String get googleNeedsConfig =>
+      'Добавьте OAuth client ID в GoogleConfig (см. TECHNICAL.md).';
+
+  @override
+  String get googleSyncOk => 'Google Календарь синхронизирован.';
+
+  @override
+  String get googleSyncError => 'Синхронизация не удалась. Проверьте OAuth.';
+
+  @override
+  String get tasksInbox => 'Inbox';
+
+  @override
+  String get tasksToday => 'Сегодня';
+
+  @override
+  String get tasksDone => 'Готово';
+
+  @override
+  String get tasksEmpty => 'Пока пусто.';
+
+  @override
+  String get tasksNew => 'Новая задача';
+
+  @override
+  String get tasksEdit => 'Задача';
+
+  @override
+  String get tasksTitleHint => 'Что сделать?';
+
+  @override
+  String get tasksNotesHint => 'Заметки';
+
+  @override
+  String get tasksTitleRequired => 'Добавьте название.';
+
+  @override
+  String get tasksDue => 'Срок';
+
+  @override
+  String get tasksClearDue => 'Сбросить';
 }
