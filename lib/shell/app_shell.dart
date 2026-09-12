@@ -14,10 +14,14 @@ class AppShell extends StatefulWidget {
     super.key,
     required this.locale,
     required this.onLocaleChanged,
+    required this.currencyCode,
+    required this.displayName,
   });
 
   final Locale locale;
   final ValueChanged<Locale> onLocaleChanged;
+  final String currencyCode;
+  final String displayName;
 
   @override
   State<AppShell> createState() => _AppShellState();
@@ -39,13 +43,15 @@ class _AppShellState extends State<AppShell> {
     );
 
     final pages = [
-      const TodayPage(),
+      TodayPage(currencyCode: widget.currencyCode),
       const CalendarPage(),
       const TasksPage(),
       const FinancePage(),
       MorePage(
         locale: widget.locale,
         onLocaleChanged: widget.onLocaleChanged,
+        displayName: widget.displayName,
+        currencyCode: widget.currencyCode,
       ),
     ];
 

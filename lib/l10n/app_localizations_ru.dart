@@ -80,6 +80,11 @@ class AppLocalizationsRu extends AppLocalizations {
   String get moreSettings => 'Настройки';
 
   @override
+  String moreProfileMeta(String currency) {
+    return 'Локальный профиль · $currency';
+  }
+
+  @override
   String get language => 'Язык';
 
   @override
@@ -87,4 +92,74 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get languageRussian => 'Русский';
+
+  @override
+  String get onboardingContinue => 'Далее';
+
+  @override
+  String get onboardingFinish => 'Войти в Lumen';
+
+  @override
+  String get onboardingSaveError =>
+      'Не удалось сохранить профиль. Попробуйте ещё раз.';
+
+  @override
+  String get onboardingNameTitle => 'Как к вам обращаться?';
+
+  @override
+  String get onboardingNameSubtitle =>
+      'Имя или ник — всё остаётся только на этом устройстве.';
+
+  @override
+  String get onboardingNameHint => 'Ваше имя';
+
+  @override
+  String get onboardingLocaleTitle => 'Язык и место';
+
+  @override
+  String get onboardingLocaleSubtitle =>
+      'По умолчанию English. Выберите страну — подскажем валюту.';
+
+  @override
+  String get onboardingCountryLabel => 'Страна / регион';
+
+  @override
+  String get onboardingCurrencyTitle => 'Базовая валюта';
+
+  @override
+  String get onboardingCurrencySubtitle =>
+      'Предложена по региону — потом можно сменить.';
+
+  @override
+  String get onboardingGoogleTitle => 'Google Calendar';
+
+  @override
+  String get onboardingGoogleSubtitle =>
+      'По желанию. Двусторонняя синхронизация — после живого локального календаря.';
+
+  @override
+  String get onboardingGoogleCardTitle => 'Пока пропустить';
+
+  @override
+  String get onboardingGoogleCardBody =>
+      'Google можно подключить позже в Календаре. Сначала Lumen полностью офлайн.';
+
+  @override
+  String get onboardingReadyTitle => 'Готово';
+
+  @override
+  String onboardingReadyTitleNamed(String name) {
+    return 'Добро пожаловать, $name';
+  }
+
+  @override
+  String get onboardingReadySubtitle =>
+      'Локальный профиль создан. Календари Personal и Lumen и стартовые категории денег уже на месте.';
+
+  @override
+  String get onboardingReadySeedTitle => 'Что уже есть';
+
+  @override
+  String get onboardingReadySeedBody =>
+      'Календари Personal и Lumen · базовые категории расходов и доходов · ваш язык и валюта.';
 }

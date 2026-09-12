@@ -23,7 +23,42 @@
   "moreNutrition": "Питание",
   "moreTraining": "Тренировки",
   "moreSettings": "Настройки",
+  "moreProfileMeta": "Локальный профиль · {currency}",
+  "@moreProfileMeta": {
+    "placeholders": {
+      "currency": {
+        "type": "String"
+      }
+    }
+  },
   "language": "Язык",
   "languageEnglish": "English",
-  "languageRussian": "Русский"
+  "languageRussian": "Русский",
+  "onboardingContinue": "Далее",
+  "onboardingFinish": "Войти в Lumen",
+  "onboardingSaveError": "Не удалось сохранить профиль. Попробуйте ещё раз.",
+  "onboardingNameTitle": "Как к вам обращаться?",
+  "onboardingNameSubtitle": "Имя или ник — всё остаётся только на этом устройстве.",
+  "onboardingNameHint": "Ваше имя",
+  "onboardingLocaleTitle": "Язык и место",
+  "onboardingLocaleSubtitle": "По умолчанию English. Выберите страну — подскажем валюту.",
+  "onboardingCountryLabel": "Страна / регион",
+  "onboardingCurrencyTitle": "Базовая валюта",
+  "onboardingCurrencySubtitle": "Предложена по региону — потом можно сменить.",
+  "onboardingGoogleTitle": "Google Calendar",
+  "onboardingGoogleSubtitle": "По желанию. Двусторонняя синхронизация — после живого локального календаря.",
+  "onboardingGoogleCardTitle": "Пока пропустить",
+  "onboardingGoogleCardBody": "Google можно подключить позже в Календаре. Сначала Lumen полностью офлайн.",
+  "onboardingReadyTitle": "Готово",
+  "onboardingReadyTitleNamed": "Добро пожаловать, {name}",
+  "@onboardingReadyTitleNamed": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "onboardingReadySubtitle": "Локальный профиль создан. Календари Personal и Lumen и стартовые категории денег уже на месте.",
+  "onboardingReadySeedTitle": "Что уже есть",
+  "onboardingReadySeedBody": "Календари Personal и Lumen · базовые категории расходов и доходов · ваш язык и валюта."
 }

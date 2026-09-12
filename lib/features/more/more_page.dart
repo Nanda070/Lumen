@@ -10,10 +10,14 @@ class MorePage extends StatelessWidget {
     super.key,
     required this.locale,
     required this.onLocaleChanged,
+    required this.displayName,
+    required this.currencyCode,
   });
 
   final Locale locale;
   final ValueChanged<Locale> onLocaleChanged;
+  final String displayName;
+  final String currencyCode;
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +29,35 @@ class MorePage extends StatelessWidget {
       subtitle: l10n.moreSubtitle,
       body: Column(
         children: [
+          GlowCard(
+            violetEdge: true,
+            padding: const EdgeInsets.all(LumenSpacing.lg),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(displayName, style: theme.titleLarge),
+                      const SizedBox(height: LumenSpacing.xxs),
+                      Text(
+                        l10n.moreProfileMeta(currencyCode),
+                        style: theme.bodySmall?.copyWith(
+                          color: LumenColors.textMuted,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Icon(
+                  PhosphorIconsRegular.userCircle,
+                  color: LumenColors.accentViolet,
+                  size: 32,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: LumenSpacing.lg),
           _RoomTile(
             icon: PhosphorIconsRegular.circleDashed,
             label: l10n.moreHabits,

@@ -5,7 +5,9 @@ import '../../l10n/app_localizations.dart';
 import '../../shell/module_scaffold.dart';
 
 class TodayPage extends StatelessWidget {
-  const TodayPage({super.key});
+  const TodayPage({super.key, this.currencyCode = 'USD'});
+
+  final String currencyCode;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +25,7 @@ class TodayPage extends StatelessWidget {
                 child: GradientMetricCard(
                   label: l10n.todaySpend,
                   value: '0',
-                  suffix: 'USD',
+                  suffix: currencyCode,
                   gradient: LumenColors.gradEmber,
                 ),
               ),

@@ -236,6 +236,12 @@ abstract class AppLocalizations {
   /// **'Settings'**
   String get moreSettings;
 
+  /// No description provided for @moreProfileMeta.
+  ///
+  /// In en, this message translates to:
+  /// **'Local profile · {currency}'**
+  String moreProfileMeta(String currency);
+
   /// No description provided for @language.
   ///
   /// In en, this message translates to:
@@ -253,6 +259,126 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Русский'**
   String get languageRussian;
+
+  /// No description provided for @onboardingContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get onboardingContinue;
+
+  /// No description provided for @onboardingFinish.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter Lumen'**
+  String get onboardingFinish;
+
+  /// No description provided for @onboardingSaveError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save your profile. Try again.'**
+  String get onboardingSaveError;
+
+  /// No description provided for @onboardingNameTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What should we call you?'**
+  String get onboardingNameTitle;
+
+  /// No description provided for @onboardingNameSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Just a name or nickname — it stays on this device.'**
+  String get onboardingNameSubtitle;
+
+  /// No description provided for @onboardingNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Your name'**
+  String get onboardingNameHint;
+
+  /// No description provided for @onboardingLocaleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Language & place'**
+  String get onboardingLocaleTitle;
+
+  /// No description provided for @onboardingLocaleSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'English by default. Pick where you live so currency feels right.'**
+  String get onboardingLocaleSubtitle;
+
+  /// No description provided for @onboardingCountryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Country / region'**
+  String get onboardingCountryLabel;
+
+  /// No description provided for @onboardingCurrencyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Base currency'**
+  String get onboardingCurrencyTitle;
+
+  /// No description provided for @onboardingCurrencySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Suggested from your region — change anytime later.'**
+  String get onboardingCurrencySubtitle;
+
+  /// No description provided for @onboardingGoogleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Google Calendar'**
+  String get onboardingGoogleTitle;
+
+  /// No description provided for @onboardingGoogleSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional. Two-way sync comes after the local calendar feels great.'**
+  String get onboardingGoogleSubtitle;
+
+  /// No description provided for @onboardingGoogleCardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip for now'**
+  String get onboardingGoogleCardTitle;
+
+  /// No description provided for @onboardingGoogleCardBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You can connect Google later from Calendar. Lumen works fully offline first.'**
+  String get onboardingGoogleCardBody;
+
+  /// No description provided for @onboardingReadyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re set'**
+  String get onboardingReadyTitle;
+
+  /// No description provided for @onboardingReadyTitleNamed.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re in, {name}'**
+  String onboardingReadyTitleNamed(String name);
+
+  /// No description provided for @onboardingReadySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'A local profile is ready. Personal & Lumen calendars and starter money categories are waiting.'**
+  String get onboardingReadySubtitle;
+
+  /// No description provided for @onboardingReadySeedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s ready'**
+  String get onboardingReadySeedTitle;
+
+  /// No description provided for @onboardingReadySeedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Personal + Lumen calendars · default expense & income categories · your language and currency.'**
+  String get onboardingReadySeedBody;
 }
 
 class _AppLocalizationsDelegate

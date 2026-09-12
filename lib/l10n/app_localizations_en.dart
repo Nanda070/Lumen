@@ -79,6 +79,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get moreSettings => 'Settings';
 
   @override
+  String moreProfileMeta(String currency) {
+    return 'Local profile · $currency';
+  }
+
+  @override
   String get language => 'Language';
 
   @override
@@ -86,4 +91,73 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get languageRussian => 'Русский';
+
+  @override
+  String get onboardingContinue => 'Continue';
+
+  @override
+  String get onboardingFinish => 'Enter Lumen';
+
+  @override
+  String get onboardingSaveError => 'Could not save your profile. Try again.';
+
+  @override
+  String get onboardingNameTitle => 'What should we call you?';
+
+  @override
+  String get onboardingNameSubtitle =>
+      'Just a name or nickname — it stays on this device.';
+
+  @override
+  String get onboardingNameHint => 'Your name';
+
+  @override
+  String get onboardingLocaleTitle => 'Language & place';
+
+  @override
+  String get onboardingLocaleSubtitle =>
+      'English by default. Pick where you live so currency feels right.';
+
+  @override
+  String get onboardingCountryLabel => 'Country / region';
+
+  @override
+  String get onboardingCurrencyTitle => 'Base currency';
+
+  @override
+  String get onboardingCurrencySubtitle =>
+      'Suggested from your region — change anytime later.';
+
+  @override
+  String get onboardingGoogleTitle => 'Google Calendar';
+
+  @override
+  String get onboardingGoogleSubtitle =>
+      'Optional. Two-way sync comes after the local calendar feels great.';
+
+  @override
+  String get onboardingGoogleCardTitle => 'Skip for now';
+
+  @override
+  String get onboardingGoogleCardBody =>
+      'You can connect Google later from Calendar. Lumen works fully offline first.';
+
+  @override
+  String get onboardingReadyTitle => 'You\'re set';
+
+  @override
+  String onboardingReadyTitleNamed(String name) {
+    return 'You\'re in, $name';
+  }
+
+  @override
+  String get onboardingReadySubtitle =>
+      'A local profile is ready. Personal & Lumen calendars and starter money categories are waiting.';
+
+  @override
+  String get onboardingReadySeedTitle => 'What\'s ready';
+
+  @override
+  String get onboardingReadySeedBody =>
+      'Personal + Lumen calendars · default expense & income categories · your language and currency.';
 }

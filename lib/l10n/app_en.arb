@@ -23,7 +23,42 @@
   "moreNutrition": "Nutrition",
   "moreTraining": "Training",
   "moreSettings": "Settings",
+  "moreProfileMeta": "Local profile · {currency}",
+  "@moreProfileMeta": {
+    "placeholders": {
+      "currency": {
+        "type": "String"
+      }
+    }
+  },
   "language": "Language",
   "languageEnglish": "English",
-  "languageRussian": "Русский"
+  "languageRussian": "Русский",
+  "onboardingContinue": "Continue",
+  "onboardingFinish": "Enter Lumen",
+  "onboardingSaveError": "Could not save your profile. Try again.",
+  "onboardingNameTitle": "What should we call you?",
+  "onboardingNameSubtitle": "Just a name or nickname — it stays on this device.",
+  "onboardingNameHint": "Your name",
+  "onboardingLocaleTitle": "Language & place",
+  "onboardingLocaleSubtitle": "English by default. Pick where you live so currency feels right.",
+  "onboardingCountryLabel": "Country / region",
+  "onboardingCurrencyTitle": "Base currency",
+  "onboardingCurrencySubtitle": "Suggested from your region — change anytime later.",
+  "onboardingGoogleTitle": "Google Calendar",
+  "onboardingGoogleSubtitle": "Optional. Two-way sync comes after the local calendar feels great.",
+  "onboardingGoogleCardTitle": "Skip for now",
+  "onboardingGoogleCardBody": "You can connect Google later from Calendar. Lumen works fully offline first.",
+  "onboardingReadyTitle": "You're set",
+  "onboardingReadyTitleNamed": "You're in, {name}",
+  "@onboardingReadyTitleNamed": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "onboardingReadySubtitle": "A local profile is ready. Personal & Lumen calendars and starter money categories are waiting.",
+  "onboardingReadySeedTitle": "What's ready",
+  "onboardingReadySeedBody": "Personal + Lumen calendars · default expense & income categories · your language and currency."
 }
