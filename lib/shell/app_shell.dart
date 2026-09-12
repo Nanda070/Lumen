@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../data/app_database.dart';
 import '../design_system/design_system.dart';
 import '../features/calendar/calendar_page.dart';
 import '../features/finance/finance_page.dart';
@@ -12,12 +13,14 @@ import '../l10n/app_localizations.dart';
 class AppShell extends StatefulWidget {
   const AppShell({
     super.key,
+    required this.database,
     required this.locale,
     required this.onLocaleChanged,
     required this.currencyCode,
     required this.displayName,
   });
 
+  final AppDatabase database;
   final Locale locale;
   final ValueChanged<Locale> onLocaleChanged;
   final String currencyCode;
@@ -43,8 +46,11 @@ class _AppShellState extends State<AppShell> {
     );
 
     final pages = [
-      TodayPage(currencyCode: widget.currencyCode),
-      const CalendarPage(),
+      TodayPage(
+        database: widget.database,
+        currencyCode: widget.currencyCode,
+      ),
+      CalendarPage(database: widget.database),
       const TasksPage(),
       const FinancePage(),
       MorePage(

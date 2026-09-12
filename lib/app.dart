@@ -134,6 +134,7 @@ class _LumenAppState extends State<LumenApp> {
     }
 
     return AppShell(
+      database: _database,
       locale: _locale,
       onLocaleChanged: _setLocale,
       currencyCode: _profile!.currencyCode,
