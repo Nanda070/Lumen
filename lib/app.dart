@@ -99,8 +99,10 @@ class _LumenAppState extends State<LumenApp> {
       return const AtmosphereBackground(
         child: Scaffold(
           backgroundColor: Colors.transparent,
-          body: Center(
-            child: CircularProgressIndicator(color: LumenColors.accentViolet),
+          body: SafeArea(
+            child: Center(
+              child: CircularProgressIndicator(color: LumenColors.accentViolet),
+            ),
           ),
         ),
       );
@@ -110,13 +112,15 @@ class _LumenAppState extends State<LumenApp> {
       return AtmosphereBackground(
         child: Scaffold(
           backgroundColor: Colors.transparent,
-          body: Center(
-            child: Padding(
-              padding: const EdgeInsets.all(LumenSpacing.pagePadding),
-              child: Text(
-                'Could not open local database.\n$_error',
-                textAlign: TextAlign.center,
-                style: const TextStyle(color: LumenColors.textMuted),
+          body: SafeArea(
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(LumenSpacing.pagePadding),
+                child: Text(
+                  'Could not open local database.\n$_error',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(color: LumenColors.textMuted),
+                ),
               ),
             ),
           ),

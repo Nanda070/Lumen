@@ -75,28 +75,32 @@ class _AppShellState extends State<AppShell> {
       return AtmosphereBackground(
         child: Scaffold(
           backgroundColor: Colors.transparent,
-          body: Row(
-            children: [
-              NavigationRail(
-                selectedIndex: _index,
-                onDestinationSelected: (i) => setState(() => _index = i),
-                labelType: NavigationRailLabelType.all,
-                backgroundColor: LumenColors.bgElevated.withValues(alpha: 0.72),
-                destinations: [
-                  for (final item in items)
-                    NavigationRailDestination(
-                      icon: Icon(item.icon),
-                      selectedIcon: Icon(item.selectedIcon),
-                      label: Text(item.label),
-                    ),
-                ],
-              ),
-              VerticalDivider(
-                width: 1,
-                color: LumenColors.divider,
-              ),
-              Expanded(child: content),
-            ],
+          // Rail + pages clear status bar / notch / home indicator.
+          body: SafeArea(
+            child: Row(
+              children: [
+                NavigationRail(
+                  selectedIndex: _index,
+                  onDestinationSelected: (i) => setState(() => _index = i),
+                  labelType: NavigationRailLabelType.all,
+                  backgroundColor:
+                      LumenColors.bgElevated.withValues(alpha: 0.72),
+                  destinations: [
+                    for (final item in items)
+                      NavigationRailDestination(
+                        icon: Icon(item.icon),
+                        selectedIcon: Icon(item.selectedIcon),
+                        label: Text(item.label),
+                      ),
+                  ],
+                ),
+                VerticalDivider(
+                  width: 1,
+                  color: LumenColors.divider,
+                ),
+                Expanded(child: content),
+              ],
+            ),
           ),
         ),
       );
@@ -106,7 +110,12 @@ class _AppShellState extends State<AppShell> {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         extendBody: true,
-        body: content,
+        // Top safe area for Dynamic Island / status bar; bottom left for
+        // floating tab bar (it already pads the home indicator).
+        body: SafeArea(
+          bottom: false,
+          child: content,
+        ),
         bottomNavigationBar: LumenTabBar(
           items: items,
           currentIndex: _index,

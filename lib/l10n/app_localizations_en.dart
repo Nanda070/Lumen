@@ -247,7 +247,40 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get onboardingCurrencySubtitle =>
-      'Suggested from your region — change anytime later.';
+      'Suggested from your region — search any world currency.';
+
+  @override
+  String get currencySelectedLabel => 'Selected';
+
+  @override
+  String get currencyPickerHint => 'Tap to search all ISO currencies.';
+
+  @override
+  String get currencySearchHint => 'Search code or name';
+
+  @override
+  String get currencySearchEmpty => 'No currencies match.';
+
+  @override
+  String get moreAbout => 'About';
+
+  @override
+  String get moreAboutBody => 'Lumen by Nanda · Cheterin Group';
+
+  @override
+  String get moreContactEmail => 'Email';
+
+  @override
+  String get moreContactTelegram => 'Telegram';
+
+  @override
+  String get moreContactDiscord => 'Discord';
+
+  @override
+  String get moreContactGithub => 'GitHub';
+
+  @override
+  String get moreContactServer => 'Discord server';
 
   @override
   String get onboardingGoogleTitle => 'Google Calendar';

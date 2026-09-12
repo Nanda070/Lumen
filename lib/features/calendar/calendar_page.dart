@@ -114,10 +114,11 @@ class _CalendarPageState extends State<CalendarPage> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            // Top inset comes from AppShell SafeArea; lg = premium air.
             Padding(
               padding: const EdgeInsets.fromLTRB(
                 LumenSpacing.pagePadding,
-                LumenSpacing.xl,
+                LumenSpacing.lg,
                 LumenSpacing.pagePadding,
                 LumenSpacing.sm,
               ),

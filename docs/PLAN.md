@@ -2,6 +2,10 @@
 
 Рабочее имя: **Lumen**. Свет, ясность, жизнь как система. Не «ещё один трекер», а личный пульт: календарь и деньги живые сразу, остальные разделы стоят как комнаты и наполняются следом.
 
+**Владелец / Developer:** Nanda · **Компания:** Cheterin Group  
+Контакты: adnan.huseynli1@gmail.com · Telegram nanda070 · Discord nandak070 · [discord.gg/cheterin](https://discord.gg/cheterin) · GitHub nanda070  
+Техническая правда: [TECHNICAL.md](TECHNICAL.md).
+
 Аудитория: ты и близкие, без магазинов. Раздача: TestFlight / IPA, APK, Flutter Web (это скомпилированное приложение в браузере, не PWA).
 
 Язык: **EN по умолчанию**, RU переключается в онбординге и в настройках.

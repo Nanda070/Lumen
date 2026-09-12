@@ -249,7 +249,41 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get onboardingCurrencySubtitle =>
-      'Предложена по региону — потом можно сменить.';
+      'Предложена по региону — можно найти любую валюту мира.';
+
+  @override
+  String get currencySelectedLabel => 'Выбрано';
+
+  @override
+  String get currencyPickerHint =>
+      'Нажмите, чтобы искать среди всех ISO-валют.';
+
+  @override
+  String get currencySearchHint => 'Код или название';
+
+  @override
+  String get currencySearchEmpty => 'Ничего не найдено.';
+
+  @override
+  String get moreAbout => 'О приложении';
+
+  @override
+  String get moreAboutBody => 'Lumen · Nanda · Cheterin Group';
+
+  @override
+  String get moreContactEmail => 'Email';
+
+  @override
+  String get moreContactTelegram => 'Telegram';
+
+  @override
+  String get moreContactDiscord => 'Discord';
+
+  @override
+  String get moreContactGithub => 'GitHub';
+
+  @override
+  String get moreContactServer => 'Discord-сервер';
 
   @override
   String get onboardingGoogleTitle => 'Google Calendar';

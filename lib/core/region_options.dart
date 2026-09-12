@@ -1,3 +1,7 @@
+import 'world_currencies.dart';
+
+export 'world_currencies.dart';
+
 /// Curated country → default currency map for onboarding.
 class RegionOption {
   const RegionOption({
@@ -11,20 +15,6 @@ class RegionOption {
   final String nameEn;
   final String nameRu;
   final String currencyCode;
-
-  String label(String localeCode) => localeCode == 'ru' ? nameRu : nameEn;
-}
-
-class CurrencyOption {
-  const CurrencyOption({
-    required this.code,
-    required this.nameEn,
-    required this.nameRu,
-  });
-
-  final String code;
-  final String nameEn;
-  final String nameRu;
 
   String label(String localeCode) => localeCode == 'ru' ? nameRu : nameEn;
 }
@@ -81,14 +71,8 @@ abstract final class RegionOptions {
     ),
   ];
 
-  static const List<CurrencyOption> currencies = [
-    CurrencyOption(code: 'USD', nameEn: 'US Dollar', nameRu: 'Доллар США'),
-    CurrencyOption(code: 'EUR', nameEn: 'Euro', nameRu: 'Евро'),
-    CurrencyOption(code: 'GBP', nameEn: 'British Pound', nameRu: 'Фунт стерлингов'),
-    CurrencyOption(code: 'RUB', nameEn: 'Russian Ruble', nameRu: 'Российский рубль'),
-    CurrencyOption(code: 'PLN', nameEn: 'Polish Złoty', nameRu: 'Польский злотый'),
-    CurrencyOption(code: 'UAH', nameEn: 'Ukrainian Hryvnia', nameRu: 'Украинская гривна'),
-  ];
+  /// Full world list — see [WorldCurrencies].
+  static List<CurrencyOption> get currencies => WorldCurrencies.all;
 
   static RegionOption byCountry(String code) {
     return countries.firstWhere(

@@ -5,6 +5,7 @@ import '../../core/region_options.dart';
 import '../../data/app_database.dart';
 import '../../design_system/design_system.dart';
 import '../../l10n/app_localizations.dart';
+import 'currency_picker_sheet.dart';
 
 /// Premium 5-step onboarding → creates local profile + seed data.
 class OnboardingFlow extends StatefulWidget {
@@ -416,26 +417,64 @@ class _CurrencyStep extends StatelessWidget {
   final String localeCode;
   final ValueChanged<String> onCurrency;
 
+  Future<void> _openPicker(BuildContext context) async {
+    final picked = await showCurrencyPickerSheet(
+      context: context,
+      localeCode: localeCode,
+      selectedCode: currencyCode,
+    );
+    if (picked != null) onCurrency(picked);
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context).textTheme;
+    final selected = WorldCurrencies.byCode(currencyCode);
+    final label = selected == null
+        ? currencyCode
+        : '${selected.code} · ${selected.label(localeCode)}';
 
     return _StepChrome(
       eyebrow: l10n.appTitle,
       title: l10n.onboardingCurrencyTitle,
       subtitle: l10n.onboardingCurrencySubtitle,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          for (final c in RegionOptions.currencies)
-            Padding(
-              padding: const EdgeInsets.only(bottom: LumenSpacing.xs),
-              child: _ChoiceChip(
-                label: '${c.code} · ${c.label(localeCode)}',
-                selected: currencyCode == c.code,
-                onTap: () => onCurrency(c.code),
-                fullWidth: true,
-              ),
+          GlowCard(
+            violetEdge: true,
+            onTap: () => _openPicker(context),
+            padding: const EdgeInsets.all(LumenSpacing.lg),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        l10n.currencySelectedLabel,
+                        style: theme.labelSmall?.copyWith(
+                          color: LumenColors.textMuted,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(label, style: theme.titleMedium),
+                    ],
+                  ),
+                ),
+                Icon(
+                  PhosphorIconsRegular.magnifyingGlass,
+                  color: LumenColors.accentBlue,
+                ),
+              ],
             ),
+          ),
+          const SizedBox(height: LumenSpacing.sm),
+          Text(
+            l10n.currencyPickerHint,
+            style: theme.bodySmall?.copyWith(color: LumenColors.textMuted),
+          ),
         ],
       ),
     );

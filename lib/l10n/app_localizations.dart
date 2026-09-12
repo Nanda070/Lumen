@@ -563,8 +563,74 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingCurrencySubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Suggested from your region — change anytime later.'**
+  /// **'Suggested from your region — search any world currency.'**
   String get onboardingCurrencySubtitle;
+
+  /// No description provided for @currencySelectedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected'**
+  String get currencySelectedLabel;
+
+  /// No description provided for @currencyPickerHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to search all ISO currencies.'**
+  String get currencyPickerHint;
+
+  /// No description provided for @currencySearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search code or name'**
+  String get currencySearchHint;
+
+  /// No description provided for @currencySearchEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No currencies match.'**
+  String get currencySearchEmpty;
+
+  /// No description provided for @moreAbout.
+  ///
+  /// In en, this message translates to:
+  /// **'About'**
+  String get moreAbout;
+
+  /// No description provided for @moreAboutBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Lumen by Nanda · Cheterin Group'**
+  String get moreAboutBody;
+
+  /// No description provided for @moreContactEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get moreContactEmail;
+
+  /// No description provided for @moreContactTelegram.
+  ///
+  /// In en, this message translates to:
+  /// **'Telegram'**
+  String get moreContactTelegram;
+
+  /// No description provided for @moreContactDiscord.
+  ///
+  /// In en, this message translates to:
+  /// **'Discord'**
+  String get moreContactDiscord;
+
+  /// No description provided for @moreContactGithub.
+  ///
+  /// In en, this message translates to:
+  /// **'GitHub'**
+  String get moreContactGithub;
+
+  /// No description provided for @moreContactServer.
+  ///
+  /// In en, this message translates to:
+  /// **'Discord server'**
+  String get moreContactServer;
 
   /// No description provided for @onboardingGoogleTitle.
   ///

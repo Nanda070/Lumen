@@ -23,6 +23,8 @@ class ModuleScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context).textTheme;
+    // Shell already applies SafeArea(top); keep premium air below it.
+    const topAir = LumenSpacing.lg;
 
     return CustomScrollView(
       physics: const BouncingScrollPhysics(),
@@ -31,7 +33,7 @@ class ModuleScaffold extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.fromLTRB(
               LumenSpacing.pagePadding,
-              LumenSpacing.xl,
+              topAir,
               LumenSpacing.pagePadding,
               LumenSpacing.lg,
             ),

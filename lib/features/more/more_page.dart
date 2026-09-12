@@ -105,6 +105,73 @@ class MorePage extends StatelessWidget {
               ],
             ),
           ),
+          const SizedBox(height: LumenSpacing.xl),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Text(l10n.moreAbout, style: theme.titleLarge),
+          ),
+          const SizedBox(height: LumenSpacing.sm),
+          GlowCard(
+            violetEdge: true,
+            padding: const EdgeInsets.all(LumenSpacing.lg),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(l10n.moreAboutBody, style: theme.titleMedium),
+                const SizedBox(height: LumenSpacing.md),
+                _ContactLine(
+                  label: l10n.moreContactEmail,
+                  value: 'adnan.huseynli1@gmail.com',
+                ),
+                _ContactLine(
+                  label: l10n.moreContactTelegram,
+                  value: 'nanda070',
+                ),
+                _ContactLine(
+                  label: l10n.moreContactDiscord,
+                  value: 'nandak070',
+                ),
+                _ContactLine(
+                  label: l10n.moreContactServer,
+                  value: 'discord.gg/cheterin',
+                ),
+                _ContactLine(
+                  label: l10n.moreContactGithub,
+                  value: 'nanda070',
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ContactLine extends StatelessWidget {
+  const _ContactLine({required this.label, required this.value});
+
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context).textTheme;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: LumenSpacing.xs),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 110,
+            child: Text(
+              label,
+              style: theme.labelMedium?.copyWith(color: LumenColors.textMuted),
+            ),
+          ),
+          Expanded(
+            child: Text(value, style: theme.bodyMedium),
+          ),
         ],
       ),
     );

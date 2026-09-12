@@ -1,11 +1,11 @@
 ---
-description: After code/features — update TECHNICAL.md; restart web + iOS
+description: After code/features — update TECHNICAL.md + contacts; restart web + iOS
 alwaysApply: true
 ---
 
 # After any feature or substantial change
 
-Do **both** without waiting for the user to ask:
+Do the following without waiting for the user to ask:
 
 ## 1. Update technical docs
 
@@ -15,7 +15,21 @@ Keep [`docs/TECHNICAL.md`](docs/TECHNICAL.md) current whenever you change code, 
 - Update DB schema, folder map, run commands, and “implemented vs stub” sections.
 - Product vision / visual language stay in `docs/PLAN.md` and `docs/STYLE.md`; tech truth lives in `TECHNICAL.md`.
 
-## 2. Restart web + iOS
+## 2. Keep Owner / Contacts in sync
+
+Canonical contacts (do not invent alternatives):
+
+- Owner & Developer: **Nanda**
+- Company: **Cheterin Group**
+- Email: adnan.huseynli1@gmail.com
+- Telegram: nanda070
+- Discord: nandak070
+- Discord server: discord.gg/cheterin
+- GitHub: nanda070
+
+When editing README, PLAN, TECHNICAL, More/About UI, or similar — keep these values accurate and present where credits/contact belong.
+
+## 3. Restart web + iOS
 
 1. Stop existing `flutter run` processes for this project.
 2. Restart **both**:
