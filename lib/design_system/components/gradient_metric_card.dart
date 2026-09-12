@@ -14,6 +14,7 @@ class GradientMetricCard extends StatelessWidget {
     this.suffix,
     this.gradient = LumenColors.gradEmber,
     this.onTap,
+    this.compact = false,
   });
 
   final String label;
@@ -21,11 +22,13 @@ class GradientMetricCard extends StatelessWidget {
   final String? suffix;
   final LinearGradient gradient;
   final VoidCallback? onTap;
+  final bool compact;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context).textTheme;
     final glow = gradient.colors.first;
+    final valueSize = compact ? 22.0 : 28.0;
 
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -50,29 +53,34 @@ class GradientMetricCard extends StatelessWidget {
               borderRadius: LumenRadii.card,
             ),
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(
+              padding: EdgeInsets.fromLTRB(
                 LumenSpacing.md,
+                compact ? LumenSpacing.sm : LumenSpacing.md,
                 LumenSpacing.md,
-                LumenSpacing.md,
-                LumenSpacing.lg,
+                compact ? LumenSpacing.md : LumenSpacing.lg,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
                     label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     style: theme.labelMedium?.copyWith(
                       color: Colors.white.withValues(alpha: 0.82),
+                      fontSize: compact ? 11 : 12,
                     ),
                   ),
-                  const SizedBox(height: LumenSpacing.sm),
+                  SizedBox(height: compact ? 6 : LumenSpacing.sm),
                   BigNumber(
                     value,
                     suffix: suffix,
                     color: Colors.white,
                     style: theme.displayMedium?.copyWith(
                       color: Colors.white,
-                      fontSize: 32,
+                      fontSize: valueSize,
+                      height: 1.05,
                     ),
                     suffixColor: Colors.white.withValues(alpha: 0.72),
                   ),

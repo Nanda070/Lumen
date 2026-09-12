@@ -533,10 +533,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get todayEditWidgets => 'Widgets';
 
   @override
-  String get todayWidgetsTitle => 'Today widgets';
+  String get todayWidgetsTitle => 'Add widget';
 
   @override
-  String get todayWidgetsSubtitle => 'Choose what appears on your hub.';
+  String get todayWidgetsSubtitle => 'Pick a tile for your Today board.';
 
   @override
   String get todayWidgetFinance => 'Month finance summary';
@@ -558,4 +558,67 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get todayMonthBudget => 'Month budget';
+
+  @override
+  String get todayEditLayout => 'Edit';
+
+  @override
+  String get todayDoneEditing => 'Done';
+
+  @override
+  String get todayAddWidget => 'Add';
+
+  @override
+  String get todayWidgetBudgetRing => 'Budget ring';
+
+  @override
+  String get todayWidgetCategoryDonut => 'Category donut';
+
+  @override
+  String get todayWidgetCashflow => 'Cashflow';
+
+  @override
+  String get todayWidgetAccounts => 'Accounts';
+
+  @override
+  String get todayWidgetEventsCount => 'Events count';
+
+  @override
+  String get todayResizeHint => 'Edit to drag & resize';
+
+  @override
+  String get todayWidgetSpent => 'Month spent';
+
+  @override
+  String get todayWidgetRemaining => 'Remaining';
+
+  @override
+  String get todayAllWidgetsAdded => 'Every widget is already on the board.';
+
+  @override
+  String get financeTabOverview => 'Overview';
+
+  @override
+  String get financeTabPlan => 'Plan';
+
+  @override
+  String get financeTabInsights => 'Insights';
+
+  @override
+  String get financeTabLedger => 'Ledger';
+
+  @override
+  String get financeCashflow => 'Cashflow';
+
+  @override
+  String get financeOfBudget => 'of budget';
+
+  @override
+  String get financeLeft => 'left';
+
+  @override
+  String get financeNet => 'Net';
+
+  @override
+  String get financeEqualSplit => 'Equal split';
 }

@@ -44,10 +44,17 @@ class ModuleScaffold extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(title, style: theme.headlineLarge),
+                      Text(
+                        title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.headlineLarge,
+                      ),
                       const SizedBox(height: LumenSpacing.xs),
                       Text(
                         subtitle,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                         style: theme.bodyMedium?.copyWith(
                           color: LumenColors.textMuted,
                           height: 1.4,

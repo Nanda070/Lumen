@@ -1109,13 +1109,13 @@ abstract class AppLocalizations {
   /// No description provided for @todayWidgetsTitle.
   ///
   /// In en, this message translates to:
-  /// **'Today widgets'**
+  /// **'Add widget'**
   String get todayWidgetsTitle;
 
   /// No description provided for @todayWidgetsSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Choose what appears on your hub.'**
+  /// **'Pick a tile for your Today board.'**
   String get todayWidgetsSubtitle;
 
   /// No description provided for @todayWidgetFinance.
@@ -1159,6 +1159,132 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Month budget'**
   String get todayMonthBudget;
+
+  /// No description provided for @todayEditLayout.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get todayEditLayout;
+
+  /// No description provided for @todayDoneEditing.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get todayDoneEditing;
+
+  /// No description provided for @todayAddWidget.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get todayAddWidget;
+
+  /// No description provided for @todayWidgetBudgetRing.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget ring'**
+  String get todayWidgetBudgetRing;
+
+  /// No description provided for @todayWidgetCategoryDonut.
+  ///
+  /// In en, this message translates to:
+  /// **'Category donut'**
+  String get todayWidgetCategoryDonut;
+
+  /// No description provided for @todayWidgetCashflow.
+  ///
+  /// In en, this message translates to:
+  /// **'Cashflow'**
+  String get todayWidgetCashflow;
+
+  /// No description provided for @todayWidgetAccounts.
+  ///
+  /// In en, this message translates to:
+  /// **'Accounts'**
+  String get todayWidgetAccounts;
+
+  /// No description provided for @todayWidgetEventsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Events count'**
+  String get todayWidgetEventsCount;
+
+  /// No description provided for @todayResizeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit to drag & resize'**
+  String get todayResizeHint;
+
+  /// No description provided for @todayWidgetSpent.
+  ///
+  /// In en, this message translates to:
+  /// **'Month spent'**
+  String get todayWidgetSpent;
+
+  /// No description provided for @todayWidgetRemaining.
+  ///
+  /// In en, this message translates to:
+  /// **'Remaining'**
+  String get todayWidgetRemaining;
+
+  /// No description provided for @todayAllWidgetsAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Every widget is already on the board.'**
+  String get todayAllWidgetsAdded;
+
+  /// No description provided for @financeTabOverview.
+  ///
+  /// In en, this message translates to:
+  /// **'Overview'**
+  String get financeTabOverview;
+
+  /// No description provided for @financeTabPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan'**
+  String get financeTabPlan;
+
+  /// No description provided for @financeTabInsights.
+  ///
+  /// In en, this message translates to:
+  /// **'Insights'**
+  String get financeTabInsights;
+
+  /// No description provided for @financeTabLedger.
+  ///
+  /// In en, this message translates to:
+  /// **'Ledger'**
+  String get financeTabLedger;
+
+  /// No description provided for @financeCashflow.
+  ///
+  /// In en, this message translates to:
+  /// **'Cashflow'**
+  String get financeCashflow;
+
+  /// No description provided for @financeOfBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'of budget'**
+  String get financeOfBudget;
+
+  /// No description provided for @financeLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'left'**
+  String get financeLeft;
+
+  /// No description provided for @financeNet.
+  ///
+  /// In en, this message translates to:
+  /// **'Net'**
+  String get financeNet;
+
+  /// No description provided for @financeEqualSplit.
+  ///
+  /// In en, this message translates to:
+  /// **'Equal split'**
+  String get financeEqualSplit;
 }
 
 class _AppLocalizationsDelegate

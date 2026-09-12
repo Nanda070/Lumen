@@ -34,7 +34,7 @@ class AppDatabase extends _$AppDatabase {
       : super(executor ?? _openExecutor());
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -57,6 +57,9 @@ class AppDatabase extends _$AppDatabase {
               "WHERE name_key IN ('food','transport','home','shopping',"
               "'health','other_expense','salary','other_income')",
             );
+          }
+          if (from < 4) {
+            await m.addColumn(todayPreferences, todayPreferences.layoutJson);
           }
         },
         beforeOpen: (details) async {
@@ -730,6 +733,7 @@ class AppDatabase extends _$AppDatabase {
     bool? showTodaySpend,
     bool? showTodayEvents,
     String? widgetOrder,
+    String? layoutJson,
   }) async {
     final prefs = await getOrCreateTodayPreferences();
     await (update(todayPreferences)..where((t) => t.id.equals(prefs.id)))
@@ -748,8 +752,23 @@ class AppDatabase extends _$AppDatabase {
             : Value(showTodayEvents),
         widgetOrder:
             widgetOrder == null ? const Value.absent() : Value(widgetOrder),
+        layoutJson:
+            layoutJson == null ? const Value.absent() : Value(layoutJson),
       ),
     );
+  }
+
+  Future<String> getDashboardLayoutJson() async {
+    final prefs = await getOrCreateTodayPreferences();
+    return prefs.layoutJson;
+  }
+
+  Stream<String> watchDashboardLayoutJson() {
+    return watchTodayPreferences().map((p) => p?.layoutJson ?? '');
+  }
+
+  Future<void> saveDashboardLayoutJson(String json) {
+    return updateTodayPreferences(layoutJson: json);
   }
 
   // ── Seed / bootstrap ─────────────────────────────────────────────────────

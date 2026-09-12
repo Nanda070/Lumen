@@ -30,14 +30,33 @@ abstract final class MoneyFormat {
     return text;
   }
 
+  /// Card-friendly: drops cents for large values, uses k/M when needed.
   static String formatCompact(
     int minor, {
     String? currencyCode,
+    bool forceShort = false,
   }) {
     final abs = minor.abs() / scale;
-    final text = NumberFormat('#,##0.##').format(abs);
+    String text;
+    if (forceShort || abs >= 1000000) {
+      text = NumberFormat.compact().format(abs);
+    } else if (abs >= 10000) {
+      text = NumberFormat('#,##0').format(abs.round());
+    } else if (abs >= 1000) {
+      text = NumberFormat('#,##0.#').format(abs);
+    } else {
+      text = NumberFormat('#,##0.##').format(abs);
+    }
     if (currencyCode == null || currencyCode.isEmpty) return text;
     return '$text $currencyCode';
+  }
+
+  /// Short value without currency — for tight metric cards.
+  static String formatCard(int minor) {
+    final abs = minor.abs() / scale;
+    if (abs >= 1000000) return NumberFormat.compact().format(abs);
+    if (abs >= 1000) return NumberFormat('#,##0').format(abs.round());
+    return NumberFormat('#,##0.##').format(abs);
   }
 
   static String formatSigned(

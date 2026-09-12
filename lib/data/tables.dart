@@ -91,7 +91,7 @@ class FinanceTransactions extends Table {
   DateTimeColumn get updatedAt => dateTime()();
 }
 
-/// Which Today hub widgets are visible / ordered.
+/// Which Today hub widgets are visible / ordered (legacy toggles kept for migration).
 class TodayPreferences extends Table {
   IntColumn get id => integer().autoIncrement()();
   BoolColumn get showFinanceSummary =>
@@ -102,8 +102,10 @@ class TodayPreferences extends Table {
       boolean().withDefault(const Constant(true))();
   BoolColumn get showTodayEvents =>
       boolean().withDefault(const Constant(true))();
-  /// Comma-separated ids: finance,budget,spend,events
+  /// Comma-separated ids: finance,budget,spend,events (legacy)
   TextColumn get widgetOrder => text().withDefault(
         const Constant('finance,budget,spend,events'),
       )();
+  /// JSON map of slotCount → {identifier → DashboardItem.toMap()} for drag/resize grid.
+  TextColumn get layoutJson => text().withDefault(const Constant(''))();
 }

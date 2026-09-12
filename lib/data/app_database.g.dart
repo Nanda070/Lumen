@@ -3613,6 +3613,18 @@ class $TodayPreferencesTable extends TodayPreferences
     requiredDuringInsert: false,
     defaultValue: const Constant('finance,budget,spend,events'),
   );
+  static const VerificationMeta _layoutJsonMeta = const VerificationMeta(
+    'layoutJson',
+  );
+  @override
+  late final GeneratedColumn<String> layoutJson = GeneratedColumn<String>(
+    'layout_json',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -3621,6 +3633,7 @@ class $TodayPreferencesTable extends TodayPreferences
     showTodaySpend,
     showTodayEvents,
     widgetOrder,
+    layoutJson,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -3682,6 +3695,12 @@ class $TodayPreferencesTable extends TodayPreferences
         ),
       );
     }
+    if (data.containsKey('layout_json')) {
+      context.handle(
+        _layoutJsonMeta,
+        layoutJson.isAcceptableOrUnknown(data['layout_json']!, _layoutJsonMeta),
+      );
+    }
     return context;
   }
 
@@ -3715,6 +3734,10 @@ class $TodayPreferencesTable extends TodayPreferences
         DriftSqlType.string,
         data['${effectivePrefix}widget_order'],
       )!,
+      layoutJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}layout_json'],
+      )!,
     );
   }
 
@@ -3731,8 +3754,11 @@ class TodayPreference extends DataClass implements Insertable<TodayPreference> {
   final bool showTodaySpend;
   final bool showTodayEvents;
 
-  /// Comma-separated ids: finance,budget,spend,events
+  /// Comma-separated ids: finance,budget,spend,events (legacy)
   final String widgetOrder;
+
+  /// JSON map of slotCount → {identifier → DashboardItem.toMap()} for drag/resize grid.
+  final String layoutJson;
   const TodayPreference({
     required this.id,
     required this.showFinanceSummary,
@@ -3740,6 +3766,7 @@ class TodayPreference extends DataClass implements Insertable<TodayPreference> {
     required this.showTodaySpend,
     required this.showTodayEvents,
     required this.widgetOrder,
+    required this.layoutJson,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -3750,6 +3777,7 @@ class TodayPreference extends DataClass implements Insertable<TodayPreference> {
     map['show_today_spend'] = Variable<bool>(showTodaySpend);
     map['show_today_events'] = Variable<bool>(showTodayEvents);
     map['widget_order'] = Variable<String>(widgetOrder);
+    map['layout_json'] = Variable<String>(layoutJson);
     return map;
   }
 
@@ -3761,6 +3789,7 @@ class TodayPreference extends DataClass implements Insertable<TodayPreference> {
       showTodaySpend: Value(showTodaySpend),
       showTodayEvents: Value(showTodayEvents),
       widgetOrder: Value(widgetOrder),
+      layoutJson: Value(layoutJson),
     );
   }
 
@@ -3776,6 +3805,7 @@ class TodayPreference extends DataClass implements Insertable<TodayPreference> {
       showTodaySpend: serializer.fromJson<bool>(json['showTodaySpend']),
       showTodayEvents: serializer.fromJson<bool>(json['showTodayEvents']),
       widgetOrder: serializer.fromJson<String>(json['widgetOrder']),
+      layoutJson: serializer.fromJson<String>(json['layoutJson']),
     );
   }
   @override
@@ -3788,6 +3818,7 @@ class TodayPreference extends DataClass implements Insertable<TodayPreference> {
       'showTodaySpend': serializer.toJson<bool>(showTodaySpend),
       'showTodayEvents': serializer.toJson<bool>(showTodayEvents),
       'widgetOrder': serializer.toJson<String>(widgetOrder),
+      'layoutJson': serializer.toJson<String>(layoutJson),
     };
   }
 
@@ -3798,6 +3829,7 @@ class TodayPreference extends DataClass implements Insertable<TodayPreference> {
     bool? showTodaySpend,
     bool? showTodayEvents,
     String? widgetOrder,
+    String? layoutJson,
   }) => TodayPreference(
     id: id ?? this.id,
     showFinanceSummary: showFinanceSummary ?? this.showFinanceSummary,
@@ -3805,6 +3837,7 @@ class TodayPreference extends DataClass implements Insertable<TodayPreference> {
     showTodaySpend: showTodaySpend ?? this.showTodaySpend,
     showTodayEvents: showTodayEvents ?? this.showTodayEvents,
     widgetOrder: widgetOrder ?? this.widgetOrder,
+    layoutJson: layoutJson ?? this.layoutJson,
   );
   TodayPreference copyWithCompanion(TodayPreferencesCompanion data) {
     return TodayPreference(
@@ -3824,6 +3857,9 @@ class TodayPreference extends DataClass implements Insertable<TodayPreference> {
       widgetOrder: data.widgetOrder.present
           ? data.widgetOrder.value
           : this.widgetOrder,
+      layoutJson: data.layoutJson.present
+          ? data.layoutJson.value
+          : this.layoutJson,
     );
   }
 
@@ -3835,7 +3871,8 @@ class TodayPreference extends DataClass implements Insertable<TodayPreference> {
           ..write('showBudgetStatus: $showBudgetStatus, ')
           ..write('showTodaySpend: $showTodaySpend, ')
           ..write('showTodayEvents: $showTodayEvents, ')
-          ..write('widgetOrder: $widgetOrder')
+          ..write('widgetOrder: $widgetOrder, ')
+          ..write('layoutJson: $layoutJson')
           ..write(')'))
         .toString();
   }
@@ -3848,6 +3885,7 @@ class TodayPreference extends DataClass implements Insertable<TodayPreference> {
     showTodaySpend,
     showTodayEvents,
     widgetOrder,
+    layoutJson,
   );
   @override
   bool operator ==(Object other) =>
@@ -3858,7 +3896,8 @@ class TodayPreference extends DataClass implements Insertable<TodayPreference> {
           other.showBudgetStatus == this.showBudgetStatus &&
           other.showTodaySpend == this.showTodaySpend &&
           other.showTodayEvents == this.showTodayEvents &&
-          other.widgetOrder == this.widgetOrder);
+          other.widgetOrder == this.widgetOrder &&
+          other.layoutJson == this.layoutJson);
 }
 
 class TodayPreferencesCompanion extends UpdateCompanion<TodayPreference> {
@@ -3868,6 +3907,7 @@ class TodayPreferencesCompanion extends UpdateCompanion<TodayPreference> {
   final Value<bool> showTodaySpend;
   final Value<bool> showTodayEvents;
   final Value<String> widgetOrder;
+  final Value<String> layoutJson;
   const TodayPreferencesCompanion({
     this.id = const Value.absent(),
     this.showFinanceSummary = const Value.absent(),
@@ -3875,6 +3915,7 @@ class TodayPreferencesCompanion extends UpdateCompanion<TodayPreference> {
     this.showTodaySpend = const Value.absent(),
     this.showTodayEvents = const Value.absent(),
     this.widgetOrder = const Value.absent(),
+    this.layoutJson = const Value.absent(),
   });
   TodayPreferencesCompanion.insert({
     this.id = const Value.absent(),
@@ -3883,6 +3924,7 @@ class TodayPreferencesCompanion extends UpdateCompanion<TodayPreference> {
     this.showTodaySpend = const Value.absent(),
     this.showTodayEvents = const Value.absent(),
     this.widgetOrder = const Value.absent(),
+    this.layoutJson = const Value.absent(),
   });
   static Insertable<TodayPreference> custom({
     Expression<int>? id,
@@ -3891,6 +3933,7 @@ class TodayPreferencesCompanion extends UpdateCompanion<TodayPreference> {
     Expression<bool>? showTodaySpend,
     Expression<bool>? showTodayEvents,
     Expression<String>? widgetOrder,
+    Expression<String>? layoutJson,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -3900,6 +3943,7 @@ class TodayPreferencesCompanion extends UpdateCompanion<TodayPreference> {
       if (showTodaySpend != null) 'show_today_spend': showTodaySpend,
       if (showTodayEvents != null) 'show_today_events': showTodayEvents,
       if (widgetOrder != null) 'widget_order': widgetOrder,
+      if (layoutJson != null) 'layout_json': layoutJson,
     });
   }
 
@@ -3910,6 +3954,7 @@ class TodayPreferencesCompanion extends UpdateCompanion<TodayPreference> {
     Value<bool>? showTodaySpend,
     Value<bool>? showTodayEvents,
     Value<String>? widgetOrder,
+    Value<String>? layoutJson,
   }) {
     return TodayPreferencesCompanion(
       id: id ?? this.id,
@@ -3918,6 +3963,7 @@ class TodayPreferencesCompanion extends UpdateCompanion<TodayPreference> {
       showTodaySpend: showTodaySpend ?? this.showTodaySpend,
       showTodayEvents: showTodayEvents ?? this.showTodayEvents,
       widgetOrder: widgetOrder ?? this.widgetOrder,
+      layoutJson: layoutJson ?? this.layoutJson,
     );
   }
 
@@ -3942,6 +3988,9 @@ class TodayPreferencesCompanion extends UpdateCompanion<TodayPreference> {
     if (widgetOrder.present) {
       map['widget_order'] = Variable<String>(widgetOrder.value);
     }
+    if (layoutJson.present) {
+      map['layout_json'] = Variable<String>(layoutJson.value);
+    }
     return map;
   }
 
@@ -3953,7 +4002,8 @@ class TodayPreferencesCompanion extends UpdateCompanion<TodayPreference> {
           ..write('showBudgetStatus: $showBudgetStatus, ')
           ..write('showTodaySpend: $showTodaySpend, ')
           ..write('showTodayEvents: $showTodayEvents, ')
-          ..write('widgetOrder: $widgetOrder')
+          ..write('widgetOrder: $widgetOrder, ')
+          ..write('layoutJson: $layoutJson')
           ..write(')'))
         .toString();
   }
@@ -6733,6 +6783,7 @@ typedef $$TodayPreferencesTableCreateCompanionBuilder =
       Value<bool> showTodaySpend,
       Value<bool> showTodayEvents,
       Value<String> widgetOrder,
+      Value<String> layoutJson,
     });
 typedef $$TodayPreferencesTableUpdateCompanionBuilder =
     TodayPreferencesCompanion Function({
@@ -6742,6 +6793,7 @@ typedef $$TodayPreferencesTableUpdateCompanionBuilder =
       Value<bool> showTodaySpend,
       Value<bool> showTodayEvents,
       Value<String> widgetOrder,
+      Value<String> layoutJson,
     });
 
 class $$TodayPreferencesTableFilterComposer
@@ -6780,6 +6832,11 @@ class $$TodayPreferencesTableFilterComposer
 
   ColumnFilters<String> get widgetOrder => $composableBuilder(
     column: $table.widgetOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get layoutJson => $composableBuilder(
+    column: $table.layoutJson,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -6822,6 +6879,11 @@ class $$TodayPreferencesTableOrderingComposer
     column: $table.widgetOrder,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get layoutJson => $composableBuilder(
+    column: $table.layoutJson,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$TodayPreferencesTableAnnotationComposer
@@ -6858,6 +6920,11 @@ class $$TodayPreferencesTableAnnotationComposer
 
   GeneratedColumn<String> get widgetOrder => $composableBuilder(
     column: $table.widgetOrder,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get layoutJson => $composableBuilder(
+    column: $table.layoutJson,
     builder: (column) => column,
   );
 }
@@ -6905,6 +6972,7 @@ class $$TodayPreferencesTableTableManager
                 Value<bool> showTodaySpend = const Value.absent(),
                 Value<bool> showTodayEvents = const Value.absent(),
                 Value<String> widgetOrder = const Value.absent(),
+                Value<String> layoutJson = const Value.absent(),
               }) => TodayPreferencesCompanion(
                 id: id,
                 showFinanceSummary: showFinanceSummary,
@@ -6912,6 +6980,7 @@ class $$TodayPreferencesTableTableManager
                 showTodaySpend: showTodaySpend,
                 showTodayEvents: showTodayEvents,
                 widgetOrder: widgetOrder,
+                layoutJson: layoutJson,
               ),
           createCompanionCallback:
               ({
@@ -6921,6 +6990,7 @@ class $$TodayPreferencesTableTableManager
                 Value<bool> showTodaySpend = const Value.absent(),
                 Value<bool> showTodayEvents = const Value.absent(),
                 Value<String> widgetOrder = const Value.absent(),
+                Value<String> layoutJson = const Value.absent(),
               }) => TodayPreferencesCompanion.insert(
                 id: id,
                 showFinanceSummary: showFinanceSummary,
@@ -6928,6 +6998,7 @@ class $$TodayPreferencesTableTableManager
                 showTodaySpend: showTodaySpend,
                 showTodayEvents: showTodayEvents,
                 widgetOrder: widgetOrder,
+                layoutJson: layoutJson,
               ),
           withReferenceMapper: (p0) => p0
               .map(

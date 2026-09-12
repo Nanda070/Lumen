@@ -35,7 +35,8 @@
 | UI | Flutter (iOS-first, Android + Web) |
 | Local DB | Drift + SQLite (`drift`, `drift_flutter`) |
 | Web SQLite | `web/sqlite3.wasm` + `web/drift_worker.js` |
-| Charts | `fl_chart` — donut + daily bars on Finance |
+| Charts | `fl_chart` — budget ring, interactive donut, smooth cashflow line, weekly bars |
+| Dashboard | `dashboard` ^0.0.4 — drag/resize Today widgets |
 | i18n | `flutter gen-l10n` — `lib/l10n/app_en.arb` / `app_ru.arb` |
 | Fonts | `google_fonts` → Outfit |
 | Icons | `phosphor_icons` |
@@ -57,15 +58,15 @@ lib/
     region_options.dart
     world_currencies.dart
   data/
-    tables.dart             # Drift tables (schema v3)
-    app_database.dart       # CRUD + seed + migrations + month summary
+    tables.dart             # Drift tables (schema v4)
+    app_database.dart       # CRUD + seed + migrations + month summary + dashboard layout
     app_database.g.dart
   design_system/
   features/
     onboarding/
-    today/                  # hub widgets + prefs sheet
+    today/                  # dashboard grid + tiles + add-widget sheet
     calendar/
-    finance/                # page, charts, tx/budget/managers sheets
+    finance/                # Overview/Plan/Insights/Ledger + premium charts
     tasks/ more/
   shell/
   l10n/
@@ -107,7 +108,7 @@ web/
 | `monthly_budgets` | year, month, totalLimitMinor |
 | `category_allocations` | year, month, categoryId, allocatedMinor |
 | `finance_transactions` | amountMinor, kind, categoryId, accountId, occurredAt, note |
-| `today_preferences` | showFinanceSummary / Budget / Spend / Events + widgetOrder |
+| `today_preferences` | legacy toggles + `widgetOrder` + **`layoutJson`** (dashboard grid) |
 
 **Seed** (onboarding + `beforeOpen` bootstrap for upgrades): Personal/Lumen calendars, default expense/income categories, one **Cash** account in profile currency, default Today prefs (all on).
 
@@ -115,6 +116,7 @@ web/
 
 - &lt;2 → create `events`
 - &lt;3 → add category columns; create accounts / budgets / allocations / transactions / today_preferences; mark seeded categories `is_system`
+- &lt;4 → add `today_preferences.layout_json` for drag/resize dashboard layouts
 
 **Storage:** native SQLite via `driftDatabase(name: 'lumen')`; web Wasm + IndexedDb.
 
@@ -122,26 +124,27 @@ web/
 
 ## Finance (shipped)
 
-- Month switcher; spent / remaining / budget / income metrics (gradient + glow).
-- Monthly budget + per-category allocations with vs-plan progress.
-- Accounts CRUD (archive; at least one kept); category create/edit/archive.
-- Transactions CRUD (amount, kind, category, account, date, note); balance sync.
-- Filters: all / expense / income / category chips.
-- Charts: donut by category, bar trend by day (`fl_chart`).
-- Budget status chip: ok / warning / overspend / none.
+Tabs: **Overview · Plan · Insights · Ledger**
+
+- Overview: month switcher, budget hero ring, spent/remaining/income/budget/net metrics, accounts strip, status chip.
+- Plan: total budget editor CTA, envelope rows with progress + leftover/over, equal-split, link to category manager.
+- Insights: interactive donut, smooth cashflow line (area gradient + tooltip), weekly bars.
+- Ledger: filters + transaction list.
+- Shared sheets: budget / transaction / category / account managers.
+- Overflow-safe: FittedBox + ellipsis on metric/allocation rows.
 
 ---
 
 ## Today (shipped)
 
-Live hub widgets (order via `widgetOrder`, visibility toggles in Drift):
+Custom **dashboard** grid (`package:dashboard`) with drag + resize:
 
-1. Finance summary (month spent + budget left)
-2. Budget status bar
-3. Spent today + upcoming count
-4. Today’s calendar events
-
-Configure: Today trailing sliders icon, or More → Settings → Widgets.
+- Phone `slotCount: 2`, wide (`width > 700`) `slotCount: 4`; `slotHeight ≈ 108`.
+- Layout persisted in `today_preferences.layoutJson` (map of slotCount → item layouts).
+- Default tiles: budget ring, spent, remaining, spend today, events count, events list, category donut, cashflow.
+- Catalog extras: accounts.
+- Edit mode: long-press, violet grid lines, trash on tiles; Add sheet for missing widgets.
+- Configure: Today Edit/Add, or More → Settings → Widgets (catalog persists into `layoutJson`).
 
 ---
 
@@ -190,8 +193,8 @@ After features: stop old `flutter run`, restart **web + iOS**, update this file 
 | Onboarding + profile + seed | Live |
 | Base currency (154 ISO, searchable) | Live |
 | Calendar local Day/Week/Month + CRUD | Live |
-| Finance core (accounts, budget, txs, charts) | Live |
-| Today hub widgets + prefs | Live |
+| Finance core (accounts, budget, txs, charts) | Live — Overview/Plan/Insights/Ledger + premium charts |
+| Today hub widgets + prefs | Live — drag/resize dashboard + layoutJson |
 | Tasks / Habits / Routine / Nutrition / Training | Stub rooms |
 | Google Calendar sync | Not started |
 | `.lumen` backup | Not started |

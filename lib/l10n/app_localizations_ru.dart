@@ -536,10 +536,10 @@ class AppLocalizationsRu extends AppLocalizations {
   String get todayEditWidgets => 'Виджеты';
 
   @override
-  String get todayWidgetsTitle => 'Виджеты Today';
+  String get todayWidgetsTitle => 'Добавить виджет';
 
   @override
-  String get todayWidgetsSubtitle => 'Что показывать на главной.';
+  String get todayWidgetsSubtitle => 'Выберите плитку для доски Today.';
 
   @override
   String get todayWidgetFinance => 'Сводка финансов месяца';
@@ -561,4 +561,67 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get todayMonthBudget => 'Бюджет месяца';
+
+  @override
+  String get todayEditLayout => 'Изменить';
+
+  @override
+  String get todayDoneEditing => 'Готово';
+
+  @override
+  String get todayAddWidget => 'Добавить';
+
+  @override
+  String get todayWidgetBudgetRing => 'Кольцо бюджета';
+
+  @override
+  String get todayWidgetCategoryDonut => 'Донат по категориям';
+
+  @override
+  String get todayWidgetCashflow => 'Кэшфлоу';
+
+  @override
+  String get todayWidgetAccounts => 'Счета';
+
+  @override
+  String get todayWidgetEventsCount => 'Число событий';
+
+  @override
+  String get todayResizeHint => 'Измените, чтобы перетаскивать и менять размер';
+
+  @override
+  String get todayWidgetSpent => 'Потрачено';
+
+  @override
+  String get todayWidgetRemaining => 'Остаток';
+
+  @override
+  String get todayAllWidgetsAdded => 'Все виджеты уже на доске.';
+
+  @override
+  String get financeTabOverview => 'Обзор';
+
+  @override
+  String get financeTabPlan => 'План';
+
+  @override
+  String get financeTabInsights => 'Аналитика';
+
+  @override
+  String get financeTabLedger => 'Леджер';
+
+  @override
+  String get financeCashflow => 'Кэшфлоу';
+
+  @override
+  String get financeOfBudget => 'от бюджета';
+
+  @override
+  String get financeLeft => 'осталось';
+
+  @override
+  String get financeNet => 'Нетто';
+
+  @override
+  String get financeEqualSplit => 'Поровну';
 }
