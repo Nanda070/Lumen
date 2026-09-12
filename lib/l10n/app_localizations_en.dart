@@ -40,7 +40,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get todaySpend => 'Spent today';
 
   @override
-  String get todayEmptyEvents => 'No events yet — calendar comes next.';
+  String get todayEmptyEvents => 'No events today — add one in Calendar.';
 
   @override
   String get todaySampleEvent => 'Morning focus';
@@ -52,7 +52,128 @@ class AppLocalizationsEn extends AppLocalizations {
   String get roomComingSoon => 'Coming soon';
 
   @override
-  String get calendarSubtitle => 'Day, week, and month views live here.';
+  String get calendarSubtitle => 'Day, week, and month — your local canvas.';
+
+  @override
+  String get calendarViewDay => 'Day';
+
+  @override
+  String get calendarViewWeek => 'Week';
+
+  @override
+  String get calendarViewMonth => 'Month';
+
+  @override
+  String get eventQuickAdd => 'Add';
+
+  @override
+  String get eventNewTitle => 'New event';
+
+  @override
+  String get eventEditTitle => 'Edit event';
+
+  @override
+  String get eventTitleHint => 'Title';
+
+  @override
+  String get eventTitleRequired => 'Add a title.';
+
+  @override
+  String get eventCalendarRequired => 'Pick a calendar.';
+
+  @override
+  String get eventTimeInvalid => 'End time must be after start.';
+
+  @override
+  String get eventSaveError => 'Could not save the event.';
+
+  @override
+  String get eventDate => 'Date';
+
+  @override
+  String get eventStart => 'Starts';
+
+  @override
+  String get eventEnd => 'Ends';
+
+  @override
+  String get eventCalendar => 'Calendar';
+
+  @override
+  String get eventCreate => 'Create';
+
+  @override
+  String get eventSave => 'Save';
+
+  @override
+  String get eventCancel => 'Cancel';
+
+  @override
+  String get eventDelete => 'Delete';
+
+  @override
+  String get eventDeleteTitle => 'Delete event?';
+
+  @override
+  String get eventDeleteBody =>
+      'This removes the event from your local calendar.';
+
+  @override
+  String get weekdayMon => 'Mon';
+
+  @override
+  String get weekdayTue => 'Tue';
+
+  @override
+  String get weekdayWed => 'Wed';
+
+  @override
+  String get weekdayThu => 'Thu';
+
+  @override
+  String get weekdayFri => 'Fri';
+
+  @override
+  String get weekdaySat => 'Sat';
+
+  @override
+  String get weekdaySun => 'Sun';
+
+  @override
+  String get monthJan => 'January';
+
+  @override
+  String get monthFeb => 'February';
+
+  @override
+  String get monthMar => 'March';
+
+  @override
+  String get monthApr => 'April';
+
+  @override
+  String get monthMay => 'May';
+
+  @override
+  String get monthJun => 'June';
+
+  @override
+  String get monthJul => 'July';
+
+  @override
+  String get monthAug => 'August';
+
+  @override
+  String get monthSep => 'September';
+
+  @override
+  String get monthOct => 'October';
+
+  @override
+  String get monthNov => 'November';
+
+  @override
+  String get monthDec => 'December';
 
   @override
   String get tasksSubtitle => 'Inbox, Today, and day plans — room for later.';

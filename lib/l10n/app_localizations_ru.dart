@@ -40,7 +40,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get todaySpend => 'Расход за день';
 
   @override
-  String get todayEmptyEvents => 'Пока пусто — календарь следующий шаг.';
+  String get todayEmptyEvents => 'На сегодня пусто — добавьте в Календаре.';
 
   @override
   String get todaySampleEvent => 'Утренний фокус';
@@ -52,7 +52,128 @@ class AppLocalizationsRu extends AppLocalizations {
   String get roomComingSoon => 'Скоро';
 
   @override
-  String get calendarSubtitle => 'День, неделя и месяц появятся здесь.';
+  String get calendarSubtitle => 'День, неделя и месяц — локальный холст.';
+
+  @override
+  String get calendarViewDay => 'День';
+
+  @override
+  String get calendarViewWeek => 'Неделя';
+
+  @override
+  String get calendarViewMonth => 'Месяц';
+
+  @override
+  String get eventQuickAdd => 'Добавить';
+
+  @override
+  String get eventNewTitle => 'Новое событие';
+
+  @override
+  String get eventEditTitle => 'Событие';
+
+  @override
+  String get eventTitleHint => 'Название';
+
+  @override
+  String get eventTitleRequired => 'Введите название.';
+
+  @override
+  String get eventCalendarRequired => 'Выберите календарь.';
+
+  @override
+  String get eventTimeInvalid => 'Конец должен быть позже начала.';
+
+  @override
+  String get eventSaveError => 'Не удалось сохранить событие.';
+
+  @override
+  String get eventDate => 'Дата';
+
+  @override
+  String get eventStart => 'Начало';
+
+  @override
+  String get eventEnd => 'Конец';
+
+  @override
+  String get eventCalendar => 'Календарь';
+
+  @override
+  String get eventCreate => 'Создать';
+
+  @override
+  String get eventSave => 'Сохранить';
+
+  @override
+  String get eventCancel => 'Отмена';
+
+  @override
+  String get eventDelete => 'Удалить';
+
+  @override
+  String get eventDeleteTitle => 'Удалить событие?';
+
+  @override
+  String get eventDeleteBody =>
+      'Событие будет удалено из локального календаря.';
+
+  @override
+  String get weekdayMon => 'пн';
+
+  @override
+  String get weekdayTue => 'вт';
+
+  @override
+  String get weekdayWed => 'ср';
+
+  @override
+  String get weekdayThu => 'чт';
+
+  @override
+  String get weekdayFri => 'пт';
+
+  @override
+  String get weekdaySat => 'сб';
+
+  @override
+  String get weekdaySun => 'вс';
+
+  @override
+  String get monthJan => 'Январь';
+
+  @override
+  String get monthFeb => 'Февраль';
+
+  @override
+  String get monthMar => 'Март';
+
+  @override
+  String get monthApr => 'Апрель';
+
+  @override
+  String get monthMay => 'Май';
+
+  @override
+  String get monthJun => 'Июнь';
+
+  @override
+  String get monthJul => 'Июль';
+
+  @override
+  String get monthAug => 'Август';
+
+  @override
+  String get monthSep => 'Сентябрь';
+
+  @override
+  String get monthOct => 'Октябрь';
+
+  @override
+  String get monthNov => 'Ноябрь';
+
+  @override
+  String get monthDec => 'Декабрь';
 
   @override
   String get tasksSubtitle => 'Inbox, Сегодня и планы дня — комната позже.';

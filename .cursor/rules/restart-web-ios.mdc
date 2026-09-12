@@ -1,16 +1,26 @@
 ---
-description: After features or substantial changes, always restart Flutter web + iOS
+description: After code/features — update TECHNICAL.md; restart web + iOS
 alwaysApply: true
 ---
 
-# Restart web + iOS after work
+# After any feature or substantial change
 
-After finishing a feature, substantial UI/code change, or any task that should be verified in the running app:
+Do **both** without waiting for the user to ask:
+
+## 1. Update technical docs
+
+Keep [`docs/TECHNICAL.md`](docs/TECHNICAL.md) current whenever you change code, schema, architecture, dependencies, navigation, or shipping status.
+
+- Reflect what actually shipped (not aspirational PLAN items).
+- Update DB schema, folder map, run commands, and “implemented vs stub” sections.
+- Product vision / visual language stay in `docs/PLAN.md` and `docs/STYLE.md`; tech truth lives in `TECHNICAL.md`.
+
+## 2. Restart web + iOS
 
 1. Stop existing `flutter run` processes for this project.
-2. Restart **both** without waiting for the user to ask:
+2. Restart **both**:
    - Web: `flutter run -d chrome`
-   - iOS: `flutter run -d <ios simulator>` (pick the available simulator)
-3. Report the Chrome/web URL and the iOS device name in the final reply.
+   - iOS: `flutter run -d <ios simulator>` (available simulator)
+3. In the final reply: report the Chrome/web URL and the iOS device name.
 
-Do this automatically at the end of the turn when the work is ready to try.
+Skip restart only for pure docs/rules/comments with zero runnable impact — still update `TECHNICAL.md` if the docs themselves changed meaningfully.

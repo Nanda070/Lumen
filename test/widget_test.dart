@@ -1,4 +1,5 @@
 import 'package:drift/native.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lumen/app.dart';
 import 'package:lumen/data/app_database.dart';
@@ -12,6 +13,9 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('What should we call you?'), findsOneWidget);
+
+    await tester.pumpWidget(const SizedBox.shrink());
+    await tester.pump(const Duration(milliseconds: 100));
   });
 
   testWidgets('Shell shows Today hub after profile exists', (tester) async {
@@ -30,5 +34,8 @@ void main() {
 
     expect(find.text('Today'), findsWidgets);
     expect(find.text('Your day at a glance.'), findsOneWidget);
+
+    await tester.pumpWidget(const SizedBox.shrink());
+    await tester.pump(const Duration(milliseconds: 100));
   });
 }

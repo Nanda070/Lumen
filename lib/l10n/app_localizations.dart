@@ -161,7 +161,7 @@ abstract class AppLocalizations {
   /// No description provided for @todayEmptyEvents.
   ///
   /// In en, this message translates to:
-  /// **'No events yet — calendar comes next.'**
+  /// **'No events today — add one in Calendar.'**
   String get todayEmptyEvents;
 
   /// No description provided for @todaySampleEvent.
@@ -185,8 +185,248 @@ abstract class AppLocalizations {
   /// No description provided for @calendarSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Day, week, and month views live here.'**
+  /// **'Day, week, and month — your local canvas.'**
   String get calendarSubtitle;
+
+  /// No description provided for @calendarViewDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Day'**
+  String get calendarViewDay;
+
+  /// No description provided for @calendarViewWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Week'**
+  String get calendarViewWeek;
+
+  /// No description provided for @calendarViewMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Month'**
+  String get calendarViewMonth;
+
+  /// No description provided for @eventQuickAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get eventQuickAdd;
+
+  /// No description provided for @eventNewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New event'**
+  String get eventNewTitle;
+
+  /// No description provided for @eventEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit event'**
+  String get eventEditTitle;
+
+  /// No description provided for @eventTitleHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get eventTitleHint;
+
+  /// No description provided for @eventTitleRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a title.'**
+  String get eventTitleRequired;
+
+  /// No description provided for @eventCalendarRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a calendar.'**
+  String get eventCalendarRequired;
+
+  /// No description provided for @eventTimeInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'End time must be after start.'**
+  String get eventTimeInvalid;
+
+  /// No description provided for @eventSaveError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save the event.'**
+  String get eventSaveError;
+
+  /// No description provided for @eventDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get eventDate;
+
+  /// No description provided for @eventStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Starts'**
+  String get eventStart;
+
+  /// No description provided for @eventEnd.
+  ///
+  /// In en, this message translates to:
+  /// **'Ends'**
+  String get eventEnd;
+
+  /// No description provided for @eventCalendar.
+  ///
+  /// In en, this message translates to:
+  /// **'Calendar'**
+  String get eventCalendar;
+
+  /// No description provided for @eventCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Create'**
+  String get eventCreate;
+
+  /// No description provided for @eventSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get eventSave;
+
+  /// No description provided for @eventCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get eventCancel;
+
+  /// No description provided for @eventDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get eventDelete;
+
+  /// No description provided for @eventDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete event?'**
+  String get eventDeleteTitle;
+
+  /// No description provided for @eventDeleteBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This removes the event from your local calendar.'**
+  String get eventDeleteBody;
+
+  /// No description provided for @weekdayMon.
+  ///
+  /// In en, this message translates to:
+  /// **'Mon'**
+  String get weekdayMon;
+
+  /// No description provided for @weekdayTue.
+  ///
+  /// In en, this message translates to:
+  /// **'Tue'**
+  String get weekdayTue;
+
+  /// No description provided for @weekdayWed.
+  ///
+  /// In en, this message translates to:
+  /// **'Wed'**
+  String get weekdayWed;
+
+  /// No description provided for @weekdayThu.
+  ///
+  /// In en, this message translates to:
+  /// **'Thu'**
+  String get weekdayThu;
+
+  /// No description provided for @weekdayFri.
+  ///
+  /// In en, this message translates to:
+  /// **'Fri'**
+  String get weekdayFri;
+
+  /// No description provided for @weekdaySat.
+  ///
+  /// In en, this message translates to:
+  /// **'Sat'**
+  String get weekdaySat;
+
+  /// No description provided for @weekdaySun.
+  ///
+  /// In en, this message translates to:
+  /// **'Sun'**
+  String get weekdaySun;
+
+  /// No description provided for @monthJan.
+  ///
+  /// In en, this message translates to:
+  /// **'January'**
+  String get monthJan;
+
+  /// No description provided for @monthFeb.
+  ///
+  /// In en, this message translates to:
+  /// **'February'**
+  String get monthFeb;
+
+  /// No description provided for @monthMar.
+  ///
+  /// In en, this message translates to:
+  /// **'March'**
+  String get monthMar;
+
+  /// No description provided for @monthApr.
+  ///
+  /// In en, this message translates to:
+  /// **'April'**
+  String get monthApr;
+
+  /// No description provided for @monthMay.
+  ///
+  /// In en, this message translates to:
+  /// **'May'**
+  String get monthMay;
+
+  /// No description provided for @monthJun.
+  ///
+  /// In en, this message translates to:
+  /// **'June'**
+  String get monthJun;
+
+  /// No description provided for @monthJul.
+  ///
+  /// In en, this message translates to:
+  /// **'July'**
+  String get monthJul;
+
+  /// No description provided for @monthAug.
+  ///
+  /// In en, this message translates to:
+  /// **'August'**
+  String get monthAug;
+
+  /// No description provided for @monthSep.
+  ///
+  /// In en, this message translates to:
+  /// **'September'**
+  String get monthSep;
+
+  /// No description provided for @monthOct.
+  ///
+  /// In en, this message translates to:
+  /// **'October'**
+  String get monthOct;
+
+  /// No description provided for @monthNov.
+  ///
+  /// In en, this message translates to:
+  /// **'November'**
+  String get monthNov;
+
+  /// No description provided for @monthDec.
+  ///
+  /// In en, this message translates to:
+  /// **'December'**
+  String get monthDec;
 
   /// No description provided for @tasksSubtitle.
   ///
