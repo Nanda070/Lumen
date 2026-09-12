@@ -205,6 +205,46 @@ class AppLocalizationsEn extends AppLocalizations {
   String get moreSettings => 'Settings';
 
   @override
+  String get moreBackup => 'Backup';
+
+  @override
+  String get moreBackupExport => 'Export .lumen';
+
+  @override
+  String get moreBackupRestore => 'Restore .lumen';
+
+  @override
+  String get moreBackupHint =>
+      'Download a local archive, or restore with Replace / Merge.';
+
+  @override
+  String get moreBackupReplace => 'Replace';
+
+  @override
+  String get moreBackupMerge => 'Merge';
+
+  @override
+  String get moreBackupReplaceBody => 'Wipe current data and load the backup.';
+
+  @override
+  String get moreBackupMergeBody =>
+      'Keep current rows; backup rows overwrite matching IDs.';
+
+  @override
+  String get moreBackupExported => 'Backup ready.';
+
+  @override
+  String get moreBackupRestored => 'Backup restored.';
+
+  @override
+  String get moreBackupCancelled => 'Cancelled.';
+
+  @override
+  String moreBackupFailed(String error) {
+    return 'Backup failed: $error';
+  }
+
+  @override
   String moreProfileMeta(String currency) {
     return 'Local profile · $currency';
   }

@@ -37,6 +37,7 @@
 | Web SQLite | `web/sqlite3.wasm` + `web/drift_worker.js` |
 | Charts | `fl_chart` — budget ring, donut, cashflow line, weekly bars |
 | Dashboard | `dashboard` ^0.0.4 — drag/resize Today widgets |
+| Backup | `archive`, `file_picker`, `share_plus`, `path_provider` — `.lumen` zip |
 | Google | `google_sign_in` ^7, `googleapis`, `extension_google_sign_in_as_googleapis_auth`, `http` |
 | i18n | `flutter gen-l10n` — `lib/l10n/app_en.arb` / `app_ru.arb` |
 | Fonts | `google_fonts` → Outfit |
@@ -63,13 +64,14 @@ lib/
     onboarding/
     today/                  # layout v3; Upcoming×2; tile → tabs
     calendar/
-    finance/                # Kebo Overview hero + ring
+    finance/                # Kebo Overview + Plan/Insights/Ledger cards
     tasks/
     habits/                 # mhabit-inspired
     routine/                # FocusForce-inspired
     nutrition/              # OpenNutriTracker-inspired
     training/               # GymMane-inspired
-    more/                   # Habits/Routine/Nutrition/Training live
+    backup/                 # .lumen export/restore
+    more/                   # Habits/Routine/Nutrition/Training + Backup + Google
   shell/
     lumen_tabs.dart
   l10n/
@@ -92,7 +94,7 @@ docs/
 Средний баланс (не простыня, не «зажато»):
 - Headers: Calendar/Finance/Tasks/Habits/Routine/Nutrition/Training top air = `lg` + `pagePadding` 24.
 - Today: `slotHeight` **104**, gutters **12**; layout JSON **v:3**; Upcoming ≤2 без inner scroll.
-- Finance: Kebo balance hero + quick actions; budget ring ~204 (текст внутри круга); charts ~205–220.
+- Finance: Kebo balance hero + quick actions; Plan/Insights/Ledger bordered cards + lavender bars; budget ring ~204; charts ~205–220.
 - Tasks/Habits: full-width GlassSurface pill filters.
 - Nutrition: ONT-style kcal ring + macro bars; date switcher; meal sections.
 - Training: GymMane focus hero + week dots + workout cards / session log.
@@ -141,20 +143,31 @@ Phone `SafeArea(bottom: false)` on shell content; titles after SafeArea.
 
 ## Google Calendar sync
 
-**Config:** `lib/core/google_config.dart` — paste OAuth client IDs (`iosClientId`, `androidClientId`, `webClientId`).
+**Config:** `lib/core/google_config.dart` — OAuth client IDs filled (iOS / Android / Web).
 
-**Cloud setup**
+**Cloud setup (done for Cheterin / Nanda project)**
 
-1. Google Cloud → enable **Calendar API**.
-2. OAuth consent + clients (iOS / Android / Web).
-3. iOS: set `GIDClientID` + URL scheme in `ios/Runner/Info.plist` (placeholders present).
-4. Rebuild.
+1. Google Cloud project + **Calendar API** enabled.
+2. OAuth consent: External / **Testing**; test user + scopes `userinfo.email` + `calendar`.
+3. Clients: iOS (`com.lumen.lumen`), Web (localhost origins), Android (package + debug SHA-1).
+4. iOS: `GIDClientID` + reversed client URL scheme in `ios/Runner/Info.plist`.
+5. Rebuild.
 
 **Engine:** `GoogleCalendarSync` — connect / disconnect / syncNow; pull primary (30d back / 90d forward); push `dirty` local events; last-write-wins (skip remote overwrite if local dirty).
 
-**UI:** `GoogleSyncCard` on **More**. Without client IDs → snackbar «нужен Cloud / GoogleConfig».
+**UI:** `GoogleSyncCard` on **More**. Sign-in flow starts when IDs are present.
 
 Local calendar works without Google.
+
+---
+
+## Backup (`.lumen`)
+
+Zip archive: `manifest.json` (formatVersion, schemaVersion, exportedAt) + `data.json` (all tables as JSON rows).
+
+- **Export:** More → Backup → download (web) / share sheet (iOS).
+- **Restore:** pick file → **Replace** (wipe then load) or **Merge** (`INSERT OR REPLACE` by PK).
+- Code: `lib/features/backup/` · `AppDatabase.importBackupPayload`.
 
 ---
 
@@ -192,7 +205,7 @@ More → Training. Focus hero + start; week session dots; workout list with play
 
 ## Finance
 
-Tabs Overview · Plan · Insights · Ledger. Overview: **Kebo**-style tint balance hero + 4 purple quick actions + lavender progress; `BudgetHeroRing` still clips center text. Further Plan/Insights Kebo bar language — in progress.
+Tabs Overview · Plan · Insights · Ledger. **Kebo** presentation: tint balance hero + purple quick actions; Plan budget card + lavender allocation bars; Insights metric strip; Ledger day groups + bordered tx rows. `BudgetHeroRing` kept.
 
 ---
 
@@ -215,12 +228,12 @@ After feature work: restart **web + iOS**, update **TECHNICAL + DEV_BLOG + TODOS
 |---|---|
 | Design system / shell / onboarding | shipped |
 | Calendar local | shipped |
-| Google Calendar sync | shipped (needs your OAuth IDs) |
-| Finance | shipped (Kebo Overview hero; ring kept) |
+| Google Calendar sync | shipped (OAuth IDs configured) |
+| Finance | shipped (full Kebo Plan/Insights/Ledger) |
 | Today dashboard | shipped (layout v3) |
 | Tasks | shipped |
 | Habits | shipped (from More) |
 | Routine | shipped (from More) |
 | Nutrition | shipped (from More; OpenNutriTracker UX) |
 | Training | shipped (from More; GymMane UX) |
-| Backup `.lumen` | stub |
+| Backup `.lumen` | shipped (Replace / Merge) |

@@ -588,6 +588,12 @@ class _PlanTab extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context).textTheme;
     final entries = summary.allocationByCategory.entries.toList();
+    final spentRatio = summary.budgetLimitMinor <= 0
+        ? 0.0
+        : (summary.spentMinor / summary.budgetLimitMinor).clamp(0.0, 1.5);
+    final over = summary.budgetLimitMinor > 0 &&
+        summary.spentMinor > summary.budgetLimitMinor;
+    final remaining = summary.remainingMinor;
 
     return ListView(
       padding: const EdgeInsets.fromLTRB(
@@ -597,25 +603,36 @@ class _PlanTab extends StatelessWidget {
         120,
       ),
       children: [
-        GlowCard(
+        // Kebo budget card — bordered 18px surface + lavender bar
+        _KeboCard(
           onTap: onEditBudget,
           padding: const EdgeInsets.all(LumenSpacing.lg),
-          child: Row(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
                       l10n.financeBudgetTotal,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: theme.labelMedium?.copyWith(
-                        color: LumenColors.textMuted,
-                      ),
+                      style: theme.titleMedium,
                     ),
-                    const SizedBox(height: 4),
-                    FittedBox(
+                  ),
+                  Icon(
+                    PhosphorIconsRegular.pencilSimple,
+                    size: 18,
+                    color: LumenColors.keboLavender,
+                  ),
+                ],
+              ),
+              const SizedBox(height: LumenSpacing.sm),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Expanded(
+                    child: FittedBox(
                       fit: BoxFit.scaleDown,
                       alignment: Alignment.centerLeft,
                       child: Text(
@@ -625,16 +642,64 @@ class _PlanTab extends StatelessWidget {
                                 summary.budgetLimitMinor,
                                 currencyCode: currency,
                               ),
-                        style: theme.headlineSmall,
+                        style: theme.headlineSmall?.copyWith(
+                          fontWeight: FontWeight.w500,
+                          fontFeatures: const [FontFeature.tabularFigures()],
+                        ),
+                      ),
+                    ),
+                  ),
+                  if (summary.budgetLimitMinor > 0)
+                    Text(
+                      '${(spentRatio.clamp(0.0, 1.0) * 100).round()}%',
+                      style: theme.labelSmall?.copyWith(
+                        color: LumenColors.keboMuted,
+                      ),
+                    ),
+                ],
+              ),
+              if (summary.budgetLimitMinor > 0) ...[
+                const SizedBox(height: LumenSpacing.sm),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(99),
+                  child: LinearProgressIndicator(
+                    value: spentRatio.clamp(0.0, 1.0),
+                    minHeight: 14,
+                    backgroundColor:
+                        LumenColors.keboMuted.withValues(alpha: 0.15),
+                    color: over
+                        ? LumenColors.keboOver
+                        : LumenColors.keboLavender,
+                  ),
+                ),
+                const SizedBox(height: LumenSpacing.sm),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        '${MoneyFormat.formatCompact(summary.spentMinor, currencyCode: currency)} ${l10n.financeSpent.toLowerCase()}',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.labelSmall?.copyWith(
+                          color: over
+                              ? LumenColors.keboOver
+                              : LumenColors.keboMuted,
+                        ),
+                      ),
+                    ),
+                    Text(
+                      remaining == null
+                          ? ''
+                          : '${MoneyFormat.formatCompact(remaining, currencyCode: currency)} ${l10n.financeRemaining.toLowerCase()}',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.labelSmall?.copyWith(
+                        color: LumenColors.keboMuted,
                       ),
                     ),
                   ],
                 ),
-              ),
-              const Icon(
-                PhosphorIconsRegular.pencilSimple,
-                color: LumenColors.accentViolet,
-              ),
+              ],
             ],
           ),
         ),
@@ -651,15 +716,21 @@ class _PlanTab extends StatelessWidget {
             ),
             TextButton(
               onPressed: onEqualSplit,
+              style: TextButton.styleFrom(
+                foregroundColor: LumenColors.keboLavender,
+              ),
               child: Text(l10n.financeEqualSplit),
             ),
           ],
         ),
         const SizedBox(height: LumenSpacing.sm),
         if (entries.isEmpty)
-          Text(
-            l10n.financeAllocationsHint,
-            style: theme.bodySmall?.copyWith(color: LumenColors.textMuted),
+          _KeboCard(
+            padding: const EdgeInsets.all(LumenSpacing.lg),
+            child: Text(
+              l10n.financeAllocationsHint,
+              style: theme.bodySmall?.copyWith(color: LumenColors.keboMuted),
+            ),
           )
         else
           for (final entry in entries)
@@ -676,6 +747,9 @@ class _PlanTab extends StatelessWidget {
         const SizedBox(height: LumenSpacing.md),
         TextButton.icon(
           onPressed: onManageCategories,
+          style: TextButton.styleFrom(
+            foregroundColor: LumenColors.keboLavender,
+          ),
           icon: const Icon(PhosphorIconsRegular.tag, size: 16),
           label: Text(l10n.financeManageCategories),
         ),
@@ -697,6 +771,10 @@ class _InsightsTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context).textTheme;
+    final net = summary.incomeMinor - summary.spentMinor;
+
     return ListView(
       padding: const EdgeInsets.fromLTRB(
         LumenSpacing.pagePadding,
@@ -705,6 +783,49 @@ class _InsightsTab extends StatelessWidget {
         120,
       ),
       children: [
+        // Kebo insight strip — income / spent / net
+        Row(
+          children: [
+            Expanded(
+              child: _KeboInsightStat(
+                label: l10n.financeIncome,
+                value: MoneyFormat.formatCompact(
+                  summary.incomeMinor,
+                  currencyCode: currency,
+                ),
+                accent: LumenColors.accentMint,
+              ),
+            ),
+            const SizedBox(width: LumenSpacing.sm),
+            Expanded(
+              child: _KeboInsightStat(
+                label: l10n.financeSpent,
+                value: MoneyFormat.formatCompact(
+                  summary.spentMinor,
+                  currencyCode: currency,
+                ),
+                accent: LumenColors.keboLavender,
+              ),
+            ),
+            const SizedBox(width: LumenSpacing.sm),
+            Expanded(
+              child: _KeboInsightStat(
+                label: l10n.financeNet,
+                value: MoneyFormat.formatSigned(
+                  net.abs(),
+                  isExpense: net < 0,
+                  currencyCode: currency,
+                ),
+                accent: net < 0
+                    ? LumenColors.keboOver
+                    : LumenColors.accentMint,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: LumenSpacing.md),
+        Text(l10n.financeTabInsights, style: theme.titleMedium),
+        const SizedBox(height: LumenSpacing.sm),
         SizedBox(
           height: 220,
           child: FinanceDonutChart(
@@ -754,42 +875,46 @@ class _LedgerTab extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context).textTheme;
 
+    // Group by calendar day (Kebo ledger rhythm)
+    final groups = <DateTime, List<TxWithMeta>>{};
+    for (final item in txs) {
+      final d = item.tx.occurredAt;
+      final key = DateTime(d.year, d.month, d.day);
+      groups.putIfAbsent(key, () => []).add(item);
+    }
+    final days = groups.keys.toList()..sort((a, b) => b.compareTo(a));
+
     return ListView(
       padding: const EdgeInsets.fromLTRB(
-        0,
+        LumenSpacing.pagePadding,
         LumenSpacing.sm,
-        0,
+        LumenSpacing.pagePadding,
         120,
       ),
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: LumenSpacing.pagePadding,
-          ),
-          child: Row(
-            children: [
-              Expanded(
-                child: Text(
-                  l10n.financeTransactions,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.titleLarge,
-                ),
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                l10n.financeTransactions,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: theme.titleLarge,
               ),
-              TextButton.icon(
-                onPressed: onAddTx,
-                icon: const Icon(PhosphorIconsRegular.plus, size: 16),
-                label: Text(l10n.financeAddTx),
+            ),
+            TextButton.icon(
+              onPressed: onAddTx,
+              style: TextButton.styleFrom(
+                foregroundColor: LumenColors.keboLavender,
               ),
-            ],
-          ),
+              icon: const Icon(PhosphorIconsRegular.plus, size: 16),
+              label: Text(l10n.financeAddTx),
+            ),
+          ],
         ),
         const SizedBox(height: LumenSpacing.sm),
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.symmetric(
-            horizontal: LumenSpacing.pagePadding,
-          ),
           child: Row(
             children: [
               _FilterChip(
@@ -822,30 +947,54 @@ class _LedgerTab extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(height: LumenSpacing.sm),
+        const SizedBox(height: LumenSpacing.md),
         if (txs.isEmpty)
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: LumenSpacing.pagePadding,
+          _KeboCard(
+            padding: const EdgeInsets.all(LumenSpacing.xl),
+            child: Center(
+              child: Text(
+                l10n.financeEmptyTx,
+                style: theme.bodySmall?.copyWith(color: LumenColors.keboMuted),
+              ),
             ),
-            child: Text(l10n.financeEmptyTx, style: theme.bodySmall),
           )
         else
-          for (final item in txs)
-            TransactionRow(
-              title: item.tx.note.trim().isNotEmpty
-                  ? item.tx.note.trim()
-                  : categoryLabel(l10n, item.category),
-              subtitle:
-                  '${categoryLabel(l10n, item.category)} · ${item.account.name} · ${item.tx.occurredAt.day}.${item.tx.occurredAt.month}',
-              amountLabel: MoneyFormat.formatSigned(
-                item.tx.amountMinor,
-                isExpense: item.tx.kind == 'expense',
-                currencyCode: currency,
+          for (final day in days) ...[
+            Padding(
+              padding: const EdgeInsets.only(
+                bottom: LumenSpacing.xs,
+                top: LumenSpacing.xs,
               ),
-              isExpense: item.tx.kind == 'expense',
-              onTap: () => onOpenTx(item),
+              child: Text(
+                '${day.day}.${day.month}.${day.year}',
+                style: theme.labelMedium?.copyWith(
+                  color: LumenColors.keboMuted,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
             ),
+            _KeboCard(
+              padding: EdgeInsets.zero,
+              child: Column(
+                children: [
+                  for (var i = 0; i < groups[day]!.length; i++) ...[
+                    if (i > 0)
+                      Divider(
+                        height: 1,
+                        thickness: 1,
+                        color: LumenColors.keboBorder.withValues(alpha: 0.55),
+                      ),
+                    _KeboTxRow(
+                      item: groups[day]![i],
+                      currency: currency,
+                      onTap: () => onOpenTx(groups[day]![i]),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            const SizedBox(height: LumenSpacing.sm),
+          ],
       ],
     );
   }
@@ -1110,12 +1259,18 @@ class _FilterChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final accent = color ?? LumenColors.accentViolet;
+    final accent = color ?? LumenColors.keboPrimary;
     return Material(
       color: selected
           ? accent.withValues(alpha: 0.28)
-          : LumenColors.surfaceRaised,
-      borderRadius: LumenRadii.pill,
+          : LumenColors.keboCard,
+      shape: StadiumBorder(
+        side: BorderSide(
+          color: selected
+              ? accent.withValues(alpha: 0.55)
+              : LumenColors.keboBorder,
+        ),
+      ),
       child: InkWell(
         onTap: onTap,
         borderRadius: LumenRadii.pill,
@@ -1129,7 +1284,8 @@ class _FilterChip extends StatelessWidget {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                  color: selected ? LumenColors.text : LumenColors.textMuted,
+                  color: selected ? LumenColors.text : LumenColors.keboMuted,
+                  fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
                 ),
           ),
         ),
@@ -1158,6 +1314,7 @@ class _AllocationRow extends StatelessWidget {
     final label = category == null ? '—' : categoryLabel(l10n, category!);
     final color = Color(category?.colorArgb ?? 0xFF8B919C);
     final ratio = allocated <= 0 ? 0.0 : (spent / allocated).clamp(0.0, 1.5);
+    final over = allocated > 0 && spent > allocated;
     final delta = allocated - spent;
     final vsPlan = delta < 0
         ? l10n.financeOverBy(
@@ -1167,7 +1324,7 @@ class _AllocationRow extends StatelessWidget {
             MoneyFormat.formatCompact(delta, currencyCode: currencyCode),
           );
 
-    return GlowCard(
+    return _KeboCard(
       padding: const EdgeInsets.all(LumenSpacing.md),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1175,9 +1332,12 @@ class _AllocationRow extends StatelessWidget {
           Row(
             children: [
               Container(
-                width: 8,
-                height: 8,
-                decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+                width: 10,
+                height: 10,
+                decoration: BoxDecoration(
+                  color: color,
+                  shape: BoxShape.circle,
+                ),
               ),
               const SizedBox(width: LumenSpacing.xs),
               Expanded(
@@ -1188,12 +1348,23 @@ class _AllocationRow extends StatelessWidget {
                   style: theme.titleMedium,
                 ),
               ),
-              Flexible(
+              Text(
+                '${(ratio.clamp(0.0, 1.0) * 100).round()}%',
+                style: theme.labelSmall?.copyWith(
+                  color: LumenColors.keboMuted,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: LumenSpacing.sm),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Expanded(
                 child: Text(
                   '${MoneyFormat.formatCard(spent)} / ${MoneyFormat.formatCard(allocated)}',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.end,
                   style: theme.labelMedium?.copyWith(
                     fontFeatures: const [FontFeature.tabularFigures()],
                   ),
@@ -1203,30 +1374,210 @@ class _AllocationRow extends StatelessWidget {
           ),
           const SizedBox(height: LumenSpacing.sm),
           ClipRRect(
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: BorderRadius.circular(99),
             child: LinearProgressIndicator(
-              value: ratio > 1 ? 1 : ratio,
-              minHeight: 6,
-              backgroundColor: LumenColors.surface,
-              color: ratio > 1
-                  ? LumenColors.accentRed
-                  : ratio > 0.85
-                      ? LumenColors.accentCream
-                      : color,
+              value: ratio.clamp(0.0, 1.0),
+              minHeight: 12,
+              backgroundColor: LumenColors.keboMuted.withValues(alpha: 0.15),
+              color: over ? LumenColors.keboOver : LumenColors.keboLavender,
             ),
           ),
-          const SizedBox(height: LumenSpacing.xxs),
+          const SizedBox(height: LumenSpacing.xs),
           Text(
             vsPlan,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: theme.bodySmall?.copyWith(
-              color: delta < 0
-                  ? LumenColors.accentRed
-                  : LumenColors.textMuted,
+              color: over ? LumenColors.keboOver : LumenColors.keboMuted,
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// Kebo presentation card — 18px radius, #1C1C1E fill, #3A3A3C border.
+class _KeboCard extends StatelessWidget {
+  const _KeboCard({
+    required this.child,
+    this.padding,
+    this.onTap,
+  });
+
+  final Widget child;
+  final EdgeInsetsGeometry? padding;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final radius = BorderRadius.circular(18);
+    final body = Container(
+      width: double.infinity,
+      padding: padding,
+      decoration: BoxDecoration(
+        color: LumenColors.keboCard,
+        borderRadius: radius,
+        border: Border.all(color: LumenColors.keboBorder),
+      ),
+      child: child,
+    );
+    if (onTap == null) return body;
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: radius,
+        splashColor: LumenColors.keboPrimary.withValues(alpha: 0.18),
+        child: body,
+      ),
+    );
+  }
+}
+
+class _KeboInsightStat extends StatelessWidget {
+  const _KeboInsightStat({
+    required this.label,
+    required this.value,
+    required this.accent,
+  });
+
+  final String label;
+  final String value;
+  final Color accent;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context).textTheme;
+    return _KeboCard(
+      padding: const EdgeInsets.all(LumenSpacing.md),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: theme.labelSmall?.copyWith(color: LumenColors.keboMuted),
+          ),
+          const SizedBox(height: 4),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Text(
+              value,
+              style: theme.titleMedium?.copyWith(
+                color: accent,
+                fontWeight: FontWeight.w600,
+                fontFeatures: const [FontFeature.tabularFigures()],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _KeboTxRow extends StatelessWidget {
+  const _KeboTxRow({
+    required this.item,
+    required this.currency,
+    required this.onTap,
+  });
+
+  final TxWithMeta item;
+  final String currency;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context).textTheme;
+    final isExpense = item.tx.kind == 'expense';
+    final title = item.tx.note.trim().isNotEmpty
+        ? item.tx.note.trim()
+        : categoryLabel(l10n, item.category);
+    final catColor = Color(item.category.colorArgb);
+
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: LumenSpacing.md,
+          vertical: LumenSpacing.md,
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: isExpense
+                      ? LumenColors.keboBorder
+                      : LumenColors.keboPrimary,
+                  width: 1.3,
+                ),
+              ),
+              child: Icon(
+                isExpense
+                    ? PhosphorIconsRegular.arrowUpRight
+                    : PhosphorIconsRegular.arrowDownLeft,
+                size: 18,
+                color: isExpense
+                    ? LumenColors.keboMuted
+                    : LumenColors.keboLavender,
+              ),
+            ),
+            const SizedBox(width: LumenSpacing.sm),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.titleMedium,
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    '${categoryLabel(l10n, item.category)} · ${item.account.name}',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.bodySmall?.copyWith(
+                      color: LumenColors.keboMuted,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Text(
+              MoneyFormat.formatSigned(
+                item.tx.amountMinor,
+                isExpense: isExpense,
+                currencyCode: currency,
+              ),
+              style: theme.titleMedium?.copyWith(
+                color: isExpense
+                    ? LumenColors.keboOver
+                    : LumenColors.accentMint,
+                fontFeatures: const [FontFeature.tabularFigures()],
+              ),
+            ),
+            const SizedBox(width: 4),
+            Container(
+              width: 6,
+              height: 6,
+              decoration: BoxDecoration(
+                color: catColor,
+                shape: BoxShape.circle,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

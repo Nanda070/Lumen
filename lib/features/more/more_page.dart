@@ -5,6 +5,7 @@ import '../../data/app_database.dart';
 import '../../design_system/design_system.dart';
 import '../../l10n/app_localizations.dart';
 import '../../shell/module_scaffold.dart';
+import '../backup/backup_sheet.dart';
 import '../calendar/google_sync_card.dart';
 import '../habits/habits_page.dart';
 import '../nutrition/nutrition_page.dart';
@@ -198,6 +199,52 @@ class MorePage extends StatelessWidget {
                       ),
                     ),
                   ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: LumenSpacing.md),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Text(l10n.moreBackup, style: theme.titleLarge),
+          ),
+          const SizedBox(height: LumenSpacing.sm),
+          GlowCard(
+            violetEdge: true,
+            onTap: () => showBackupSheet(
+              context: context,
+              database: database,
+            ),
+            padding: const EdgeInsets.symmetric(
+              horizontal: LumenSpacing.md,
+              vertical: LumenSpacing.md,
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  PhosphorIconsRegular.archive,
+                  color: LumenColors.accentViolet,
+                  size: 22,
+                ),
+                const SizedBox(width: LumenSpacing.sm),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(l10n.moreBackup, style: theme.titleMedium),
+                      Text(
+                        l10n.moreBackupHint,
+                        style: theme.bodySmall?.copyWith(
+                          color: LumenColors.textMuted,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const Icon(
+                  PhosphorIconsRegular.caretRight,
+                  color: LumenColors.textMuted,
+                  size: 18,
                 ),
               ],
             ),

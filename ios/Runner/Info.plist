@@ -73,12 +73,11 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<!-- Reversed iOS client ID from Google Cloud, e.g. com.googleusercontent.apps.XXXX -->
-				<string>com.googleusercontent.apps.YOUR_IOS_CLIENT_ID</string>
+				<string>com.googleusercontent.apps.445364111690-4f1p41ingckci1ejpf3o1cvqktp79hk0</string>
 			</array>
 		</dict>
 	</array>
 	<key>GIDClientID</key>
-	<string>YOUR_IOS_CLIENT_ID.apps.googleusercontent.com</string>
+	<string>445364111690-4f1p41ingckci1ejpf3o1cvqktp79hk0.apps.googleusercontent.com</string>
 </dict>
 </plist>

@@ -206,6 +206,47 @@ class AppLocalizationsRu extends AppLocalizations {
   String get moreSettings => 'Настройки';
 
   @override
+  String get moreBackup => 'Бэкап';
+
+  @override
+  String get moreBackupExport => 'Экспорт .lumen';
+
+  @override
+  String get moreBackupRestore => 'Восстановить .lumen';
+
+  @override
+  String get moreBackupHint =>
+      'Скачать локальный архив или восстановить: Заменить / Слить.';
+
+  @override
+  String get moreBackupReplace => 'Заменить';
+
+  @override
+  String get moreBackupMerge => 'Слить';
+
+  @override
+  String get moreBackupReplaceBody =>
+      'Стереть текущие данные и загрузить бэкап.';
+
+  @override
+  String get moreBackupMergeBody =>
+      'Оставить текущие строки; из бэкапа перезапишутся совпадающие ID.';
+
+  @override
+  String get moreBackupExported => 'Бэкап готов.';
+
+  @override
+  String get moreBackupRestored => 'Бэкап восстановлен.';
+
+  @override
+  String get moreBackupCancelled => 'Отменено.';
+
+  @override
+  String moreBackupFailed(String error) {
+    return 'Ошибка бэкапа: $error';
+  }
+
+  @override
   String moreProfileMeta(String currency) {
     return 'Локальный профиль · $currency';
   }

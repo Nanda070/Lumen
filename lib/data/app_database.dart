@@ -1674,6 +1674,115 @@ class AppDatabase extends _$AppDatabase {
     );
   }
 
+  // ── Backup import ────────────────────────────────────────────────────────
+
+  /// Import a `.lumen` JSON payload.
+  ///
+  /// [replace]: wipe all user tables then insert rows (default choice in UI).
+  /// Otherwise merge: insert-or-replace by primary key where present.
+  Future<void> importBackupPayload(
+    Map<String, dynamic> payload, {
+    required bool replace,
+  }) async {
+    await transaction(() async {
+      if (replace) {
+        // Child tables first (FK order).
+        await customStatement('DELETE FROM session_sets');
+        await customStatement('DELETE FROM workout_sessions');
+        await customStatement('DELETE FROM workout_exercises');
+        await customStatement('DELETE FROM workouts');
+        await customStatement('DELETE FROM food_entries');
+        await customStatement('DELETE FROM nutrition_targets');
+        await customStatement('DELETE FROM routine_slot_logs');
+        await customStatement('DELETE FROM routine_slots');
+        await customStatement('DELETE FROM routines');
+        await customStatement('DELETE FROM habit_logs');
+        await customStatement('DELETE FROM habits');
+        await customStatement('DELETE FROM finance_transactions');
+        await customStatement('DELETE FROM category_allocations');
+        await customStatement('DELETE FROM monthly_budgets');
+        await customStatement('DELETE FROM finance_accounts');
+        await customStatement('DELETE FROM finance_categories');
+        await customStatement('DELETE FROM events');
+        await customStatement('DELETE FROM calendars');
+        await customStatement('DELETE FROM tasks');
+        await customStatement('DELETE FROM google_sync_state');
+        await customStatement('DELETE FROM today_preferences');
+        await customStatement('DELETE FROM profiles');
+      }
+
+      Future<void> upsertRows(String table, List<dynamic>? rows) async {
+        if (rows == null) return;
+        for (final raw in rows) {
+          if (raw is! Map) continue;
+          final map = Map<String, Object?>.from(raw);
+          if (map.isEmpty) continue;
+          final cols = map.keys.toList();
+          final placeholders = List.filled(cols.length, '?').join(', ');
+          final colList = cols.join(', ');
+          await customStatement(
+            'INSERT OR REPLACE INTO $table ($colList) VALUES ($placeholders)',
+            [for (final c in cols) map[c]],
+          );
+        }
+      }
+
+      // Parents before children.
+      await upsertRows('profiles', payload['profiles'] as List?);
+      await upsertRows('calendars', payload['calendars'] as List?);
+      await upsertRows('events', payload['events'] as List?);
+      await upsertRows(
+        'google_sync_state',
+        payload['google_sync_state'] as List?,
+      );
+      await upsertRows('tasks', payload['tasks'] as List?);
+      await upsertRows(
+        'finance_categories',
+        payload['finance_categories'] as List?,
+      );
+      await upsertRows(
+        'finance_accounts',
+        payload['finance_accounts'] as List?,
+      );
+      await upsertRows('monthly_budgets', payload['monthly_budgets'] as List?);
+      await upsertRows(
+        'category_allocations',
+        payload['category_allocations'] as List?,
+      );
+      await upsertRows(
+        'finance_transactions',
+        payload['finance_transactions'] as List?,
+      );
+      await upsertRows(
+        'today_preferences',
+        payload['today_preferences'] as List?,
+      );
+      await upsertRows('habits', payload['habits'] as List?);
+      await upsertRows('habit_logs', payload['habit_logs'] as List?);
+      await upsertRows('routines', payload['routines'] as List?);
+      await upsertRows('routine_slots', payload['routine_slots'] as List?);
+      await upsertRows(
+        'routine_slot_logs',
+        payload['routine_slot_logs'] as List?,
+      );
+      await upsertRows(
+        'nutrition_targets',
+        payload['nutrition_targets'] as List?,
+      );
+      await upsertRows('food_entries', payload['food_entries'] as List?);
+      await upsertRows('workouts', payload['workouts'] as List?);
+      await upsertRows(
+        'workout_exercises',
+        payload['workout_exercises'] as List?,
+      );
+      await upsertRows(
+        'workout_sessions',
+        payload['workout_sessions'] as List?,
+      );
+      await upsertRows('session_sets', payload['session_sets'] as List?);
+    });
+  }
+
   // ── Seed / bootstrap ─────────────────────────────────────────────────────
 
   Future<void> _ensureFinanceBootstrap() async {

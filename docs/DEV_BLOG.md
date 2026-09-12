@@ -15,6 +15,13 @@
 
 ---
 
+## 2026-09-12 — Finance Kebo depth + Backup + Google OAuth
+
+- **Finance Plan/Insights/Ledger**: Kebo cards (18px / `#1C1C1E` / `#3A3A3C`), lavender progress bars, day-grouped ledger rows — presentation 1:1 kebo; Drift data layer без смены.
+- **Backup**: `.lumen` zip (`manifest.json` + `data.json`); More → Export (download/share) + Restore с выбором **Replace** / **Merge**.
+- **Google Cloud**: Calendar API; consent Testing + test user; OAuth clients iOS/Web/Android → `GoogleConfig` + `Info.plist` URL scheme. Client secret не в репо.
+- **Зачем:** закрыть оставшийся чеклист продукта и разблокировать Connect Google.
+
 ## 2026-09-12 — Live Nutrition + Training (schema v7)
 
 - **Nutrition** (`lib/features/nutrition/`): дневной трекер как OpenNutriTracker — date switch, kcal ring (left/over), macro bars, breakfast/lunch/dinner/snack + add/edit entry, goals sheet.

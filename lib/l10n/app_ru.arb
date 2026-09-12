@@ -69,6 +69,23 @@
   "moreNutrition": "Питание",
   "moreTraining": "Тренировки",
   "moreSettings": "Настройки",
+  "moreBackup": "Бэкап",
+  "moreBackupExport": "Экспорт .lumen",
+  "moreBackupRestore": "Восстановить .lumen",
+  "moreBackupHint": "Скачать локальный архив или восстановить: Заменить / Слить.",
+  "moreBackupReplace": "Заменить",
+  "moreBackupMerge": "Слить",
+  "moreBackupReplaceBody": "Стереть текущие данные и загрузить бэкап.",
+  "moreBackupMergeBody": "Оставить текущие строки; из бэкапа перезапишутся совпадающие ID.",
+  "moreBackupExported": "Бэкап готов.",
+  "moreBackupRestored": "Бэкап восстановлен.",
+  "moreBackupCancelled": "Отменено.",
+  "moreBackupFailed": "Ошибка бэкапа: {error}",
+  "@moreBackupFailed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
   "moreProfileMeta": "Локальный профиль · {currency}",
   "@moreProfileMeta": {
     "placeholders": {

@@ -482,6 +482,78 @@ abstract class AppLocalizations {
   /// **'Settings'**
   String get moreSettings;
 
+  /// No description provided for @moreBackup.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup'**
+  String get moreBackup;
+
+  /// No description provided for @moreBackupExport.
+  ///
+  /// In en, this message translates to:
+  /// **'Export .lumen'**
+  String get moreBackupExport;
+
+  /// No description provided for @moreBackupRestore.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore .lumen'**
+  String get moreBackupRestore;
+
+  /// No description provided for @moreBackupHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Download a local archive, or restore with Replace / Merge.'**
+  String get moreBackupHint;
+
+  /// No description provided for @moreBackupReplace.
+  ///
+  /// In en, this message translates to:
+  /// **'Replace'**
+  String get moreBackupReplace;
+
+  /// No description provided for @moreBackupMerge.
+  ///
+  /// In en, this message translates to:
+  /// **'Merge'**
+  String get moreBackupMerge;
+
+  /// No description provided for @moreBackupReplaceBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Wipe current data and load the backup.'**
+  String get moreBackupReplaceBody;
+
+  /// No description provided for @moreBackupMergeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep current rows; backup rows overwrite matching IDs.'**
+  String get moreBackupMergeBody;
+
+  /// No description provided for @moreBackupExported.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup ready.'**
+  String get moreBackupExported;
+
+  /// No description provided for @moreBackupRestored.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup restored.'**
+  String get moreBackupRestored;
+
+  /// No description provided for @moreBackupCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled.'**
+  String get moreBackupCancelled;
+
+  /// No description provided for @moreBackupFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup failed: {error}'**
+  String moreBackupFailed(String error);
+
   /// No description provided for @moreProfileMeta.
   ///
   /// In en, this message translates to:

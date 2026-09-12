@@ -69,6 +69,23 @@
   "moreNutrition": "Nutrition",
   "moreTraining": "Training",
   "moreSettings": "Settings",
+  "moreBackup": "Backup",
+  "moreBackupExport": "Export .lumen",
+  "moreBackupRestore": "Restore .lumen",
+  "moreBackupHint": "Download a local archive, or restore with Replace / Merge.",
+  "moreBackupReplace": "Replace",
+  "moreBackupMerge": "Merge",
+  "moreBackupReplaceBody": "Wipe current data and load the backup.",
+  "moreBackupMergeBody": "Keep current rows; backup rows overwrite matching IDs.",
+  "moreBackupExported": "Backup ready.",
+  "moreBackupRestored": "Backup restored.",
+  "moreBackupCancelled": "Cancelled.",
+  "moreBackupFailed": "Backup failed: {error}",
+  "@moreBackupFailed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
   "moreProfileMeta": "Local profile · {currency}",
   "@moreProfileMeta": {
     "placeholders": {
