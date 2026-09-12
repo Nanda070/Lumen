@@ -1,0 +1,16 @@
+---
+description: After features or substantial changes, always restart Flutter web + iOS
+alwaysApply: true
+---
+
+# Restart web + iOS after work
+
+After finishing a feature, substantial UI/code change, or any task that should be verified in the running app:
+
+1. Stop existing `flutter run` processes for this project.
+2. Restart **both** without waiting for the user to ask:
+   - Web: `flutter run -d chrome`
+   - iOS: `flutter run -d <ios simulator>` (pick the available simulator)
+3. Report the Chrome/web URL and the iOS device name in the final reply.
+
+Do this automatically at the end of the turn when the work is ready to try.

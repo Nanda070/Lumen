@@ -19,6 +19,17 @@ class Calendars extends Table {
   IntColumn get sortOrder => integer().withDefault(const Constant(0))();
 }
 
+/// Local calendar events (no Google sync in this layer).
+class Events extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get title => text().withLength(min: 1, max: 200)();
+  DateTimeColumn get startsAt => dateTime()();
+  DateTimeColumn get endsAt => dateTime()();
+  IntColumn get calendarId => integer().references(Calendars, #id)();
+  DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get updatedAt => dateTime()();
+}
+
 /// Default money categories seeded with the profile.
 class FinanceCategories extends Table {
   IntColumn get id => integer().autoIncrement()();

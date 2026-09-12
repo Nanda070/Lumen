@@ -6,13 +6,26 @@ import 'tables.dart';
 
 part 'app_database.g.dart';
 
-@DriftDatabase(tables: [Profiles, Calendars, FinanceCategories])
+/// Event joined with its calendar color/name for UI.
+typedef EventWithCalendar = ({Event event, Calendar calendar});
+
+@DriftDatabase(tables: [Profiles, Calendars, FinanceCategories, Events])
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor])
       : super(executor ?? _openExecutor());
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
+
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+        onCreate: (m) async => m.createAll(),
+        onUpgrade: (m, from, to) async {
+          if (from < 2) {
+            await m.createTable(events);
+          }
+        },
+      );
 
   Future<Profile?> getProfile() {
     return (select(profiles)..limit(1)).getSingleOrNull();
@@ -64,6 +77,92 @@ class AppDatabase extends _$AppDatabase {
     await (update(profiles)..where((t) => t.id.equals(profile.id))).write(
       ProfilesCompanion(currencyCode: Value(currencyCode)),
     );
+  }
+
+  Future<List<Calendar>> getCalendars() {
+    return (select(calendars)
+          ..orderBy([(t) => OrderingTerm.asc(t.sortOrder)]))
+        .get();
+  }
+
+  Stream<List<Calendar>> watchCalendars() {
+    return (select(calendars)
+          ..orderBy([(t) => OrderingTerm.asc(t.sortOrder)]))
+        .watch();
+  }
+
+  Stream<List<EventWithCalendar>> watchEventsInRange(
+    DateTime rangeStart,
+    DateTime rangeEnd,
+  ) {
+    final query = select(events).join([
+      innerJoin(calendars, calendars.id.equalsExp(events.calendarId)),
+    ])
+      ..where(
+        events.startsAt.isBiggerOrEqualValue(rangeStart) &
+            events.startsAt.isSmallerThanValue(rangeEnd),
+      )
+      ..orderBy([OrderingTerm.asc(events.startsAt)]);
+
+    return query.watch().map((rows) {
+      return rows
+          .map(
+            (row) => (
+              event: row.readTable(events),
+              calendar: row.readTable(calendars),
+            ),
+          )
+          .toList();
+    });
+  }
+
+  Stream<List<EventWithCalendar>> watchEventsForDay(DateTime day) {
+    final start = DateTime(day.year, day.month, day.day);
+    final end = start.add(const Duration(days: 1));
+    return watchEventsInRange(start, end);
+  }
+
+  Future<int> insertEvent({
+    required String title,
+    required DateTime startsAt,
+    required DateTime endsAt,
+    required int calendarId,
+  }) {
+    final now = DateTime.now().toUtc();
+    return into(events).insert(
+      EventsCompanion.insert(
+        title: title.trim(),
+        startsAt: startsAt,
+        endsAt: endsAt,
+        calendarId: calendarId,
+        createdAt: now,
+        updatedAt: now,
+      ),
+    );
+  }
+
+  Future<bool> updateEvent({
+    required int id,
+    required String title,
+    required DateTime startsAt,
+    required DateTime endsAt,
+    required int calendarId,
+  }) async {
+    final rows = await (update(events)..where((t) => t.id.equals(id))).write(
+      EventsCompanion(
+        title: Value(title.trim()),
+        startsAt: Value(startsAt),
+        endsAt: Value(endsAt),
+        calendarId: Value(calendarId),
+        updatedAt: Value(DateTime.now().toUtc()),
+      ),
+    );
+    return rows > 0;
+  }
+
+  Future<bool> deleteEvent(int id) async {
+    final rows = await (delete(events)..where((t) => t.id.equals(id))).go();
+    return rows > 0;
   }
 
   Future<void> _seedStarterData() async {
