@@ -35,6 +35,7 @@
 | UI | Flutter (iOS-first, Android + Web) |
 | Local DB | Drift + SQLite (`drift`, `drift_flutter`) |
 | Web SQLite | `web/sqlite3.wasm` + `web/drift_worker.js` |
+| Charts | `fl_chart` — donut + daily bars on Finance |
 | i18n | `flutter gen-l10n` — `lib/l10n/app_en.arb` / `app_ru.arb` |
 | Fonts | `google_fonts` → Outfit |
 | Icons | `phosphor_icons` |
@@ -50,27 +51,26 @@ Dev: `drift_dev`, `build_runner`, `flutter_lints`, `flutter_test`.
 
 ```
 lib/
-  main.dart                 # entry, system UI chrome
-  app.dart                  # LumenApp: bootstrap DB → onboarding or shell
+  main.dart
+  app.dart
   core/
-    region_options.dart     # countries → suggested currency
-    world_currencies.dart    # 154 ISO 4217 currencies EN/RU
+    region_options.dart
+    world_currencies.dart
   data/
-    tables.dart             # Drift table defs
-    app_database.dart       # CRUD + seed + migrations
-    app_database.g.dart     # generated
-  design_system/            # colors, type, glass, glow, metrics, tab bar
+    tables.dart             # Drift tables (schema v3)
+    app_database.dart       # CRUD + seed + migrations + month summary
+    app_database.g.dart
+  design_system/
   features/
-    onboarding/             # 5-step flow + currency searchable picker
-    today/                  # hub with live today’s events
-    calendar/               # Day/Week/Month + event CRUD sheet
-    tasks/ finance/ more/   # rooms / settings / about
+    onboarding/
+    today/                  # hub widgets + prefs sheet
+    calendar/
+    finance/                # page, charts, tx/budget/managers sheets
+    tasks/ more/
   shell/
-    app_shell.dart          # tabs + SafeArea + rail
-    module_scaffold.dart    # shared large-title chrome
   l10n/
-docs/                       # PLAN, STYLE, TODOS, TECHNICAL, MAC
-web/                        # index + sqlite3.wasm + drift_worker.js
+docs/
+web/
 ```
 
 ---
@@ -78,57 +78,84 @@ web/                        # index + sqlite3.wasm + drift_worker.js
 ## Architecture
 
 1. **`LumenApp`** opens `AppDatabase`, loads profile.
-2. No profile → **`OnboardingFlow`** (name, locale+country, base currency, Google skip, ready) → seed calendars/categories.
+2. No profile → **`OnboardingFlow`** → seed calendars / categories / Cash account / Today prefs.
 3. Profile exists → **`AppShell`**: phone floating glass tabs / wide left rail.
-4. Pages receive `AppDatabase` where they need live data (Today, Calendar).
-5. Streams via Drift `watch*` for reactive UI.
+4. Today, Calendar, Finance, More receive `AppDatabase` for live streams.
+5. Amounts stored as **minor units** (cents); account balance updated on tx insert/update/delete.
 
 ### Safe area
 
 - Phone: `AppShell` wraps body in `SafeArea(bottom: false)` — top clears Dynamic Island/status bar; bottom left for floating tab bar.
 - Wide: `SafeArea` around rail + content.
 - Onboarding / loading / error: own `SafeArea`.
-- Module titles use `LumenSpacing.lg` air **after** SafeArea (no magic status-bar pixels).
+- Module titles use `LumenSpacing.lg` air **after** SafeArea.
 
 ---
 
 ## Database
 
-**Schema version:** 2  
+**Schema version:** 3  
 **Name:** `lumen` (Drift / sqlite)
 
 | Table | Purpose |
 |---|---|
-| `profiles` | Single local profile: displayName, localeCode, countryCode, currencyCode, createdAt |
+| `profiles` | displayName, localeCode, countryCode, currencyCode, createdAt |
 | `calendars` | Named calendars + colorArgb; seed Personal / Lumen |
-| `events` | title, startsAt, endsAt, calendarId → calendars, createdAt, updatedAt |
-| `finance_categories` | nameKey, kind expense\|income, color; seeded defaults |
+| `events` | title, startsAt, endsAt, calendarId, createdAt, updatedAt |
+| `finance_categories` | nameKey, displayName?, kind expense\|income, color, isSystem, isArchived |
+| `finance_accounts` | name, balanceMinor, currencyCode, sortOrder, isArchived |
+| `monthly_budgets` | year, month, totalLimitMinor |
+| `category_allocations` | year, month, categoryId, allocatedMinor |
+| `finance_transactions` | amountMinor, kind, categoryId, accountId, occurredAt, note |
+| `today_preferences` | showFinanceSummary / Budget / Spend / Events + widgetOrder |
 
-Seed on first `completeOnboarding`: Personal (`#8B6CFF`), Lumen (`#5B7CFF`), expense/income categories.
+**Seed** (onboarding + `beforeOpen` bootstrap for upgrades): Personal/Lumen calendars, default expense/income categories, one **Cash** account in profile currency, default Today prefs (all on).
 
-**Storage**
+**Migration**
 
-- Native: platform SQLite via `driftDatabase(name: 'lumen')` (app support dir).
-- Web: Wasm / shared IndexedDb (`sqlite3.wasm`, `drift_worker.js`).
-- No SharedPreferences yet; locale/currency live on `profiles`.
+- &lt;2 → create `events`
+- &lt;3 → add category columns; create accounts / budgets / allocations / transactions / today_preferences; mark seeded categories `is_system`
 
-Migration: `onUpgrade` from &lt;2 creates `events`.
+**Storage:** native SQLite via `driftDatabase(name: 'lumen')`; web Wasm + IndexedDb.
+
+---
+
+## Finance (shipped)
+
+- Month switcher; spent / remaining / budget / income metrics (gradient + glow).
+- Monthly budget + per-category allocations with vs-plan progress.
+- Accounts CRUD (archive; at least one kept); category create/edit/archive.
+- Transactions CRUD (amount, kind, category, account, date, note); balance sync.
+- Filters: all / expense / income / category chips.
+- Charts: donut by category, bar trend by day (`fl_chart`).
+- Budget status chip: ok / warning / overspend / none.
+
+---
+
+## Today (shipped)
+
+Live hub widgets (order via `widgetOrder`, visibility toggles in Drift):
+
+1. Finance summary (month spent + budget left)
+2. Budget status bar
+3. Spent today + upcoming count
+4. Today’s calendar events
+
+Configure: Today trailing sliders icon, or More → Settings → Widgets.
 
 ---
 
 ## Calendar (shipped)
 
-- Views: Day / Week / Month, now-line, cream Quick Add.
-- CRUD sheet: title, date, start/end, calendar chip; delete on edit.
-- Today hub lists today’s events from Drift.
-- No Google sync in this layer (`google-sync` later).
+- Day / Week / Month, now-line, cream Quick Add, CRUD sheet.
+- No Google sync in this layer.
 
 ---
 
 ## Navigation & i18n
 
 Tabs: Today · Calendar · Tasks · Finance · More.  
-Locale from profile; switch in More. ARB → `AppLocalizations`.
+Locale from profile; switch in More. ARB → `AppLocalizations` (category labels + finance/today strings EN/RU).
 
 ---
 
@@ -163,9 +190,9 @@ After features: stop old `flutter run`, restart **web + iOS**, update this file 
 | Onboarding + profile + seed | Live |
 | Base currency (154 ISO, searchable) | Live |
 | Calendar local Day/Week/Month + CRUD | Live |
-| Today live events | Live |
+| Finance core (accounts, budget, txs, charts) | Live |
+| Today hub widgets + prefs | Live |
 | Tasks / Habits / Routine / Nutrition / Training | Stub rooms |
-| Finance UI | Placeholder metrics |
 | Google Calendar sync | Not started |
 | `.lumen` backup | Not started |
 
@@ -174,8 +201,9 @@ After features: stop old `flutter run`, restart **web + iOS**, update this file 
 ## Key decisions
 
 - Local-first SQLite over cloud account.
+- Money as integer minor units; profile currency on accounts.
 - Custom calendar canvas (not `table_calendar` as final UI).
 - EN default; RU first-class ARB.
 - Premium charcoal/violet language intentional (STYLE over generic anti-purple rules).
-- Full ISO currency list + search (not a short curated chip row).
+- Full ISO currency list + search.
 - Contacts stay human-facing (docs + More), bundle id unchanged.

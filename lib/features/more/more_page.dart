@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 
+import '../../data/app_database.dart';
 import '../../design_system/design_system.dart';
 import '../../l10n/app_localizations.dart';
 import '../../shell/module_scaffold.dart';
+import '../today/today_widgets_sheet.dart';
 
 class MorePage extends StatelessWidget {
   const MorePage({
     super.key,
+    required this.database,
     required this.locale,
     required this.onLocaleChanged,
     required this.displayName,
     required this.currencyCode,
   });
 
+  final AppDatabase database;
   final Locale locale;
   final ValueChanged<Locale> onLocaleChanged;
   final String displayName;
@@ -101,6 +105,46 @@ class MorePage extends StatelessWidget {
                       onTap: () => onLocaleChanged(const Locale('ru')),
                     ),
                   ],
+                ),
+                const SizedBox(height: LumenSpacing.lg),
+                Text(l10n.todayWidgetsTitle, style: theme.labelMedium),
+                const SizedBox(height: LumenSpacing.sm),
+                Material(
+                  color: LumenColors.surfaceRaised,
+                  borderRadius: LumenRadii.card,
+                  child: InkWell(
+                    borderRadius: LumenRadii.card,
+                    onTap: () => showTodayWidgetsSheet(
+                      context: context,
+                      database: database,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: LumenSpacing.md,
+                        vertical: LumenSpacing.md,
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            PhosphorIconsRegular.squaresFour,
+                            color: LumenColors.accentViolet,
+                          ),
+                          const SizedBox(width: LumenSpacing.sm),
+                          Expanded(
+                            child: Text(
+                              l10n.todayEditWidgets,
+                              style: theme.titleMedium,
+                            ),
+                          ),
+                          Icon(
+                            PhosphorIconsRegular.caretRight,
+                            color: LumenColors.textMuted,
+                            size: 16,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
               ],
             ),

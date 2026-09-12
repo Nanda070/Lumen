@@ -52,8 +52,12 @@ class _AppShellState extends State<AppShell> {
       ),
       CalendarPage(database: widget.database),
       const TasksPage(),
-      const FinancePage(),
+      FinancePage(
+        database: widget.database,
+        currencyCode: widget.currencyCode,
+      ),
       MorePage(
+        database: widget.database,
         locale: widget.locale,
         onLocaleChanged: widget.onLocaleChanged,
         displayName: widget.displayName,

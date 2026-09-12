@@ -314,4 +314,248 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get onboardingReadySeedBody =>
       'Personal + Lumen calendars · default expense & income categories · your language and currency.';
+
+  @override
+  String get catFood => 'Food';
+
+  @override
+  String get catTransport => 'Transport';
+
+  @override
+  String get catHome => 'Home';
+
+  @override
+  String get catShopping => 'Shopping';
+
+  @override
+  String get catHealth => 'Health';
+
+  @override
+  String get catOtherExpense => 'Other';
+
+  @override
+  String get catSalary => 'Salary';
+
+  @override
+  String get catOtherIncome => 'Other income';
+
+  @override
+  String get financeSpent => 'Spent';
+
+  @override
+  String get financeRemaining => 'Remaining';
+
+  @override
+  String get financeBudget => 'Budget';
+
+  @override
+  String get financeIncome => 'Income';
+
+  @override
+  String get financeNoBudget => 'No budget set';
+
+  @override
+  String get financeSetBudget => 'Set budget';
+
+  @override
+  String get financeEditBudget => 'Edit budget';
+
+  @override
+  String get financeBudgetHint => 'Monthly spending limit';
+
+  @override
+  String get financeBudgetTotal => 'Total monthly limit';
+
+  @override
+  String get financeAllocations => 'Category plan';
+
+  @override
+  String get financeAllocationsHint => 'Allocate within your budget';
+
+  @override
+  String financeAllocationFor(String category) {
+    return '$category';
+  }
+
+  @override
+  String get financeStatusOk => 'On track';
+
+  @override
+  String get financeStatusWarning => 'Almost there';
+
+  @override
+  String get financeStatusOver => 'Overspent';
+
+  @override
+  String get financeStatusNone => 'Set a budget';
+
+  @override
+  String get financeVsPlan => 'vs plan';
+
+  @override
+  String financeOverBy(String amount) {
+    return 'Over by $amount';
+  }
+
+  @override
+  String financeUnderBy(String amount) {
+    return '$amount left in plan';
+  }
+
+  @override
+  String get financeByCategory => 'By category';
+
+  @override
+  String get financeTrend => 'Daily spend';
+
+  @override
+  String get financeTransactions => 'Transactions';
+
+  @override
+  String get financeEmptyTx => 'No transactions this month.';
+
+  @override
+  String get financeAddTx => 'Add';
+
+  @override
+  String get financeNewTx => 'New transaction';
+
+  @override
+  String get financeEditTx => 'Edit transaction';
+
+  @override
+  String get financeAmount => 'Amount';
+
+  @override
+  String get financeAmountRequired => 'Enter an amount.';
+
+  @override
+  String get financeNote => 'Note';
+
+  @override
+  String get financeNoteHint => 'Optional note';
+
+  @override
+  String get financeCategory => 'Category';
+
+  @override
+  String get financeAccount => 'Account';
+
+  @override
+  String get financeDate => 'Date';
+
+  @override
+  String get financeTypeExpense => 'Expense';
+
+  @override
+  String get financeTypeIncome => 'Income';
+
+  @override
+  String get financeFilterAll => 'All';
+
+  @override
+  String get financeSaveError => 'Could not save.';
+
+  @override
+  String get financeDeleteTxTitle => 'Delete transaction?';
+
+  @override
+  String get financeDeleteTxBody =>
+      'This removes it from your ledger and updates the account balance.';
+
+  @override
+  String get financeAccounts => 'Accounts';
+
+  @override
+  String get financeCategories => 'Categories';
+
+  @override
+  String get financeManageAccounts => 'Manage accounts';
+
+  @override
+  String get financeManageCategories => 'Manage categories';
+
+  @override
+  String get financeNewAccount => 'New account';
+
+  @override
+  String get financeEditAccount => 'Edit account';
+
+  @override
+  String get financeAccountName => 'Account name';
+
+  @override
+  String get financeAccountBalance => 'Balance';
+
+  @override
+  String get financeAccountRequired => 'Enter a name.';
+
+  @override
+  String get financeArchiveAccount => 'Archive';
+
+  @override
+  String get financeCannotArchiveLastAccount => 'Keep at least one account.';
+
+  @override
+  String get financeNewCategory => 'New category';
+
+  @override
+  String get financeEditCategory => 'Edit category';
+
+  @override
+  String get financeCategoryName => 'Name';
+
+  @override
+  String get financeCategoryNameRequired => 'Enter a name.';
+
+  @override
+  String get financeArchiveCategory => 'Archive';
+
+  @override
+  String get financeDeleteCategory => 'Delete';
+
+  @override
+  String get financeBalance => 'Balance';
+
+  @override
+  String get financeSave => 'Save';
+
+  @override
+  String get financeCancel => 'Cancel';
+
+  @override
+  String get financeDelete => 'Delete';
+
+  @override
+  String get financeColor => 'Color';
+
+  @override
+  String get todayEditWidgets => 'Widgets';
+
+  @override
+  String get todayWidgetsTitle => 'Today widgets';
+
+  @override
+  String get todayWidgetsSubtitle => 'Choose what appears on your hub.';
+
+  @override
+  String get todayWidgetFinance => 'Month finance summary';
+
+  @override
+  String get todayWidgetBudget => 'Budget status';
+
+  @override
+  String get todayWidgetSpend => 'Spent today';
+
+  @override
+  String get todayWidgetEvents => 'Today’s events';
+
+  @override
+  String get todayBudgetLeft => 'Budget left';
+
+  @override
+  String get todayMonthSpent => 'Month spent';
+
+  @override
+  String get todayMonthBudget => 'Month budget';
 }

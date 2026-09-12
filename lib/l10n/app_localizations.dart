@@ -685,6 +685,480 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Personal + Lumen calendars · default expense & income categories · your language and currency.'**
   String get onboardingReadySeedBody;
+
+  /// No description provided for @catFood.
+  ///
+  /// In en, this message translates to:
+  /// **'Food'**
+  String get catFood;
+
+  /// No description provided for @catTransport.
+  ///
+  /// In en, this message translates to:
+  /// **'Transport'**
+  String get catTransport;
+
+  /// No description provided for @catHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get catHome;
+
+  /// No description provided for @catShopping.
+  ///
+  /// In en, this message translates to:
+  /// **'Shopping'**
+  String get catShopping;
+
+  /// No description provided for @catHealth.
+  ///
+  /// In en, this message translates to:
+  /// **'Health'**
+  String get catHealth;
+
+  /// No description provided for @catOtherExpense.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get catOtherExpense;
+
+  /// No description provided for @catSalary.
+  ///
+  /// In en, this message translates to:
+  /// **'Salary'**
+  String get catSalary;
+
+  /// No description provided for @catOtherIncome.
+  ///
+  /// In en, this message translates to:
+  /// **'Other income'**
+  String get catOtherIncome;
+
+  /// No description provided for @financeSpent.
+  ///
+  /// In en, this message translates to:
+  /// **'Spent'**
+  String get financeSpent;
+
+  /// No description provided for @financeRemaining.
+  ///
+  /// In en, this message translates to:
+  /// **'Remaining'**
+  String get financeRemaining;
+
+  /// No description provided for @financeBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget'**
+  String get financeBudget;
+
+  /// No description provided for @financeIncome.
+  ///
+  /// In en, this message translates to:
+  /// **'Income'**
+  String get financeIncome;
+
+  /// No description provided for @financeNoBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'No budget set'**
+  String get financeNoBudget;
+
+  /// No description provided for @financeSetBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'Set budget'**
+  String get financeSetBudget;
+
+  /// No description provided for @financeEditBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit budget'**
+  String get financeEditBudget;
+
+  /// No description provided for @financeBudgetHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly spending limit'**
+  String get financeBudgetHint;
+
+  /// No description provided for @financeBudgetTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Total monthly limit'**
+  String get financeBudgetTotal;
+
+  /// No description provided for @financeAllocations.
+  ///
+  /// In en, this message translates to:
+  /// **'Category plan'**
+  String get financeAllocations;
+
+  /// No description provided for @financeAllocationsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Allocate within your budget'**
+  String get financeAllocationsHint;
+
+  /// No description provided for @financeAllocationFor.
+  ///
+  /// In en, this message translates to:
+  /// **'{category}'**
+  String financeAllocationFor(String category);
+
+  /// No description provided for @financeStatusOk.
+  ///
+  /// In en, this message translates to:
+  /// **'On track'**
+  String get financeStatusOk;
+
+  /// No description provided for @financeStatusWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Almost there'**
+  String get financeStatusWarning;
+
+  /// No description provided for @financeStatusOver.
+  ///
+  /// In en, this message translates to:
+  /// **'Overspent'**
+  String get financeStatusOver;
+
+  /// No description provided for @financeStatusNone.
+  ///
+  /// In en, this message translates to:
+  /// **'Set a budget'**
+  String get financeStatusNone;
+
+  /// No description provided for @financeVsPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'vs plan'**
+  String get financeVsPlan;
+
+  /// No description provided for @financeOverBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Over by {amount}'**
+  String financeOverBy(String amount);
+
+  /// No description provided for @financeUnderBy.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} left in plan'**
+  String financeUnderBy(String amount);
+
+  /// No description provided for @financeByCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'By category'**
+  String get financeByCategory;
+
+  /// No description provided for @financeTrend.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily spend'**
+  String get financeTrend;
+
+  /// No description provided for @financeTransactions.
+  ///
+  /// In en, this message translates to:
+  /// **'Transactions'**
+  String get financeTransactions;
+
+  /// No description provided for @financeEmptyTx.
+  ///
+  /// In en, this message translates to:
+  /// **'No transactions this month.'**
+  String get financeEmptyTx;
+
+  /// No description provided for @financeAddTx.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get financeAddTx;
+
+  /// No description provided for @financeNewTx.
+  ///
+  /// In en, this message translates to:
+  /// **'New transaction'**
+  String get financeNewTx;
+
+  /// No description provided for @financeEditTx.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit transaction'**
+  String get financeEditTx;
+
+  /// No description provided for @financeAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount'**
+  String get financeAmount;
+
+  /// No description provided for @financeAmountRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter an amount.'**
+  String get financeAmountRequired;
+
+  /// No description provided for @financeNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Note'**
+  String get financeNote;
+
+  /// No description provided for @financeNoteHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional note'**
+  String get financeNoteHint;
+
+  /// No description provided for @financeCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get financeCategory;
+
+  /// No description provided for @financeAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get financeAccount;
+
+  /// No description provided for @financeDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get financeDate;
+
+  /// No description provided for @financeTypeExpense.
+  ///
+  /// In en, this message translates to:
+  /// **'Expense'**
+  String get financeTypeExpense;
+
+  /// No description provided for @financeTypeIncome.
+  ///
+  /// In en, this message translates to:
+  /// **'Income'**
+  String get financeTypeIncome;
+
+  /// No description provided for @financeFilterAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get financeFilterAll;
+
+  /// No description provided for @financeSaveError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save.'**
+  String get financeSaveError;
+
+  /// No description provided for @financeDeleteTxTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete transaction?'**
+  String get financeDeleteTxTitle;
+
+  /// No description provided for @financeDeleteTxBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This removes it from your ledger and updates the account balance.'**
+  String get financeDeleteTxBody;
+
+  /// No description provided for @financeAccounts.
+  ///
+  /// In en, this message translates to:
+  /// **'Accounts'**
+  String get financeAccounts;
+
+  /// No description provided for @financeCategories.
+  ///
+  /// In en, this message translates to:
+  /// **'Categories'**
+  String get financeCategories;
+
+  /// No description provided for @financeManageAccounts.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage accounts'**
+  String get financeManageAccounts;
+
+  /// No description provided for @financeManageCategories.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage categories'**
+  String get financeManageCategories;
+
+  /// No description provided for @financeNewAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'New account'**
+  String get financeNewAccount;
+
+  /// No description provided for @financeEditAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit account'**
+  String get financeEditAccount;
+
+  /// No description provided for @financeAccountName.
+  ///
+  /// In en, this message translates to:
+  /// **'Account name'**
+  String get financeAccountName;
+
+  /// No description provided for @financeAccountBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Balance'**
+  String get financeAccountBalance;
+
+  /// No description provided for @financeAccountRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a name.'**
+  String get financeAccountRequired;
+
+  /// No description provided for @financeArchiveAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Archive'**
+  String get financeArchiveAccount;
+
+  /// No description provided for @financeCannotArchiveLastAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep at least one account.'**
+  String get financeCannotArchiveLastAccount;
+
+  /// No description provided for @financeNewCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'New category'**
+  String get financeNewCategory;
+
+  /// No description provided for @financeEditCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit category'**
+  String get financeEditCategory;
+
+  /// No description provided for @financeCategoryName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get financeCategoryName;
+
+  /// No description provided for @financeCategoryNameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a name.'**
+  String get financeCategoryNameRequired;
+
+  /// No description provided for @financeArchiveCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Archive'**
+  String get financeArchiveCategory;
+
+  /// No description provided for @financeDeleteCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get financeDeleteCategory;
+
+  /// No description provided for @financeBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Balance'**
+  String get financeBalance;
+
+  /// No description provided for @financeSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get financeSave;
+
+  /// No description provided for @financeCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get financeCancel;
+
+  /// No description provided for @financeDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get financeDelete;
+
+  /// No description provided for @financeColor.
+  ///
+  /// In en, this message translates to:
+  /// **'Color'**
+  String get financeColor;
+
+  /// No description provided for @todayEditWidgets.
+  ///
+  /// In en, this message translates to:
+  /// **'Widgets'**
+  String get todayEditWidgets;
+
+  /// No description provided for @todayWidgetsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Today widgets'**
+  String get todayWidgetsTitle;
+
+  /// No description provided for @todayWidgetsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose what appears on your hub.'**
+  String get todayWidgetsSubtitle;
+
+  /// No description provided for @todayWidgetFinance.
+  ///
+  /// In en, this message translates to:
+  /// **'Month finance summary'**
+  String get todayWidgetFinance;
+
+  /// No description provided for @todayWidgetBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget status'**
+  String get todayWidgetBudget;
+
+  /// No description provided for @todayWidgetSpend.
+  ///
+  /// In en, this message translates to:
+  /// **'Spent today'**
+  String get todayWidgetSpend;
+
+  /// No description provided for @todayWidgetEvents.
+  ///
+  /// In en, this message translates to:
+  /// **'Today’s events'**
+  String get todayWidgetEvents;
+
+  /// No description provided for @todayBudgetLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget left'**
+  String get todayBudgetLeft;
+
+  /// No description provided for @todayMonthSpent.
+  ///
+  /// In en, this message translates to:
+  /// **'Month spent'**
+  String get todayMonthSpent;
+
+  /// No description provided for @todayMonthBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'Month budget'**
+  String get todayMonthBudget;
 }
 
 class _AppLocalizationsDelegate

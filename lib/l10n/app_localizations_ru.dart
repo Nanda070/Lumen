@@ -317,4 +317,248 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get onboardingReadySeedBody =>
       'Календари Personal и Lumen · базовые категории расходов и доходов · ваш язык и валюта.';
+
+  @override
+  String get catFood => 'Еда';
+
+  @override
+  String get catTransport => 'Транспорт';
+
+  @override
+  String get catHome => 'Дом';
+
+  @override
+  String get catShopping => 'Покупки';
+
+  @override
+  String get catHealth => 'Здоровье';
+
+  @override
+  String get catOtherExpense => 'Другое';
+
+  @override
+  String get catSalary => 'Зарплата';
+
+  @override
+  String get catOtherIncome => 'Прочий доход';
+
+  @override
+  String get financeSpent => 'Потрачено';
+
+  @override
+  String get financeRemaining => 'Остаток';
+
+  @override
+  String get financeBudget => 'Бюджет';
+
+  @override
+  String get financeIncome => 'Доход';
+
+  @override
+  String get financeNoBudget => 'Бюджет не задан';
+
+  @override
+  String get financeSetBudget => 'Задать бюджет';
+
+  @override
+  String get financeEditBudget => 'Изменить бюджет';
+
+  @override
+  String get financeBudgetHint => 'Лимит трат на месяц';
+
+  @override
+  String get financeBudgetTotal => 'Общий лимит месяца';
+
+  @override
+  String get financeAllocations => 'План по категориям';
+
+  @override
+  String get financeAllocationsHint => 'Распределите в рамках бюджета';
+
+  @override
+  String financeAllocationFor(String category) {
+    return '$category';
+  }
+
+  @override
+  String get financeStatusOk => 'В плане';
+
+  @override
+  String get financeStatusWarning => 'Почти на пределе';
+
+  @override
+  String get financeStatusOver => 'Перерасход';
+
+  @override
+  String get financeStatusNone => 'Задайте бюджет';
+
+  @override
+  String get financeVsPlan => 'к плану';
+
+  @override
+  String financeOverBy(String amount) {
+    return 'Сверх плана на $amount';
+  }
+
+  @override
+  String financeUnderBy(String amount) {
+    return 'В плане ещё $amount';
+  }
+
+  @override
+  String get financeByCategory => 'По категориям';
+
+  @override
+  String get financeTrend => 'Расход по дням';
+
+  @override
+  String get financeTransactions => 'Операции';
+
+  @override
+  String get financeEmptyTx => 'В этом месяце операций нет.';
+
+  @override
+  String get financeAddTx => 'Добавить';
+
+  @override
+  String get financeNewTx => 'Новая операция';
+
+  @override
+  String get financeEditTx => 'Операция';
+
+  @override
+  String get financeAmount => 'Сумма';
+
+  @override
+  String get financeAmountRequired => 'Введите сумму.';
+
+  @override
+  String get financeNote => 'Заметка';
+
+  @override
+  String get financeNoteHint => 'Необязательно';
+
+  @override
+  String get financeCategory => 'Категория';
+
+  @override
+  String get financeAccount => 'Счёт';
+
+  @override
+  String get financeDate => 'Дата';
+
+  @override
+  String get financeTypeExpense => 'Расход';
+
+  @override
+  String get financeTypeIncome => 'Доход';
+
+  @override
+  String get financeFilterAll => 'Все';
+
+  @override
+  String get financeSaveError => 'Не удалось сохранить.';
+
+  @override
+  String get financeDeleteTxTitle => 'Удалить операцию?';
+
+  @override
+  String get financeDeleteTxBody =>
+      'Она исчезнет из журнала, баланс счёта обновится.';
+
+  @override
+  String get financeAccounts => 'Счета';
+
+  @override
+  String get financeCategories => 'Категории';
+
+  @override
+  String get financeManageAccounts => 'Счета';
+
+  @override
+  String get financeManageCategories => 'Категории';
+
+  @override
+  String get financeNewAccount => 'Новый счёт';
+
+  @override
+  String get financeEditAccount => 'Счёт';
+
+  @override
+  String get financeAccountName => 'Название';
+
+  @override
+  String get financeAccountBalance => 'Баланс';
+
+  @override
+  String get financeAccountRequired => 'Введите название.';
+
+  @override
+  String get financeArchiveAccount => 'Архив';
+
+  @override
+  String get financeCannotArchiveLastAccount => 'Нужен хотя бы один счёт.';
+
+  @override
+  String get financeNewCategory => 'Новая категория';
+
+  @override
+  String get financeEditCategory => 'Категория';
+
+  @override
+  String get financeCategoryName => 'Название';
+
+  @override
+  String get financeCategoryNameRequired => 'Введите название.';
+
+  @override
+  String get financeArchiveCategory => 'Архив';
+
+  @override
+  String get financeDeleteCategory => 'Удалить';
+
+  @override
+  String get financeBalance => 'Баланс';
+
+  @override
+  String get financeSave => 'Сохранить';
+
+  @override
+  String get financeCancel => 'Отмена';
+
+  @override
+  String get financeDelete => 'Удалить';
+
+  @override
+  String get financeColor => 'Цвет';
+
+  @override
+  String get todayEditWidgets => 'Виджеты';
+
+  @override
+  String get todayWidgetsTitle => 'Виджеты Today';
+
+  @override
+  String get todayWidgetsSubtitle => 'Что показывать на главной.';
+
+  @override
+  String get todayWidgetFinance => 'Сводка финансов месяца';
+
+  @override
+  String get todayWidgetBudget => 'Статус бюджета';
+
+  @override
+  String get todayWidgetSpend => 'Расход за день';
+
+  @override
+  String get todayWidgetEvents => 'События сегодня';
+
+  @override
+  String get todayBudgetLeft => 'Остаток бюджета';
+
+  @override
+  String get todayMonthSpent => 'Потрачено за месяц';
+
+  @override
+  String get todayMonthBudget => 'Бюджет месяца';
 }
