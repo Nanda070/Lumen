@@ -1,0 +1,60 @@
+import 'package:flutter/material.dart';
+
+/// Premium charcoal — violet bloom + cream CTA; red/blue stay semantic.
+abstract final class LumenColors {
+  static const Color bg = Color(0xFF090A0D);
+  static const Color bgElevated = Color(0xFF0E1015);
+  static const Color surface = Color(0xFF14161C);
+  static const Color surfaceRaised = Color(0xFF1B1E27);
+  static const Color text = Color(0xFFF4F2EC);
+  static const Color textMuted = Color(0xFF8B919C);
+  static const Color accentRed = Color(0xFFC53B4A);
+  static const Color accentBlue = Color(0xFF5B7CFF);
+  static const Color accentViolet = Color(0xFF8B6CFF);
+  static const Color accentCream = Color(0xFFE6DDD0);
+  static const Color accentMint = Color(0xFF5ECF9A);
+
+  /// Glass fill ~8% white.
+  static const Color glassFill = Color(0x14FFFFFF);
+
+  /// Hairline ~12% white.
+  static const Color glassStroke = Color(0x1FFFFFFF);
+
+  /// Soft violet edge for module tiles.
+  static const Color glassStrokeViolet = Color(0x2E8B6CFF);
+
+  static const Color divider = Color(0x14FFFFFF);
+
+  static const LinearGradient gradDusk = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFF3D5AFE), Color(0xFF7C4DFF)],
+  );
+
+  static const LinearGradient gradEmber = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFFFF6B3D), Color(0xFFFFB347)],
+  );
+
+  /// Soft ambient bloom behind content.
+  static const RadialGradient ambienceViolet = RadialGradient(
+    center: Alignment(0.0, -0.35),
+    radius: 1.1,
+    colors: [
+      Color(0x338B6CFF),
+      Color(0x148B6CFF),
+      Color(0x00090A0D),
+    ],
+    stops: [0.0, 0.45, 1.0],
+  );
+
+  static const RadialGradient ambienceWarm = RadialGradient(
+    center: Alignment(0.85, 0.75),
+    radius: 0.9,
+    colors: [
+      Color(0x1AFF6B3D),
+      Color(0x00090A0D),
+    ],
+  );
+}
