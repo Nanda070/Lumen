@@ -200,3 +200,74 @@ class RoutineSlotLogs extends Table {
         {slotId, day},
       ];
 }
+
+/// Daily calorie / macro goals (single active row).
+class NutritionTargets extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get caloriesKcal => integer().withDefault(const Constant(2000))();
+  IntColumn get carbsG => integer().withDefault(const Constant(250))();
+  IntColumn get fatG => integer().withDefault(const Constant(70))();
+  IntColumn get proteinG => integer().withDefault(const Constant(150))();
+  DateTimeColumn get updatedAt => dateTime()();
+}
+
+/// Logged food item for a meal on a calendar day (OpenNutriTracker-style diary).
+class FoodEntries extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  /// Date-only (local midnight).
+  DateTimeColumn get day => dateTime()();
+  /// `breakfast` | `lunch` | `dinner` | `snack`
+  TextColumn get mealType => text().withLength(min: 1, max: 16)();
+  TextColumn get name => text().withLength(min: 1, max: 120)();
+  IntColumn get caloriesKcal => integer().withDefault(const Constant(0))();
+  IntColumn get carbsG => integer().withDefault(const Constant(0))();
+  IntColumn get fatG => integer().withDefault(const Constant(0))();
+  IntColumn get proteinG => integer().withDefault(const Constant(0))();
+  IntColumn get grams => integer().withDefault(const Constant(100))();
+  DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get updatedAt => dateTime()();
+}
+
+/// Workout template / routine (GymMane-style).
+class Workouts extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get title => text().withLength(min: 1, max: 120)();
+  TextColumn get notes => text().withDefault(const Constant(''))();
+  IntColumn get sortOrder => integer().withDefault(const Constant(0))();
+  DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get updatedAt => dateTime()();
+}
+
+/// Exercise rows inside a workout template.
+class WorkoutExercises extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get workoutId => integer().references(Workouts, #id)();
+  TextColumn get name => text().withLength(min: 1, max: 120)();
+  IntColumn get targetSets => integer().withDefault(const Constant(3))();
+  IntColumn get targetReps => integer().withDefault(const Constant(10))();
+  IntColumn get sortOrder => integer().withDefault(const Constant(0))();
+  TextColumn get notes => text().withDefault(const Constant(''))();
+}
+
+/// Logged training session.
+class WorkoutSessions extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get workoutId => integer().nullable().references(Workouts, #id)();
+  TextColumn get title => text().withLength(min: 1, max: 120)();
+  DateTimeColumn get startedAt => dateTime()();
+  DateTimeColumn get endedAt => dateTime().nullable()();
+  TextColumn get notes => text().withDefault(const Constant(''))();
+}
+
+/// Sets logged during a session (reps × weight).
+class SessionSets extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get sessionId => integer().references(WorkoutSessions, #id)();
+  TextColumn get exerciseName => text().withLength(min: 1, max: 120)();
+  IntColumn get setIndex => integer().withDefault(const Constant(1))();
+  IntColumn get reps => integer().withDefault(const Constant(0))();
+  /// Weight in grams (minor units) to avoid floats — UI shows kg.
+  IntColumn get weightGrams => integer().withDefault(const Constant(0))();
+  BoolColumn get isDone => boolean().withDefault(const Constant(true))();
+  DateTimeColumn get createdAt => dateTime()();
+}

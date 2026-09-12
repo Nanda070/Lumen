@@ -784,6 +784,158 @@ class AppLocalizationsRu extends AppLocalizations {
   String get routineWeekdays => 'Дни';
 
   @override
+  String get nutritionSubtitle => 'Калории и макросы за день.';
+
+  @override
+  String get nutritionToday => 'Сегодня';
+
+  @override
+  String get nutritionSupplied => 'Съедено';
+
+  @override
+  String get nutritionGoal => 'Цель ккал';
+
+  @override
+  String get nutritionKcalLeft => 'ккал осталось';
+
+  @override
+  String get nutritionKcalOver => 'ккал сверх';
+
+  @override
+  String get nutritionKcal => 'ккал';
+
+  @override
+  String get nutritionCarbs => 'Углеводы';
+
+  @override
+  String get nutritionFat => 'Жиры';
+
+  @override
+  String get nutritionProtein => 'Белки';
+
+  @override
+  String get nutritionBreakfast => 'Завтрак';
+
+  @override
+  String get nutritionLunch => 'Обед';
+
+  @override
+  String get nutritionDinner => 'Ужин';
+
+  @override
+  String get nutritionSnack => 'Перекус';
+
+  @override
+  String get nutritionEmptyHint => 'Добавьте первую еду через + у приёма пищи.';
+
+  @override
+  String get nutritionAddEntry => 'Добавить еду';
+
+  @override
+  String get nutritionEditEntry => 'Редактировать';
+
+  @override
+  String get nutritionFoodName => 'Название';
+
+  @override
+  String get nutritionNameRequired => 'Укажите название.';
+
+  @override
+  String get nutritionEditGoals => 'Дневные цели';
+
+  @override
+  String get trainingTodayLabel => 'Сегодня';
+
+  @override
+  String get trainingTodaysFocus => 'Фокус дня';
+
+  @override
+  String get trainingFocusTitle => 'Тренировка';
+
+  @override
+  String trainingFocusSubtitle(int count) {
+    return '$count программ готово';
+  }
+
+  @override
+  String get trainingFirstHint => 'Создайте программу и нажмите play.';
+
+  @override
+  String get trainingStartWorkout => 'Начать';
+
+  @override
+  String get trainingThisWeek => 'Эта неделя';
+
+  @override
+  String get trainingSessions => 'Сессии';
+
+  @override
+  String get trainingTodaySessions => 'Сегодня';
+
+  @override
+  String get trainingYourWorkouts => 'Ваши тренировки';
+
+  @override
+  String get trainingEmpty => 'Пока пусто — создайте программу ниже.';
+
+  @override
+  String get trainingNewWorkout => 'Новая тренировка';
+
+  @override
+  String get trainingEditWorkout => 'Редактировать';
+
+  @override
+  String get trainingTitleHint => 'Название';
+
+  @override
+  String get trainingTitleRequired => 'Добавьте название.';
+
+  @override
+  String get trainingExercises => 'Упражнения';
+
+  @override
+  String get trainingExerciseHint => 'Упражнение';
+
+  @override
+  String get trainingAddExercise => 'Добавить упражнение';
+
+  @override
+  String get trainingAddExerciseHint =>
+      'Добавьте упражнение, чтобы писать подходы.';
+
+  @override
+  String trainingExerciseCount(int count) {
+    return '$count упр.';
+  }
+
+  @override
+  String get trainingSetsShort => 'Подх.';
+
+  @override
+  String get trainingRepsShort => 'Повт.';
+
+  @override
+  String get trainingReps => 'повт.';
+
+  @override
+  String get trainingWeightKg => 'кг';
+
+  @override
+  String get trainingLogSet => 'Записать подход';
+
+  @override
+  String get trainingInProgress => 'Идёт';
+
+  @override
+  String get trainingFinish => 'Завершить';
+
+  @override
+  String get trainingQuickSession => 'Быстрая сессия';
+
+  @override
+  String get trainingDelete => 'Удалить';
+
+  @override
   String get financeSeeMore => 'Ещё';
 
   @override

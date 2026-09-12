@@ -1586,6 +1586,300 @@ abstract class AppLocalizations {
   /// **'Days'**
   String get routineWeekdays;
 
+  /// No description provided for @nutritionSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily calories and macros.'**
+  String get nutritionSubtitle;
+
+  /// No description provided for @nutritionToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get nutritionToday;
+
+  /// No description provided for @nutritionSupplied.
+  ///
+  /// In en, this message translates to:
+  /// **'Supplied'**
+  String get nutritionSupplied;
+
+  /// No description provided for @nutritionGoal.
+  ///
+  /// In en, this message translates to:
+  /// **'Goal kcal'**
+  String get nutritionGoal;
+
+  /// No description provided for @nutritionKcalLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'kcal left'**
+  String get nutritionKcalLeft;
+
+  /// No description provided for @nutritionKcalOver.
+  ///
+  /// In en, this message translates to:
+  /// **'kcal over'**
+  String get nutritionKcalOver;
+
+  /// No description provided for @nutritionKcal.
+  ///
+  /// In en, this message translates to:
+  /// **'kcal'**
+  String get nutritionKcal;
+
+  /// No description provided for @nutritionCarbs.
+  ///
+  /// In en, this message translates to:
+  /// **'Carbs'**
+  String get nutritionCarbs;
+
+  /// No description provided for @nutritionFat.
+  ///
+  /// In en, this message translates to:
+  /// **'Fat'**
+  String get nutritionFat;
+
+  /// No description provided for @nutritionProtein.
+  ///
+  /// In en, this message translates to:
+  /// **'Protein'**
+  String get nutritionProtein;
+
+  /// No description provided for @nutritionBreakfast.
+  ///
+  /// In en, this message translates to:
+  /// **'Breakfast'**
+  String get nutritionBreakfast;
+
+  /// No description provided for @nutritionLunch.
+  ///
+  /// In en, this message translates to:
+  /// **'Lunch'**
+  String get nutritionLunch;
+
+  /// No description provided for @nutritionDinner.
+  ///
+  /// In en, this message translates to:
+  /// **'Dinner'**
+  String get nutritionDinner;
+
+  /// No description provided for @nutritionSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Snack'**
+  String get nutritionSnack;
+
+  /// No description provided for @nutritionEmptyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Log your first meal with + on a section.'**
+  String get nutritionEmptyHint;
+
+  /// No description provided for @nutritionAddEntry.
+  ///
+  /// In en, this message translates to:
+  /// **'Add food'**
+  String get nutritionAddEntry;
+
+  /// No description provided for @nutritionEditEntry.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit food'**
+  String get nutritionEditEntry;
+
+  /// No description provided for @nutritionFoodName.
+  ///
+  /// In en, this message translates to:
+  /// **'Food name'**
+  String get nutritionFoodName;
+
+  /// No description provided for @nutritionNameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a food name.'**
+  String get nutritionNameRequired;
+
+  /// No description provided for @nutritionEditGoals.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily goals'**
+  String get nutritionEditGoals;
+
+  /// No description provided for @trainingTodayLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get trainingTodayLabel;
+
+  /// No description provided for @trainingTodaysFocus.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s focus'**
+  String get trainingTodaysFocus;
+
+  /// No description provided for @trainingFocusTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Train'**
+  String get trainingFocusTitle;
+
+  /// No description provided for @trainingFocusSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} routines ready'**
+  String trainingFocusSubtitle(int count);
+
+  /// No description provided for @trainingFirstHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a routine, then hit play.'**
+  String get trainingFirstHint;
+
+  /// No description provided for @trainingStartWorkout.
+  ///
+  /// In en, this message translates to:
+  /// **'Start workout'**
+  String get trainingStartWorkout;
+
+  /// No description provided for @trainingThisWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'This week'**
+  String get trainingThisWeek;
+
+  /// No description provided for @trainingSessions.
+  ///
+  /// In en, this message translates to:
+  /// **'Sessions'**
+  String get trainingSessions;
+
+  /// No description provided for @trainingTodaySessions.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get trainingTodaySessions;
+
+  /// No description provided for @trainingYourWorkouts.
+  ///
+  /// In en, this message translates to:
+  /// **'Your workouts'**
+  String get trainingYourWorkouts;
+
+  /// No description provided for @trainingEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No workouts yet — build one below.'**
+  String get trainingEmpty;
+
+  /// No description provided for @trainingNewWorkout.
+  ///
+  /// In en, this message translates to:
+  /// **'New workout'**
+  String get trainingNewWorkout;
+
+  /// No description provided for @trainingEditWorkout.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit workout'**
+  String get trainingEditWorkout;
+
+  /// No description provided for @trainingTitleHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Workout name'**
+  String get trainingTitleHint;
+
+  /// No description provided for @trainingTitleRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a title.'**
+  String get trainingTitleRequired;
+
+  /// No description provided for @trainingExercises.
+  ///
+  /// In en, this message translates to:
+  /// **'Exercises'**
+  String get trainingExercises;
+
+  /// No description provided for @trainingExerciseHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Exercise name'**
+  String get trainingExerciseHint;
+
+  /// No description provided for @trainingAddExercise.
+  ///
+  /// In en, this message translates to:
+  /// **'Add exercise'**
+  String get trainingAddExercise;
+
+  /// No description provided for @trainingAddExerciseHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Add an exercise to start logging sets.'**
+  String get trainingAddExerciseHint;
+
+  /// No description provided for @trainingExerciseCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} exercises'**
+  String trainingExerciseCount(int count);
+
+  /// No description provided for @trainingSetsShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Sets'**
+  String get trainingSetsShort;
+
+  /// No description provided for @trainingRepsShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Reps'**
+  String get trainingRepsShort;
+
+  /// No description provided for @trainingReps.
+  ///
+  /// In en, this message translates to:
+  /// **'reps'**
+  String get trainingReps;
+
+  /// No description provided for @trainingWeightKg.
+  ///
+  /// In en, this message translates to:
+  /// **'kg'**
+  String get trainingWeightKg;
+
+  /// No description provided for @trainingLogSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Log set'**
+  String get trainingLogSet;
+
+  /// No description provided for @trainingInProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'In progress'**
+  String get trainingInProgress;
+
+  /// No description provided for @trainingFinish.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish workout'**
+  String get trainingFinish;
+
+  /// No description provided for @trainingQuickSession.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick session'**
+  String get trainingQuickSession;
+
+  /// No description provided for @trainingDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete workout'**
+  String get trainingDelete;
+
   /// No description provided for @financeSeeMore.
   ///
   /// In en, this message translates to:

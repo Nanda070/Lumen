@@ -25,6 +25,22 @@ abstract final class LumenColors {
   static const Color keboBorder = Color(0xFF3A3A3C);
   static const Color keboCard = Color(0xFF1C1C1E);
 
+  /// OpenNutriTracker-inspired macros (dark palette).
+  static const Color nutriCarbs = Color(0xFFF2B45A);
+  static const Color nutriFat = Color(0xFFFF937B);
+  static const Color nutriProtein = Color(0xFF49C9B8);
+  static const Color nutriRing = Color(0xFF8B6CFF);
+
+  /// GymMane-inspired training (ember / brass accents on charcoal).
+  static const Color gymEmber = Color(0xFFFFFFFF);
+  static const Color gymOnEmber = Color(0xFF0A0A0A);
+  static const Color gymEmberSoft = Color(0x1AFFFFFF);
+  static const Color gymAccent = Color(0xFFD9A184);
+  static const Color gymBrass = Color(0xFFB98F72);
+  static const Color gymBorder = Color(0xFF2A2A2A);
+  static const Color gymRaised = Color(0xFF161616);
+  static const Color gymRaised2 = Color(0xFF202020);
+
   /// Glass fill ~8% white.
   static const Color glassFill = Color(0x14FFFFFF);
 

@@ -7,8 +7,10 @@ import '../../l10n/app_localizations.dart';
 import '../../shell/module_scaffold.dart';
 import '../calendar/google_sync_card.dart';
 import '../habits/habits_page.dart';
+import '../nutrition/nutrition_page.dart';
 import '../routine/routine_page.dart';
 import '../today/today_widgets_sheet.dart';
+import '../training/training_page.dart';
 
 class MorePage extends StatelessWidget {
   const MorePage({
@@ -100,10 +102,34 @@ class MorePage extends StatelessWidget {
           _RoomTile(
             icon: PhosphorIconsRegular.forkKnife,
             label: l10n.moreNutrition,
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => AtmosphereBackground(
+                  child: Scaffold(
+                    backgroundColor: Colors.transparent,
+                    body: SafeArea(
+                      child: NutritionPage(database: database),
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ),
           _RoomTile(
             icon: PhosphorIconsRegular.barbell,
             label: l10n.moreTraining,
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => AtmosphereBackground(
+                  child: Scaffold(
+                    backgroundColor: Colors.transparent,
+                    body: SafeArea(
+                      child: TrainingPage(database: database),
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ),
           const SizedBox(height: LumenSpacing.xl),
           Align(

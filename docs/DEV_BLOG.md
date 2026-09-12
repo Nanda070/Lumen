@@ -15,6 +15,14 @@
 
 ---
 
+## 2026-09-12 — Live Nutrition + Training (schema v7)
+
+- **Nutrition** (`lib/features/nutrition/`): дневной трекер как OpenNutriTracker — date switch, kcal ring (left/over), macro bars, breakfast/lunch/dinner/snack + add/edit entry, goals sheet.
+- **Training** (`lib/features/training/`): UX как GymMane — focus hero, week dots, workout list + play, session (sets/reps/kg), finish.
+- Drift **schema v7**: `nutrition_targets`, `food_entries`, `workouts`, `workout_exercises`, `workout_sessions`, `session_sets`.
+- More → оба модуля живые; i18n EN/RU; токены `nutri*` / `gym*`.
+- **Зачем:** закрыть последние комнаты More живыми модулями по ориентирам 1:1 по UX.
+
 ## 2026-09-12 — Live Habits + Routine + Kebo Finance Overview
 
 - **Habits** (`lib/features/habits/`): Today cards (check-in + streak) и All (7-day dots) — UX в духе mhabit; вход из More.

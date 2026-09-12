@@ -1,6 +1,6 @@
 # Lumen — implementation todos
 
-Статус: **в работе** — Habits/Routine live + Kebo Finance polish. Дальше: backup, Nutrition/Training.
+Статус: **в работе** — Nutrition/Training live + Habits/Routine + Kebo Finance polish. Дальше: backup, finance depth.
 
 - [x] **design-system** / **app-shell** / **onboarding** / **calendar-local**
 - [x] **finance** — live tabs; Kebo-inspired Overview hero (ring kept)
@@ -9,8 +9,9 @@
 - [x] **tasks** — Inbox / Today / Done + CRUD; width = pagePadding/pills
 - [x] **habits** — Today/All + check-in + streak (mhabit UX)
 - [x] **routine** — templates + today slots (FocusForce UX)
+- [x] **nutrition** — daily diary + macros (OpenNutriTracker UX)
+- [x] **training** — workouts + session log (GymMane UX)
 - [ ] **finance-kebo-depth** — Plan/Insights/Ledger full Kebo card/bar language
 - [ ] **backup** — `.lumen` download / restore
-- [ ] **later-modules** — Nutrition → Training
 
 Дневник: [DEV_BLOG.md](DEV_BLOG.md) · Детали: [PLAN.md](PLAN.md) · [STYLE.md](STYLE.md) · [TECHNICAL.md](TECHNICAL.md).

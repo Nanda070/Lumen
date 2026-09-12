@@ -782,6 +782,158 @@ class AppLocalizationsEn extends AppLocalizations {
   String get routineWeekdays => 'Days';
 
   @override
+  String get nutritionSubtitle => 'Daily calories and macros.';
+
+  @override
+  String get nutritionToday => 'Today';
+
+  @override
+  String get nutritionSupplied => 'Supplied';
+
+  @override
+  String get nutritionGoal => 'Goal kcal';
+
+  @override
+  String get nutritionKcalLeft => 'kcal left';
+
+  @override
+  String get nutritionKcalOver => 'kcal over';
+
+  @override
+  String get nutritionKcal => 'kcal';
+
+  @override
+  String get nutritionCarbs => 'Carbs';
+
+  @override
+  String get nutritionFat => 'Fat';
+
+  @override
+  String get nutritionProtein => 'Protein';
+
+  @override
+  String get nutritionBreakfast => 'Breakfast';
+
+  @override
+  String get nutritionLunch => 'Lunch';
+
+  @override
+  String get nutritionDinner => 'Dinner';
+
+  @override
+  String get nutritionSnack => 'Snack';
+
+  @override
+  String get nutritionEmptyHint => 'Log your first meal with + on a section.';
+
+  @override
+  String get nutritionAddEntry => 'Add food';
+
+  @override
+  String get nutritionEditEntry => 'Edit food';
+
+  @override
+  String get nutritionFoodName => 'Food name';
+
+  @override
+  String get nutritionNameRequired => 'Add a food name.';
+
+  @override
+  String get nutritionEditGoals => 'Daily goals';
+
+  @override
+  String get trainingTodayLabel => 'Today';
+
+  @override
+  String get trainingTodaysFocus => 'Today\'s focus';
+
+  @override
+  String get trainingFocusTitle => 'Train';
+
+  @override
+  String trainingFocusSubtitle(int count) {
+    return '$count routines ready';
+  }
+
+  @override
+  String get trainingFirstHint => 'Create a routine, then hit play.';
+
+  @override
+  String get trainingStartWorkout => 'Start workout';
+
+  @override
+  String get trainingThisWeek => 'This week';
+
+  @override
+  String get trainingSessions => 'Sessions';
+
+  @override
+  String get trainingTodaySessions => 'Today';
+
+  @override
+  String get trainingYourWorkouts => 'Your workouts';
+
+  @override
+  String get trainingEmpty => 'No workouts yet — build one below.';
+
+  @override
+  String get trainingNewWorkout => 'New workout';
+
+  @override
+  String get trainingEditWorkout => 'Edit workout';
+
+  @override
+  String get trainingTitleHint => 'Workout name';
+
+  @override
+  String get trainingTitleRequired => 'Add a title.';
+
+  @override
+  String get trainingExercises => 'Exercises';
+
+  @override
+  String get trainingExerciseHint => 'Exercise name';
+
+  @override
+  String get trainingAddExercise => 'Add exercise';
+
+  @override
+  String get trainingAddExerciseHint =>
+      'Add an exercise to start logging sets.';
+
+  @override
+  String trainingExerciseCount(int count) {
+    return '$count exercises';
+  }
+
+  @override
+  String get trainingSetsShort => 'Sets';
+
+  @override
+  String get trainingRepsShort => 'Reps';
+
+  @override
+  String get trainingReps => 'reps';
+
+  @override
+  String get trainingWeightKg => 'kg';
+
+  @override
+  String get trainingLogSet => 'Log set';
+
+  @override
+  String get trainingInProgress => 'In progress';
+
+  @override
+  String get trainingFinish => 'Finish workout';
+
+  @override
+  String get trainingQuickSession => 'Quick session';
+
+  @override
+  String get trainingDelete => 'Delete workout';
+
+  @override
   String get financeSeeMore => 'See more';
 
   @override

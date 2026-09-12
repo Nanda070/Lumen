@@ -34,6 +34,12 @@ typedef TxWithMeta = ({
     Routines,
     RoutineSlots,
     RoutineSlotLogs,
+    NutritionTargets,
+    FoodEntries,
+    Workouts,
+    WorkoutExercises,
+    WorkoutSessions,
+    SessionSets,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -41,7 +47,7 @@ class AppDatabase extends _$AppDatabase {
       : super(executor ?? _openExecutor());
 
   @override
-  int get schemaVersion => 6;
+  int get schemaVersion => 7;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -84,9 +90,18 @@ class AppDatabase extends _$AppDatabase {
             await m.createTable(routineSlots);
             await m.createTable(routineSlotLogs);
           }
+          if (from < 7) {
+            await m.createTable(nutritionTargets);
+            await m.createTable(foodEntries);
+            await m.createTable(workouts);
+            await m.createTable(workoutExercises);
+            await m.createTable(workoutSessions);
+            await m.createTable(sessionSets);
+          }
         },
         beforeOpen: (details) async {
           await _ensureFinanceBootstrap();
+          await _ensureNutritionTargets();
         },
       );
 
@@ -1196,6 +1211,333 @@ class AppDatabase extends _$AppDatabase {
       ),
     );
     return true;
+  }
+
+  // ── Nutrition ─────────────────────────────────────────────────────────────
+
+  Future<void> _ensureNutritionTargets() async {
+    final count = await nutritionTargets.count().getSingle();
+    if (count > 0) return;
+    await into(nutritionTargets).insert(
+      NutritionTargetsCompanion.insert(
+        updatedAt: DateTime.now().toUtc(),
+      ),
+    );
+  }
+
+  Stream<NutritionTarget> watchNutritionTargets() {
+    return (select(nutritionTargets)..limit(1)).watchSingle();
+  }
+
+  Future<NutritionTarget> getNutritionTargets() async {
+    await _ensureNutritionTargets();
+    return (select(nutritionTargets)..limit(1)).getSingle();
+  }
+
+  Future<void> updateNutritionTargets({
+    required int caloriesKcal,
+    required int carbsG,
+    required int fatG,
+    required int proteinG,
+  }) async {
+    final row = await getNutritionTargets();
+    await (update(nutritionTargets)..where((t) => t.id.equals(row.id))).write(
+      NutritionTargetsCompanion(
+        caloriesKcal: Value(caloriesKcal),
+        carbsG: Value(carbsG),
+        fatG: Value(fatG),
+        proteinG: Value(proteinG),
+        updatedAt: Value(DateTime.now().toUtc()),
+      ),
+    );
+  }
+
+  Stream<List<FoodEntry>> watchFoodEntriesForDay(DateTime day) {
+    final d = dayOnly(day);
+    final end = d.add(const Duration(days: 1));
+    return (select(foodEntries)
+          ..where(
+            (t) =>
+                t.day.isBiggerOrEqualValue(d) & t.day.isSmallerThanValue(end),
+          )
+          ..orderBy([(t) => OrderingTerm.asc(t.createdAt)]))
+        .watch();
+  }
+
+  Future<int> insertFoodEntry({
+    required DateTime day,
+    required String mealType,
+    required String name,
+    required int caloriesKcal,
+    int carbsG = 0,
+    int fatG = 0,
+    int proteinG = 0,
+    int grams = 100,
+  }) {
+    final now = DateTime.now().toUtc();
+    return into(foodEntries).insert(
+      FoodEntriesCompanion.insert(
+        day: dayOnly(day),
+        mealType: mealType,
+        name: name.trim(),
+        caloriesKcal: Value(caloriesKcal),
+        carbsG: Value(carbsG),
+        fatG: Value(fatG),
+        proteinG: Value(proteinG),
+        grams: Value(grams),
+        createdAt: now,
+        updatedAt: now,
+      ),
+    );
+  }
+
+  Future<bool> updateFoodEntry({
+    required int id,
+    required String mealType,
+    required String name,
+    required int caloriesKcal,
+    required int carbsG,
+    required int fatG,
+    required int proteinG,
+    required int grams,
+  }) async {
+    final rows =
+        await (update(foodEntries)..where((t) => t.id.equals(id))).write(
+      FoodEntriesCompanion(
+        mealType: Value(mealType),
+        name: Value(name.trim()),
+        caloriesKcal: Value(caloriesKcal),
+        carbsG: Value(carbsG),
+        fatG: Value(fatG),
+        proteinG: Value(proteinG),
+        grams: Value(grams),
+        updatedAt: Value(DateTime.now().toUtc()),
+      ),
+    );
+    return rows > 0;
+  }
+
+  Future<bool> deleteFoodEntry(int id) async {
+    final rows =
+        await (delete(foodEntries)..where((t) => t.id.equals(id))).go();
+    return rows > 0;
+  }
+
+  // ── Training ──────────────────────────────────────────────────────────────
+
+  Stream<List<Workout>> watchWorkouts() {
+    return (select(workouts)
+          ..orderBy([
+            (t) => OrderingTerm.asc(t.sortOrder),
+            (t) => OrderingTerm.desc(t.createdAt),
+          ]))
+        .watch();
+  }
+
+  Stream<List<WorkoutExercise>> watchWorkoutExercises(int workoutId) {
+    return (select(workoutExercises)
+          ..where((t) => t.workoutId.equals(workoutId))
+          ..orderBy([(t) => OrderingTerm.asc(t.sortOrder)]))
+        .watch();
+  }
+
+  Future<List<WorkoutExercise>> getWorkoutExercises(int workoutId) {
+    return (select(workoutExercises)
+          ..where((t) => t.workoutId.equals(workoutId))
+          ..orderBy([(t) => OrderingTerm.asc(t.sortOrder)]))
+        .get();
+  }
+
+  Future<int> insertWorkout({
+    required String title,
+    String notes = '',
+    List<({String name, int targetSets, int targetReps})> exercises =
+        const [],
+  }) {
+    return transaction(() async {
+      final now = DateTime.now().toUtc();
+      final maxOrder = await (selectOnly(workouts)
+            ..addColumns([workouts.sortOrder.max()]))
+          .map((row) => row.read(workouts.sortOrder.max()) ?? -1)
+          .getSingle();
+      final id = await into(workouts).insert(
+        WorkoutsCompanion.insert(
+          title: title.trim(),
+          notes: Value(notes),
+          sortOrder: Value(maxOrder + 1),
+          createdAt: now,
+          updatedAt: now,
+        ),
+      );
+      for (var i = 0; i < exercises.length; i++) {
+        final e = exercises[i];
+        await into(workoutExercises).insert(
+          WorkoutExercisesCompanion.insert(
+            workoutId: id,
+            name: e.name.trim(),
+            targetSets: Value(e.targetSets),
+            targetReps: Value(e.targetReps),
+            sortOrder: Value(i),
+          ),
+        );
+      }
+      return id;
+    });
+  }
+
+  Future<void> updateWorkout({
+    required int id,
+    required String title,
+    String notes = '',
+    List<({String name, int targetSets, int targetReps})> exercises =
+        const [],
+  }) {
+    return transaction(() async {
+      await (update(workouts)..where((t) => t.id.equals(id))).write(
+        WorkoutsCompanion(
+          title: Value(title.trim()),
+          notes: Value(notes),
+          updatedAt: Value(DateTime.now().toUtc()),
+        ),
+      );
+      await (delete(workoutExercises)..where((t) => t.workoutId.equals(id)))
+          .go();
+      for (var i = 0; i < exercises.length; i++) {
+        final e = exercises[i];
+        await into(workoutExercises).insert(
+          WorkoutExercisesCompanion.insert(
+            workoutId: id,
+            name: e.name.trim(),
+            targetSets: Value(e.targetSets),
+            targetReps: Value(e.targetReps),
+            sortOrder: Value(i),
+          ),
+        );
+      }
+    });
+  }
+
+  Future<bool> deleteWorkout(int id) async {
+    await (delete(workoutExercises)..where((t) => t.workoutId.equals(id))).go();
+    // Keep historical sessions; only clear FK.
+    await (update(workoutSessions)..where((t) => t.workoutId.equals(id))).write(
+      const WorkoutSessionsCompanion(workoutId: Value(null)),
+    );
+    final rows = await (delete(workouts)..where((t) => t.id.equals(id))).go();
+    return rows > 0;
+  }
+
+  Stream<List<WorkoutSession>> watchRecentSessions({int limit = 20}) {
+    return (select(workoutSessions)
+          ..orderBy([(t) => OrderingTerm.desc(t.startedAt)])
+          ..limit(limit))
+        .watch();
+  }
+
+  Stream<List<WorkoutSession>> watchSessionsInRange(
+    DateTime start,
+    DateTime end,
+  ) {
+    final s = dayOnly(start);
+    final e = dayOnly(end).add(const Duration(days: 1));
+    return (select(workoutSessions)
+          ..where(
+            (t) =>
+                t.startedAt.isBiggerOrEqualValue(s) &
+                t.startedAt.isSmallerThanValue(e),
+          )
+          ..orderBy([(t) => OrderingTerm.desc(t.startedAt)]))
+        .watch();
+  }
+
+  Stream<WorkoutSession?> watchActiveSession() {
+    return (select(workoutSessions)
+          ..where((t) => t.endedAt.isNull())
+          ..orderBy([(t) => OrderingTerm.desc(t.startedAt)])
+          ..limit(1))
+        .watchSingleOrNull();
+  }
+
+  Future<int> startWorkoutSession({
+    int? workoutId,
+    required String title,
+  }) async {
+    // End any dangling active session first.
+    final active = await (select(workoutSessions)
+          ..where((t) => t.endedAt.isNull()))
+        .get();
+    final now = DateTime.now().toUtc();
+    for (final s in active) {
+      await (update(workoutSessions)..where((t) => t.id.equals(s.id))).write(
+        WorkoutSessionsCompanion(endedAt: Value(now)),
+      );
+    }
+    return into(workoutSessions).insert(
+      WorkoutSessionsCompanion.insert(
+        workoutId: Value(workoutId),
+        title: title.trim(),
+        startedAt: now,
+      ),
+    );
+  }
+
+  Future<bool> finishWorkoutSession(int sessionId) async {
+    final rows =
+        await (update(workoutSessions)..where((t) => t.id.equals(sessionId)))
+            .write(
+      WorkoutSessionsCompanion(endedAt: Value(DateTime.now().toUtc())),
+    );
+    return rows > 0;
+  }
+
+  Stream<List<SessionSet>> watchSessionSets(int sessionId) {
+    return (select(sessionSets)
+          ..where((t) => t.sessionId.equals(sessionId))
+          ..orderBy([
+            (t) => OrderingTerm.asc(t.exerciseName),
+            (t) => OrderingTerm.asc(t.setIndex),
+          ]))
+        .watch();
+  }
+
+  Future<int> addSessionSet({
+    required int sessionId,
+    required String exerciseName,
+    required int reps,
+    required int weightGrams,
+  }) async {
+    final existing = await (select(sessionSets)
+          ..where(
+            (t) =>
+                t.sessionId.equals(sessionId) &
+                t.exerciseName.equals(exerciseName),
+          ))
+        .get();
+    final nextIndex = existing.isEmpty
+        ? 1
+        : existing.map((e) => e.setIndex).reduce((a, b) => a > b ? a : b) + 1;
+    return into(sessionSets).insert(
+      SessionSetsCompanion.insert(
+        sessionId: sessionId,
+        exerciseName: exerciseName.trim(),
+        setIndex: Value(nextIndex),
+        reps: Value(reps),
+        weightGrams: Value(weightGrams),
+        createdAt: DateTime.now().toUtc(),
+      ),
+    );
+  }
+
+  Future<bool> deleteSessionSet(int id) async {
+    final rows = await (delete(sessionSets)..where((t) => t.id.equals(id))).go();
+    return rows > 0;
+  }
+
+  Future<bool> deleteWorkoutSession(int id) async {
+    await (delete(sessionSets)..where((t) => t.sessionId.equals(id))).go();
+    final rows =
+        await (delete(workoutSessions)..where((t) => t.id.equals(id))).go();
+    return rows > 0;
   }
 
   // ── Google sync state ────────────────────────────────────────────────────

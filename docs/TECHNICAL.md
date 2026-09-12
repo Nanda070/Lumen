@@ -22,7 +22,7 @@
 
 ## Product
 
-**Lumen** — локальный life OS: календарь, финансы, задачи, **привычки и распорядок** живые; Nutrition/Training — комнаты. Без сервера Lumen: источник правды — SQLite на устройстве. Google Calendar — опциональный linked sync.
+**Lumen** — локальный life OS: календарь, финансы, задачи, **привычки, распорядок, питание и тренировки** живые. Без сервера Lumen: источник правды — SQLite на устройстве. Google Calendar — опциональный linked sync.
 
 Аудитория: Nanda и близкие. Язык: EN по умолчанию, RU в онбординге и More.
 
@@ -56,9 +56,9 @@ lib/
     region_options.dart
     world_currencies.dart
   data/
-    tables.dart             # schema v6
+    tables.dart             # schema v7
     app_database.dart
-  design_system/            # + Kebo finance tokens
+  design_system/            # + Kebo / Nutri / Gym tokens
   features/
     onboarding/
     today/                  # layout v3; Upcoming×2; tile → tabs
@@ -67,7 +67,9 @@ lib/
     tasks/
     habits/                 # mhabit-inspired
     routine/                # FocusForce-inspired
-    more/                   # Habits/Routine live; Nutrition/Training stub
+    nutrition/              # OpenNutriTracker-inspired
+    training/               # GymMane-inspired
+    more/                   # Habits/Routine/Nutrition/Training live
   shell/
     lumen_tabs.dart
   l10n/
@@ -82,16 +84,18 @@ docs/
 1. **`LumenApp`** opens `AppDatabase`, loads profile.
 2. No profile → **`OnboardingFlow`** → seed.
 3. Profile → **`AppShell`** (phone glass tabs / wide rail).
-4. Live modules: Today, Calendar, **Tasks**, Finance, More (+ **Habits** / **Routine** from More) — all get `AppDatabase`.
+4. Live modules: Today, Calendar, **Tasks**, Finance, More (+ **Habits** / **Routine** / **Nutrition** / **Training** from More) — all get `AppDatabase`.
 5. Money in **minor units**. Local events mark `dirty` for Google push.
 
 ### Density / depth
 
 Средний баланс (не простыня, не «зажато»):
-- Headers: Calendar/Finance/Tasks/Habits/Routine top air = `lg` + `pagePadding` 24.
+- Headers: Calendar/Finance/Tasks/Habits/Routine/Nutrition/Training top air = `lg` + `pagePadding` 24.
 - Today: `slotHeight` **104**, gutters **12**; layout JSON **v:3**; Upcoming ≤2 без inner scroll.
 - Finance: Kebo balance hero + quick actions; budget ring ~204 (текст внутри круга); charts ~205–220.
 - Tasks/Habits: full-width GlassSurface pill filters.
+- Nutrition: ONT-style kcal ring + macro bars; date switcher; meal sections.
+- Training: GymMane focus hero + week dots + workout cards / session log.
 
 ### Docs sync
 
@@ -105,7 +109,7 @@ Phone `SafeArea(bottom: false)` on shell content; titles after SafeArea.
 
 ## Database
 
-**Schema version:** **6**  
+**Schema version:** **7**  
 **Name:** `lumen`
 
 | Table | Purpose |
@@ -117,6 +121,10 @@ Phone `SafeArea(bottom: false)` on shell content; titles after SafeArea.
 | `tasks` | title, isDone, dueDate?, notes, sortOrder |
 | `habits` / `habit_logs` | frequency, color, daily check-ins |
 | `routines` / `routine_slots` / `routine_slot_logs` | timed templates + per-day slot done |
+| `nutrition_targets` | daily kcal + carbs/fat/protein goals |
+| `food_entries` | mealType + macros per calendar day |
+| `workouts` / `workout_exercises` | training templates |
+| `workout_sessions` / `session_sets` | live/logged sessions (reps × weightGrams) |
 | `finance_*` | categories, accounts, budgets, allocations, transactions |
 | `today_preferences` | legacy toggles + `layoutJson` (`{v, "2"|"4":…}`) |
 
@@ -127,6 +135,7 @@ Phone `SafeArea(bottom: false)` on shell content; titles after SafeArea.
 - &lt;4 → `layout_json`
 - &lt;5 → Google columns; `tasks`; `google_sync_state`
 - &lt;6 → habits + routines tables
+- &lt;7 → nutrition + training tables
 
 ---
 
@@ -173,6 +182,14 @@ More → Habits. Tabs **Today** (card + check + streak) / **All** (7-day dots). 
 
 More → Routine. Today's slots mark-done + template list (start time, weekday chips, enable switch). Editor: ordered slots with duration steppers. Orientir: **FocusForcePlus**.
 
+## Nutrition
+
+More → Nutrition. Date switcher; kcal left ring + supplied/goal; carbs/fat/protein progress bars; breakfast/lunch/dinner/snack sections with add/edit/delete entries; tap goal to edit targets. Orientir: **OpenNutriTracker**.
+
+## Training
+
+More → Training. Focus hero + start; week session dots; workout list with play; session view (exercise rows, log set reps×kg, finish). Orientir: **GymMane**.
+
 ## Finance
 
 Tabs Overview · Plan · Insights · Ledger. Overview: **Kebo**-style tint balance hero + 4 purple quick actions + lavender progress; `BudgetHeroRing` still clips center text. Further Plan/Insights Kebo bar language — in progress.
@@ -204,5 +221,6 @@ After feature work: restart **web + iOS**, update **TECHNICAL + DEV_BLOG + TODOS
 | Tasks | shipped |
 | Habits | shipped (from More) |
 | Routine | shipped (from More) |
+| Nutrition | shipped (from More; OpenNutriTracker UX) |
+| Training | shipped (from More; GymMane UX) |
 | Backup `.lumen` | stub |
-| Nutrition / Training | rooms |
