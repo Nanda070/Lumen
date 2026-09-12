@@ -14,6 +14,17 @@ abstract final class LumenColors {
   static const Color accentCream = Color(0xFFE6DDD0);
   static const Color accentMint = Color(0xFF5ECF9A);
 
+  /// Kebo finance brand (presentation layer).
+  static const Color keboPrimary = Color(0xFF6934D2);
+  static const Color keboPrimarySoft = Color(0x266934D2);
+  static const Color keboLavender = Color(0xFFC4A8FF);
+  static const Color keboLavenderFill = Color(0xFF9C88FF);
+  static const Color keboOver = Color(0xFFED706B);
+  static const Color keboSecondary = Color(0xFF260035);
+  static const Color keboMuted = Color(0xFF606A84);
+  static const Color keboBorder = Color(0xFF3A3A3C);
+  static const Color keboCard = Color(0xFF1C1C1E);
+
   /// Glass fill ~8% white.
   static const Color glassFill = Color(0x14FFFFFF);
 

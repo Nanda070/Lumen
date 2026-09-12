@@ -258,5 +258,50 @@
   "tasksNotesHint": "Заметки",
   "tasksTitleRequired": "Добавьте название.",
   "tasksDue": "Срок",
-  "tasksClearDue": "Сбросить"
+  "tasksClearDue": "Сбросить",
+
+  "habitsSubtitle": "Серии и ежедневные отметки.",
+  "habitsTabToday": "Сегодня",
+  "habitsTabAll": "Все",
+  "habitsEmpty": "Привычек пока нет — добавьте первую.",
+  "habitsNew": "Новая привычка",
+  "habitsEdit": "Редактировать",
+  "habitsTitleHint": "Название",
+  "habitsNotesHint": "Заметки",
+  "habitsTitleRequired": "Добавьте название.",
+  "habitsStreak": "Держитесь уже {count} дн.",
+  "@habitsStreak": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "habitsFreqDaily": "Каждый день",
+  "habitsFreqWeekly": "N× / неделю",
+  "habitsCheckIn": "Отметить",
+  "habitsDelete": "Удалить привычку",
+
+  "routineSubtitle": "Слоты по времени — отмечайте по ходу дня.",
+  "routineEmpty": "Распорядков нет — соберите утренний или вечерний.",
+  "routineNew": "Новый распорядок",
+  "routineEdit": "Редактировать",
+  "routineTitleHint": "Название",
+  "routineSlots": "Слоты",
+  "routineAddSlot": "Добавить слот",
+  "routineSlotHint": "Название слота",
+  "routineMinutes": "{count} мин",
+  "@routineMinutes": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "routineStart": "Начало",
+  "routineToday": "Слоты на сегодня",
+  "routineNoSlotsToday": "На сегодня ничего не запланировано.",
+  "routineTitleRequired": "Добавьте название.",
+  "routineDelete": "Удалить распорядок",
+  "routineWeekdays": "Дни",
+
+  "financeBalance": "Баланс",
+  "financeSeeMore": "Ещё",
+  "financeQuickExpense": "Расход",
+  "financeQuickIncome": "Доход",
+  "financeQuickBudget": "Бюджет",
+  "financeQuickAccounts": "Счета",
+  "financeRecentTx": "Операции"
 }

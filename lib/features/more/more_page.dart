@@ -6,6 +6,8 @@ import '../../design_system/design_system.dart';
 import '../../l10n/app_localizations.dart';
 import '../../shell/module_scaffold.dart';
 import '../calendar/google_sync_card.dart';
+import '../habits/habits_page.dart';
+import '../routine/routine_page.dart';
 import '../today/today_widgets_sheet.dart';
 
 class MorePage extends StatelessWidget {
@@ -66,10 +68,34 @@ class MorePage extends StatelessWidget {
           _RoomTile(
             icon: PhosphorIconsRegular.circleDashed,
             label: l10n.moreHabits,
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => AtmosphereBackground(
+                  child: Scaffold(
+                    backgroundColor: Colors.transparent,
+                    body: SafeArea(
+                      child: HabitsPage(database: database),
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ),
           _RoomTile(
             icon: PhosphorIconsRegular.clock,
             label: l10n.moreRoutine,
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => AtmosphereBackground(
+                  child: Scaffold(
+                    backgroundColor: Colors.transparent,
+                    body: SafeArea(
+                      child: RoutinePage(database: database),
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ),
           _RoomTile(
             icon: PhosphorIconsRegular.forkKnife,
@@ -231,17 +257,24 @@ class _ContactLine extends StatelessWidget {
 }
 
 class _RoomTile extends StatelessWidget {
-  const _RoomTile({required this.icon, required this.label});
+  const _RoomTile({
+    required this.icon,
+    required this.label,
+    this.onTap,
+  });
 
   final IconData icon;
   final String label;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
+    final live = onTap != null;
     return Padding(
       padding: const EdgeInsets.only(bottom: LumenSpacing.sm),
       child: GlowCard(
         violetEdge: true,
+        onTap: onTap,
         padding: const EdgeInsets.symmetric(
           horizontal: LumenSpacing.md,
           vertical: LumenSpacing.md,
@@ -253,10 +286,17 @@ class _RoomTile extends StatelessWidget {
             Expanded(
               child: Text(label, style: Theme.of(context).textTheme.titleMedium),
             ),
-            Text(
-              AppLocalizations.of(context).roomComingSoon,
-              style: Theme.of(context).textTheme.labelMedium,
-            ),
+            if (live)
+              const Icon(
+                PhosphorIconsRegular.caretRight,
+                color: LumenColors.textMuted,
+                size: 18,
+              )
+            else
+              Text(
+                AppLocalizations.of(context).roomComingSoon,
+                style: Theme.of(context).textTheme.labelMedium,
+              ),
           ],
         ),
       ),

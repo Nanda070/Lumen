@@ -248,6 +248,11 @@ class _FinancePageState extends State<FinancePage>
                                   currencyCode: currency,
                                   initialDate: DateTime.now(),
                                 ),
+                                onAccounts: () => showAccountManagerSheet(
+                                  context: context,
+                                  database: db,
+                                  currencyCode: currency,
+                                ),
                               ),
                               _PlanTab(
                                 summary: summary,
@@ -370,6 +375,7 @@ class _OverviewTab extends StatelessWidget {
     required this.onNext,
     required this.onEditBudget,
     required this.onAddTx,
+    required this.onAccounts,
   });
 
   final MonthFinanceSummary summary;
@@ -380,6 +386,7 @@ class _OverviewTab extends StatelessWidget {
   final VoidCallback onNext;
   final VoidCallback onEditBudget;
   final VoidCallback onAddTx;
+  final VoidCallback onAccounts;
 
   @override
   Widget build(BuildContext context) {
@@ -396,6 +403,17 @@ class _OverviewTab extends StatelessWidget {
       ),
       children: [
         _MonthSwitcher(title: monthTitle, onPrev: onPrev, onNext: onNext),
+        const SizedBox(height: LumenSpacing.md),
+        // Kebo-inspired hero: tinted balance + 4 quick actions
+        _KeboBalanceHero(
+          summary: summary,
+          accounts: accounts,
+          currency: currency,
+          onExpense: onAddTx,
+          onIncome: onAddTx,
+          onBudget: onEditBudget,
+          onAccounts: onAccounts,
+        ),
         const SizedBox(height: LumenSpacing.md),
         SizedBox(
           height: 204,
@@ -829,6 +847,164 @@ class _LedgerTab extends StatelessWidget {
               onTap: () => onOpenTx(item),
             ),
       ],
+    );
+  }
+}
+
+class _KeboBalanceHero extends StatelessWidget {
+  const _KeboBalanceHero({
+    required this.summary,
+    required this.accounts,
+    required this.currency,
+    required this.onExpense,
+    required this.onIncome,
+    required this.onBudget,
+    required this.onAccounts,
+  });
+
+  final MonthFinanceSummary summary;
+  final List<FinanceAccount> accounts;
+  final String currency;
+  final VoidCallback onExpense;
+  final VoidCallback onIncome;
+  final VoidCallback onBudget;
+  final VoidCallback onAccounts;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context).textTheme;
+    final balance = accounts.fold<int>(0, (s, a) => s + a.balanceMinor);
+    final ratio = summary.budgetLimitMinor <= 0
+        ? 0.0
+        : (summary.spentMinor / summary.budgetLimitMinor).clamp(0.0, 1.5);
+    final over = summary.budgetLimitMinor > 0 &&
+        summary.spentMinor > summary.budgetLimitMinor;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Container(
+          padding: const EdgeInsets.fromLTRB(17, 19, 17, 15),
+          decoration: BoxDecoration(
+            color: LumenColors.keboPrimarySoft,
+            borderRadius: BorderRadius.circular(18),
+          ),
+          child: Column(
+            children: [
+              Text(
+                l10n.financeBalance,
+                style: theme.labelMedium?.copyWith(
+                  color: LumenColors.keboLavender,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                MoneyFormat.formatCard(balance),
+                style: theme.headlineMedium?.copyWith(
+                  fontWeight: FontWeight.w500,
+                  fontFeatures: const [FontFeature.tabularFigures()],
+                ),
+              ),
+              Text(
+                currency,
+                style: theme.labelSmall?.copyWith(
+                  color: LumenColors.keboMuted,
+                ),
+              ),
+              if (summary.budgetLimitMinor > 0) ...[
+                const SizedBox(height: LumenSpacing.sm),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(99),
+                  child: LinearProgressIndicator(
+                    value: ratio.clamp(0.0, 1.0),
+                    minHeight: 12,
+                    backgroundColor:
+                        LumenColors.keboMuted.withValues(alpha: 0.15),
+                    color: over
+                        ? LumenColors.keboOver
+                        : LumenColors.keboLavender,
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+        const SizedBox(height: LumenSpacing.md),
+        Row(
+          children: [
+            _KeboQuickAction(
+              icon: PhosphorIconsRegular.arrowUpRight,
+              label: l10n.financeQuickExpense,
+              onTap: onExpense,
+            ),
+            _KeboQuickAction(
+              icon: PhosphorIconsRegular.arrowDownLeft,
+              label: l10n.financeQuickIncome,
+              onTap: onIncome,
+            ),
+            _KeboQuickAction(
+              icon: PhosphorIconsRegular.chartPieSlice,
+              label: l10n.financeQuickBudget,
+              onTap: onBudget,
+            ),
+            _KeboQuickAction(
+              icon: PhosphorIconsRegular.wallet,
+              label: l10n.financeQuickAccounts,
+              onTap: onAccounts,
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _KeboQuickAction extends StatelessWidget {
+  const _KeboQuickAction({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(18),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4),
+          child: Column(
+            children: [
+              Container(
+                width: 56,
+                height: 56,
+                decoration: BoxDecoration(
+                  color: LumenColors.keboPrimary,
+                  borderRadius: BorderRadius.circular(18),
+                ),
+                child: Icon(icon, color: Colors.white, size: 22),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

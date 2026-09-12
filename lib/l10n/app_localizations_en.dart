@@ -688,4 +688,114 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tasksClearDue => 'Clear';
+
+  @override
+  String get habitsSubtitle => 'Streaks and daily check-ins.';
+
+  @override
+  String get habitsTabToday => 'Today';
+
+  @override
+  String get habitsTabAll => 'All';
+
+  @override
+  String get habitsEmpty => 'No habits yet — add one.';
+
+  @override
+  String get habitsNew => 'New habit';
+
+  @override
+  String get habitsEdit => 'Edit habit';
+
+  @override
+  String get habitsTitleHint => 'Habit name';
+
+  @override
+  String get habitsNotesHint => 'Notes';
+
+  @override
+  String get habitsTitleRequired => 'Add a name.';
+
+  @override
+  String habitsStreak(int count) {
+    return 'Kept it up for $count days';
+  }
+
+  @override
+  String get habitsFreqDaily => 'Daily';
+
+  @override
+  String get habitsFreqWeekly => 'N× / week';
+
+  @override
+  String get habitsCheckIn => 'Check in';
+
+  @override
+  String get habitsDelete => 'Delete habit';
+
+  @override
+  String get routineSubtitle => 'Timed day slots — mark done as you go.';
+
+  @override
+  String get routineEmpty =>
+      'No routines yet — create a morning or evening flow.';
+
+  @override
+  String get routineNew => 'New routine';
+
+  @override
+  String get routineEdit => 'Edit routine';
+
+  @override
+  String get routineTitleHint => 'Routine name';
+
+  @override
+  String get routineSlots => 'Slots';
+
+  @override
+  String get routineAddSlot => 'Add slot';
+
+  @override
+  String get routineSlotHint => 'Slot title';
+
+  @override
+  String routineMinutes(int count) {
+    return '$count min';
+  }
+
+  @override
+  String get routineStart => 'Start time';
+
+  @override
+  String get routineToday => 'Today\'s slots';
+
+  @override
+  String get routineNoSlotsToday => 'Nothing scheduled for today.';
+
+  @override
+  String get routineTitleRequired => 'Add a title.';
+
+  @override
+  String get routineDelete => 'Delete routine';
+
+  @override
+  String get routineWeekdays => 'Days';
+
+  @override
+  String get financeSeeMore => 'See more';
+
+  @override
+  String get financeQuickExpense => 'Expense';
+
+  @override
+  String get financeQuickIncome => 'Income';
+
+  @override
+  String get financeQuickBudget => 'Budget';
+
+  @override
+  String get financeQuickAccounts => 'Accounts';
+
+  @override
+  String get financeRecentTx => 'Transactions';
 }

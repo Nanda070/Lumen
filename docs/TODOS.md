@@ -1,13 +1,16 @@
 # Lumen — implementation todos
 
-Статус: **в работе** — medium UI density + Google sync + live Tasks. Дальше: backup.
+Статус: **в работе** — Habits/Routine live + Kebo Finance polish. Дальше: backup, Nutrition/Training.
 
 - [x] **design-system** / **app-shell** / **onboarding** / **calendar-local**
-- [x] **finance** — premium tabs; denser-but-readable heights (medium balance)
-- [x] **today-dashboard** — drag/resize; layout v2 compact defaults; `slotHeight` 100
+- [x] **finance** — live tabs; Kebo-inspired Overview hero (ring kept)
+- [x] **today-dashboard** — drag/resize; layout v3; Upcoming ×2 no inner scroll; tile → tab nav
 - [x] **google-sync** — engine + More Connect UI (нужны OAuth IDs в `GoogleConfig`)
-- [x] **tasks** — Inbox / Today / Done + CRUD
+- [x] **tasks** — Inbox / Today / Done + CRUD; width = pagePadding/pills
+- [x] **habits** — Today/All + check-in + streak (mhabit UX)
+- [x] **routine** — templates + today slots (FocusForce UX)
+- [ ] **finance-kebo-depth** — Plan/Insights/Ledger full Kebo card/bar language
 - [ ] **backup** — `.lumen` download / restore
-- [ ] **later-modules** — Habits → Routine → Nutrition → Training
+- [ ] **later-modules** — Nutrition → Training
 
-Детали: [PLAN.md](PLAN.md) · [STYLE.md](STYLE.md) · [TECHNICAL.md](TECHNICAL.md).
+Дневник: [DEV_BLOG.md](DEV_BLOG.md) · Детали: [PLAN.md](PLAN.md) · [STYLE.md](STYLE.md) · [TECHNICAL.md](TECHNICAL.md).

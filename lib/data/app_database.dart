@@ -29,6 +29,11 @@ typedef TxWithMeta = ({
     TodayPreferences,
     Tasks,
     GoogleSyncState,
+    Habits,
+    HabitLogs,
+    Routines,
+    RoutineSlots,
+    RoutineSlotLogs,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -36,7 +41,7 @@ class AppDatabase extends _$AppDatabase {
       : super(executor ?? _openExecutor());
 
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -71,6 +76,13 @@ class AppDatabase extends _$AppDatabase {
             await m.addColumn(events, events.dirty);
             await m.createTable(tasks);
             await m.createTable(googleSyncState);
+          }
+          if (from < 6) {
+            await m.createTable(habits);
+            await m.createTable(habitLogs);
+            await m.createTable(routines);
+            await m.createTable(routineSlots);
+            await m.createTable(routineSlotLogs);
           }
         },
         beforeOpen: (details) async {
@@ -888,6 +900,302 @@ class AppDatabase extends _$AppDatabase {
   Future<bool> deleteTask(int id) async {
     final rows = await (delete(tasks)..where((t) => t.id.equals(id))).go();
     return rows > 0;
+  }
+
+  // ── Habits ───────────────────────────────────────────────────────────────
+
+  static DateTime dayOnly(DateTime d) => DateTime(d.year, d.month, d.day);
+
+  Stream<List<Habit>> watchHabits({bool archived = false}) {
+    return (select(habits)
+          ..where((t) => t.isArchived.equals(archived))
+          ..orderBy([
+            (t) => OrderingTerm.asc(t.sortOrder),
+            (t) => OrderingTerm.desc(t.createdAt),
+          ]))
+        .watch();
+  }
+
+  Stream<List<HabitLog>> watchHabitLogsInRange(
+    DateTime start,
+    DateTime end,
+  ) {
+    final s = dayOnly(start);
+    final e = dayOnly(end).add(const Duration(days: 1));
+    return (select(habitLogs)
+          ..where(
+            (t) =>
+                t.day.isBiggerOrEqualValue(s) & t.day.isSmallerThanValue(e),
+          ))
+        .watch();
+  }
+
+  Stream<List<HabitLog>> watchHabitLogsForHabit(int habitId) {
+    return (select(habitLogs)
+          ..where((t) => t.habitId.equals(habitId))
+          ..orderBy([(t) => OrderingTerm.desc(t.day)]))
+        .watch();
+  }
+
+  Future<int> insertHabit({
+    required String title,
+    String frequency = 'daily',
+    int timesPerPeriod = 1,
+    int periodDays = 7,
+    required int colorArgb,
+    String notes = '',
+  }) async {
+    final now = DateTime.now().toUtc();
+    final maxOrder = await (selectOnly(habits)
+          ..addColumns([habits.sortOrder.max()]))
+        .map((row) => row.read(habits.sortOrder.max()) ?? -1)
+        .getSingle();
+    return into(habits).insert(
+      HabitsCompanion.insert(
+        title: title.trim(),
+        frequency: Value(frequency),
+        timesPerPeriod: Value(timesPerPeriod),
+        periodDays: Value(periodDays),
+        colorArgb: colorArgb,
+        notes: Value(notes),
+        sortOrder: Value(maxOrder + 1),
+        createdAt: now,
+        updatedAt: now,
+      ),
+    );
+  }
+
+  Future<bool> updateHabit({
+    required int id,
+    required String title,
+    required String frequency,
+    required int timesPerPeriod,
+    required int periodDays,
+    required int colorArgb,
+    String notes = '',
+  }) async {
+    final rows = await (update(habits)..where((t) => t.id.equals(id))).write(
+      HabitsCompanion(
+        title: Value(title.trim()),
+        frequency: Value(frequency),
+        timesPerPeriod: Value(timesPerPeriod),
+        periodDays: Value(periodDays),
+        colorArgb: Value(colorArgb),
+        notes: Value(notes),
+        updatedAt: Value(DateTime.now().toUtc()),
+      ),
+    );
+    return rows > 0;
+  }
+
+  Future<bool> deleteHabit(int id) async {
+    await (delete(habitLogs)..where((t) => t.habitId.equals(id))).go();
+    final rows = await (delete(habits)..where((t) => t.id.equals(id))).go();
+    return rows > 0;
+  }
+
+  /// Toggle done for [day]; returns whether now done.
+  Future<bool> toggleHabitDone(int habitId, DateTime day) async {
+    final d = dayOnly(day);
+    final existing = await (select(habitLogs)
+          ..where(
+            (t) => t.habitId.equals(habitId) & t.day.equals(d),
+          ))
+        .getSingleOrNull();
+    if (existing != null && existing.status == 'done') {
+      await (delete(habitLogs)..where((t) => t.id.equals(existing.id))).go();
+      return false;
+    }
+    if (existing != null) {
+      await (update(habitLogs)..where((t) => t.id.equals(existing.id))).write(
+        const HabitLogsCompanion(status: Value('done')),
+      );
+      return true;
+    }
+    await into(habitLogs).insert(
+      HabitLogsCompanion.insert(
+        habitId: habitId,
+        day: d,
+        status: const Value('done'),
+        createdAt: DateTime.now().toUtc(),
+      ),
+    );
+    return true;
+  }
+
+  Future<int> habitStreak(int habitId) async {
+    final logs = await (select(habitLogs)
+          ..where(
+            (t) => t.habitId.equals(habitId) & t.status.equals('done'),
+          )
+          ..orderBy([(t) => OrderingTerm.desc(t.day)]))
+        .get();
+    if (logs.isEmpty) return 0;
+    var streak = 0;
+    var cursor = dayOnly(DateTime.now());
+    final doneDays = logs.map((l) => dayOnly(l.day)).toSet();
+    // Allow streak to count from yesterday if today not done yet.
+    if (!doneDays.contains(cursor)) {
+      cursor = cursor.subtract(const Duration(days: 1));
+    }
+    while (doneDays.contains(cursor)) {
+      streak++;
+      cursor = cursor.subtract(const Duration(days: 1));
+    }
+    return streak;
+  }
+
+  // ── Routines ─────────────────────────────────────────────────────────────
+
+  Stream<List<Routine>> watchRoutines() {
+    return (select(routines)
+          ..orderBy([
+            (t) => OrderingTerm.asc(t.sortOrder),
+            (t) => OrderingTerm.asc(t.startMinutes),
+          ]))
+        .watch();
+  }
+
+  Stream<List<RoutineSlot>> watchRoutineSlots(int routineId) {
+    return (select(routineSlots)
+          ..where((t) => t.routineId.equals(routineId))
+          ..orderBy([(t) => OrderingTerm.asc(t.sortOrder)]))
+        .watch();
+  }
+
+  Future<List<RoutineSlot>> getRoutineSlots(int routineId) {
+    return (select(routineSlots)
+          ..where((t) => t.routineId.equals(routineId))
+          ..orderBy([(t) => OrderingTerm.asc(t.sortOrder)]))
+        .get();
+  }
+
+  Stream<List<RoutineSlotLog>> watchRoutineSlotLogsForDay(DateTime day) {
+    final d = dayOnly(day);
+    final end = d.add(const Duration(days: 1));
+    return (select(routineSlotLogs)
+          ..where(
+            (t) =>
+                t.day.isBiggerOrEqualValue(d) & t.day.isSmallerThanValue(end),
+          ))
+        .watch();
+  }
+
+  Future<int> insertRoutine({
+    required String title,
+    required int startMinutes,
+    required int weekdaysMask,
+    String notes = '',
+    List<({String title, int durationMinutes})> slots = const [],
+  }) {
+    return transaction(() async {
+      final now = DateTime.now().toUtc();
+      final maxOrder = await (selectOnly(routines)
+            ..addColumns([routines.sortOrder.max()]))
+          .map((row) => row.read(routines.sortOrder.max()) ?? -1)
+          .getSingle();
+      final id = await into(routines).insert(
+        RoutinesCompanion.insert(
+          title: title.trim(),
+          startMinutes: Value(startMinutes),
+          weekdaysMask: Value(weekdaysMask),
+          notes: Value(notes),
+          sortOrder: Value(maxOrder + 1),
+          createdAt: now,
+          updatedAt: now,
+        ),
+      );
+      for (var i = 0; i < slots.length; i++) {
+        final s = slots[i];
+        await into(routineSlots).insert(
+          RoutineSlotsCompanion.insert(
+            routineId: id,
+            title: s.title.trim(),
+            durationMinutes: Value(s.durationMinutes),
+            sortOrder: Value(i),
+          ),
+        );
+      }
+      return id;
+    });
+  }
+
+  Future<void> updateRoutine({
+    required int id,
+    required String title,
+    required int startMinutes,
+    required int weekdaysMask,
+    String notes = '',
+    required List<({String title, int durationMinutes})> slots,
+  }) {
+    return transaction(() async {
+      await (update(routines)..where((t) => t.id.equals(id))).write(
+        RoutinesCompanion(
+          title: Value(title.trim()),
+          startMinutes: Value(startMinutes),
+          weekdaysMask: Value(weekdaysMask),
+          notes: Value(notes),
+          updatedAt: Value(DateTime.now().toUtc()),
+        ),
+      );
+      final old = await getRoutineSlots(id);
+      for (final s in old) {
+        await (delete(routineSlotLogs)..where((t) => t.slotId.equals(s.id)))
+            .go();
+      }
+      await (delete(routineSlots)..where((t) => t.routineId.equals(id))).go();
+      for (var i = 0; i < slots.length; i++) {
+        final s = slots[i];
+        await into(routineSlots).insert(
+          RoutineSlotsCompanion.insert(
+            routineId: id,
+            title: s.title.trim(),
+            durationMinutes: Value(s.durationMinutes),
+            sortOrder: Value(i),
+          ),
+        );
+      }
+    });
+  }
+
+  Future<bool> deleteRoutine(int id) async {
+    final slots = await getRoutineSlots(id);
+    for (final s in slots) {
+      await (delete(routineSlotLogs)..where((t) => t.slotId.equals(s.id))).go();
+    }
+    await (delete(routineSlots)..where((t) => t.routineId.equals(id))).go();
+    final rows = await (delete(routines)..where((t) => t.id.equals(id))).go();
+    return rows > 0;
+  }
+
+  Future<bool> setRoutineEnabled(int id, bool enabled) async {
+    final rows = await (update(routines)..where((t) => t.id.equals(id))).write(
+      RoutinesCompanion(
+        isEnabled: Value(enabled),
+        updatedAt: Value(DateTime.now().toUtc()),
+      ),
+    );
+    return rows > 0;
+  }
+
+  Future<bool> toggleRoutineSlotDone(int slotId, DateTime day) async {
+    final d = dayOnly(day);
+    final existing = await (select(routineSlotLogs)
+          ..where((t) => t.slotId.equals(slotId) & t.day.equals(d)))
+        .getSingleOrNull();
+    if (existing != null) {
+      await (delete(routineSlotLogs)..where((t) => t.id.equals(existing.id)))
+          .go();
+      return false;
+    }
+    await into(routineSlotLogs).insert(
+      RoutineSlotLogsCompanion.insert(
+        slotId: slotId,
+        day: d,
+        completedAt: DateTime.now().toUtc(),
+      ),
+    );
+    return true;
   }
 
   // ── Google sync state ────────────────────────────────────────────────────

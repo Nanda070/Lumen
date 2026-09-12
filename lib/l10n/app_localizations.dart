@@ -1411,6 +1411,216 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Clear'**
   String get tasksClearDue;
+
+  /// No description provided for @habitsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Streaks and daily check-ins.'**
+  String get habitsSubtitle;
+
+  /// No description provided for @habitsTabToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get habitsTabToday;
+
+  /// No description provided for @habitsTabAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get habitsTabAll;
+
+  /// No description provided for @habitsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No habits yet — add one.'**
+  String get habitsEmpty;
+
+  /// No description provided for @habitsNew.
+  ///
+  /// In en, this message translates to:
+  /// **'New habit'**
+  String get habitsNew;
+
+  /// No description provided for @habitsEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit habit'**
+  String get habitsEdit;
+
+  /// No description provided for @habitsTitleHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Habit name'**
+  String get habitsTitleHint;
+
+  /// No description provided for @habitsNotesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get habitsNotesHint;
+
+  /// No description provided for @habitsTitleRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a name.'**
+  String get habitsTitleRequired;
+
+  /// No description provided for @habitsStreak.
+  ///
+  /// In en, this message translates to:
+  /// **'Kept it up for {count} days'**
+  String habitsStreak(int count);
+
+  /// No description provided for @habitsFreqDaily.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily'**
+  String get habitsFreqDaily;
+
+  /// No description provided for @habitsFreqWeekly.
+  ///
+  /// In en, this message translates to:
+  /// **'N× / week'**
+  String get habitsFreqWeekly;
+
+  /// No description provided for @habitsCheckIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Check in'**
+  String get habitsCheckIn;
+
+  /// No description provided for @habitsDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete habit'**
+  String get habitsDelete;
+
+  /// No description provided for @routineSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Timed day slots — mark done as you go.'**
+  String get routineSubtitle;
+
+  /// No description provided for @routineEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No routines yet — create a morning or evening flow.'**
+  String get routineEmpty;
+
+  /// No description provided for @routineNew.
+  ///
+  /// In en, this message translates to:
+  /// **'New routine'**
+  String get routineNew;
+
+  /// No description provided for @routineEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit routine'**
+  String get routineEdit;
+
+  /// No description provided for @routineTitleHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Routine name'**
+  String get routineTitleHint;
+
+  /// No description provided for @routineSlots.
+  ///
+  /// In en, this message translates to:
+  /// **'Slots'**
+  String get routineSlots;
+
+  /// No description provided for @routineAddSlot.
+  ///
+  /// In en, this message translates to:
+  /// **'Add slot'**
+  String get routineAddSlot;
+
+  /// No description provided for @routineSlotHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Slot title'**
+  String get routineSlotHint;
+
+  /// No description provided for @routineMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} min'**
+  String routineMinutes(int count);
+
+  /// No description provided for @routineStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Start time'**
+  String get routineStart;
+
+  /// No description provided for @routineToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s slots'**
+  String get routineToday;
+
+  /// No description provided for @routineNoSlotsToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing scheduled for today.'**
+  String get routineNoSlotsToday;
+
+  /// No description provided for @routineTitleRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a title.'**
+  String get routineTitleRequired;
+
+  /// No description provided for @routineDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete routine'**
+  String get routineDelete;
+
+  /// No description provided for @routineWeekdays.
+  ///
+  /// In en, this message translates to:
+  /// **'Days'**
+  String get routineWeekdays;
+
+  /// No description provided for @financeSeeMore.
+  ///
+  /// In en, this message translates to:
+  /// **'See more'**
+  String get financeSeeMore;
+
+  /// No description provided for @financeQuickExpense.
+  ///
+  /// In en, this message translates to:
+  /// **'Expense'**
+  String get financeQuickExpense;
+
+  /// No description provided for @financeQuickIncome.
+  ///
+  /// In en, this message translates to:
+  /// **'Income'**
+  String get financeQuickIncome;
+
+  /// No description provided for @financeQuickBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget'**
+  String get financeQuickBudget;
+
+  /// No description provided for @financeQuickAccounts.
+  ///
+  /// In en, this message translates to:
+  /// **'Accounts'**
+  String get financeQuickAccounts;
+
+  /// No description provided for @financeRecentTx.
+  ///
+  /// In en, this message translates to:
+  /// **'Transactions'**
+  String get financeRecentTx;
 }
 
 class _AppLocalizationsDelegate

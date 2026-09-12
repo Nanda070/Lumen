@@ -1,5 +1,5 @@
 ---
-description: After code/features — update TECHNICAL.md + contacts; restart web + iOS
+description: After code/features — update TECHNICAL + DEV_BLOG + TODOS; contacts; restart web + iOS
 alwaysApply: true
 ---
 
@@ -7,13 +7,19 @@ alwaysApply: true
 
 Do the following without waiting for the user to ask:
 
-## 1. Update technical docs
+## 1. Update technical docs + DEV_BLOG
 
-Keep [`docs/TECHNICAL.md`](docs/TECHNICAL.md) current whenever you change code, schema, architecture, dependencies, navigation, or shipping status.
+Keep these in sync whenever you change code, schema, architecture, dependencies, navigation, or shipping status:
+
+| File | Role |
+|------|------|
+| [`docs/TECHNICAL.md`](docs/TECHNICAL.md) | Tech truth: schema, folders, run commands, shipped vs stub |
+| [`docs/DEV_BLOG.md`](docs/DEV_BLOG.md) | Chronological changelog (newest first): **what** + **why** in short bullets |
+| [`docs/TODOS.md`](docs/TODOS.md) | Checklist status for major workstreams |
 
 - Reflect what actually shipped (not aspirational PLAN items).
-- Update DB schema, folder map, run commands, and “implemented vs stub” sections.
-- Product vision / visual language stay in `docs/PLAN.md` and `docs/STYLE.md`; tech truth lives in `TECHNICAL.md`.
+- Product vision / visual language stay in `docs/PLAN.md` and `docs/STYLE.md`.
+- **DEV_BLOG:** after each substantial chunk, add a dated entry at the **top** (RU or RU+EN brief). Do not skip when only “small” UI polish if it changes user-visible behavior.
 
 ## 2. Keep Owner / Contacts in sync
 
@@ -27,7 +33,7 @@ Canonical contacts (do not invent alternatives):
 - Discord server: discord.gg/cheterin
 - GitHub: nanda070
 
-When editing README, PLAN, TECHNICAL, More/About UI, or similar — keep these values accurate and present where credits/contact belong.
+When editing README, PLAN, TECHNICAL, DEV_BLOG, More/About UI, or similar — keep these values accurate and present where credits/contact belong.
 
 ## 3. Restart web + iOS
 
@@ -37,4 +43,4 @@ When editing README, PLAN, TECHNICAL, More/About UI, or similar — keep these v
    - iOS: `flutter run -d <ios simulator>` (available simulator)
 3. In the final reply: report the Chrome/web URL and the iOS device name.
 
-Skip restart only for pure docs/rules/comments with zero runnable impact — still update `TECHNICAL.md` if the docs themselves changed meaningfully.
+Skip restart only for pure docs/rules/comments with zero runnable impact — still update `TECHNICAL.md` / `DEV_BLOG.md` if the docs themselves changed meaningfully.

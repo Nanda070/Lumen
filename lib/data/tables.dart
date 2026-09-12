@@ -125,3 +125,78 @@ class TodayPreferences extends Table {
       )();
   TextColumn get layoutJson => text().withDefault(const Constant(''))();
 }
+
+/// Habit definition (mhabit-style daily / weekly frequency).
+class Habits extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get title => text().withLength(min: 1, max: 120)();
+  /// `daily` | `weekly` | `custom`
+  TextColumn get frequency =>
+      text().withLength(min: 1, max: 16).withDefault(const Constant('daily'))();
+  /// Times per period (e.g. 3× per week).
+  IntColumn get timesPerPeriod => integer().withDefault(const Constant(1))();
+  /// Period length in days for custom (default 7).
+  IntColumn get periodDays => integer().withDefault(const Constant(7))();
+  IntColumn get colorArgb => integer()();
+  TextColumn get notes => text().withDefault(const Constant(''))();
+  IntColumn get sortOrder => integer().withDefault(const Constant(0))();
+  BoolColumn get isArchived => boolean().withDefault(const Constant(false))();
+  DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get updatedAt => dateTime()();
+}
+
+/// One check-in per habit per calendar day.
+class HabitLogs extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get habitId => integer().references(Habits, #id)();
+  /// Date-only (local midnight).
+  DateTimeColumn get day => dateTime()();
+  /// `done` | `skip`
+  TextColumn get status =>
+      text().withLength(min: 1, max: 16).withDefault(const Constant('done'))();
+  DateTimeColumn get createdAt => dateTime()();
+
+  @override
+  List<Set<Column>> get uniqueKeys => [
+        {habitId, day},
+      ];
+}
+
+/// Named daily routine template (FocusForce-style).
+class Routines extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get title => text().withLength(min: 1, max: 120)();
+  /// Minutes from midnight for start.
+  IntColumn get startMinutes => integer().withDefault(const Constant(8 * 60))();
+  /// Bitmask Mon=1 … Sun=64.
+  IntColumn get weekdaysMask => integer().withDefault(const Constant(127))();
+  TextColumn get notes => text().withDefault(const Constant(''))();
+  BoolColumn get isEnabled => boolean().withDefault(const Constant(true))();
+  IntColumn get sortOrder => integer().withDefault(const Constant(0))();
+  DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get updatedAt => dateTime()();
+}
+
+/// Ordered timed slots inside a routine.
+class RoutineSlots extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get routineId => integer().references(Routines, #id)();
+  TextColumn get title => text().withLength(min: 1, max: 120)();
+  IntColumn get durationMinutes => integer().withDefault(const Constant(15))();
+  TextColumn get notes => text().withDefault(const Constant(''))();
+  IntColumn get sortOrder => integer().withDefault(const Constant(0))();
+}
+
+/// Per-day slot completion.
+class RoutineSlotLogs extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get slotId => integer().references(RoutineSlots, #id)();
+  DateTimeColumn get day => dateTime()();
+  BoolColumn get isDone => boolean().withDefault(const Constant(true))();
+  DateTimeColumn get completedAt => dateTime()();
+
+  @override
+  List<Set<Column>> get uniqueKeys => [
+        {slotId, day},
+      ];
+}

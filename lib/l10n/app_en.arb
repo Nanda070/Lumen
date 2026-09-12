@@ -258,5 +258,50 @@
   "tasksNotesHint": "Notes",
   "tasksTitleRequired": "Add a title.",
   "tasksDue": "Due date",
-  "tasksClearDue": "Clear"
+  "tasksClearDue": "Clear",
+
+  "habitsSubtitle": "Streaks and daily check-ins.",
+  "habitsTabToday": "Today",
+  "habitsTabAll": "All",
+  "habitsEmpty": "No habits yet — add one.",
+  "habitsNew": "New habit",
+  "habitsEdit": "Edit habit",
+  "habitsTitleHint": "Habit name",
+  "habitsNotesHint": "Notes",
+  "habitsTitleRequired": "Add a name.",
+  "habitsStreak": "Kept it up for {count} days",
+  "@habitsStreak": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "habitsFreqDaily": "Daily",
+  "habitsFreqWeekly": "N× / week",
+  "habitsCheckIn": "Check in",
+  "habitsDelete": "Delete habit",
+
+  "routineSubtitle": "Timed day slots — mark done as you go.",
+  "routineEmpty": "No routines yet — create a morning or evening flow.",
+  "routineNew": "New routine",
+  "routineEdit": "Edit routine",
+  "routineTitleHint": "Routine name",
+  "routineSlots": "Slots",
+  "routineAddSlot": "Add slot",
+  "routineSlotHint": "Slot title",
+  "routineMinutes": "{count} min",
+  "@routineMinutes": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "routineStart": "Start time",
+  "routineToday": "Today's slots",
+  "routineNoSlotsToday": "Nothing scheduled for today.",
+  "routineTitleRequired": "Add a title.",
+  "routineDelete": "Delete routine",
+  "routineWeekdays": "Days",
+
+  "financeBalance": "Balance",
+  "financeSeeMore": "See more",
+  "financeQuickExpense": "Expense",
+  "financeQuickIncome": "Income",
+  "financeQuickBudget": "Budget",
+  "financeQuickAccounts": "Accounts",
+  "financeRecentTx": "Transactions"
 }

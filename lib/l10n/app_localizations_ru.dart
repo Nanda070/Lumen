@@ -690,4 +690,114 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get tasksClearDue => 'Сбросить';
+
+  @override
+  String get habitsSubtitle => 'Серии и ежедневные отметки.';
+
+  @override
+  String get habitsTabToday => 'Сегодня';
+
+  @override
+  String get habitsTabAll => 'Все';
+
+  @override
+  String get habitsEmpty => 'Привычек пока нет — добавьте первую.';
+
+  @override
+  String get habitsNew => 'Новая привычка';
+
+  @override
+  String get habitsEdit => 'Редактировать';
+
+  @override
+  String get habitsTitleHint => 'Название';
+
+  @override
+  String get habitsNotesHint => 'Заметки';
+
+  @override
+  String get habitsTitleRequired => 'Добавьте название.';
+
+  @override
+  String habitsStreak(int count) {
+    return 'Держитесь уже $count дн.';
+  }
+
+  @override
+  String get habitsFreqDaily => 'Каждый день';
+
+  @override
+  String get habitsFreqWeekly => 'N× / неделю';
+
+  @override
+  String get habitsCheckIn => 'Отметить';
+
+  @override
+  String get habitsDelete => 'Удалить привычку';
+
+  @override
+  String get routineSubtitle => 'Слоты по времени — отмечайте по ходу дня.';
+
+  @override
+  String get routineEmpty =>
+      'Распорядков нет — соберите утренний или вечерний.';
+
+  @override
+  String get routineNew => 'Новый распорядок';
+
+  @override
+  String get routineEdit => 'Редактировать';
+
+  @override
+  String get routineTitleHint => 'Название';
+
+  @override
+  String get routineSlots => 'Слоты';
+
+  @override
+  String get routineAddSlot => 'Добавить слот';
+
+  @override
+  String get routineSlotHint => 'Название слота';
+
+  @override
+  String routineMinutes(int count) {
+    return '$count мин';
+  }
+
+  @override
+  String get routineStart => 'Начало';
+
+  @override
+  String get routineToday => 'Слоты на сегодня';
+
+  @override
+  String get routineNoSlotsToday => 'На сегодня ничего не запланировано.';
+
+  @override
+  String get routineTitleRequired => 'Добавьте название.';
+
+  @override
+  String get routineDelete => 'Удалить распорядок';
+
+  @override
+  String get routineWeekdays => 'Дни';
+
+  @override
+  String get financeSeeMore => 'Ещё';
+
+  @override
+  String get financeQuickExpense => 'Расход';
+
+  @override
+  String get financeQuickIncome => 'Доход';
+
+  @override
+  String get financeQuickBudget => 'Бюджет';
+
+  @override
+  String get financeQuickAccounts => 'Счета';
+
+  @override
+  String get financeRecentTx => 'Операции';
 }

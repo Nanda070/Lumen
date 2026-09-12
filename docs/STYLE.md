@@ -86,6 +86,12 @@
 4. Finance  
 5. More — Habits, Routine, Nutrition, Training, Settings
 
+### Ориентиры экранов (пример → перерисовка в Lumen tokens)
+
+- **Habits:** mhabit (Today cards + day strip) — charcoal/violet Lumen shell.
+- **Routine:** FocusForcePlus (time + weekday chips + slots).
+- **Finance:** kebo mobile (purple tint hero, 18px bordered cards, lavender progress); budget ring Lumen остаётся.
+
 ### Today (первый экран)
 
 Одна композиция: greeting → ряд gradient metrics → upcoming events.  
