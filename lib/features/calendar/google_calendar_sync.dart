@@ -25,14 +25,10 @@ class GoogleCalendarSync {
     if (!GoogleConfig.isConfigured) {
       throw GoogleNotConfiguredException();
     }
-    final clientId = GoogleConfig.iosClientId.isNotEmpty
-        ? GoogleConfig.iosClientId
-        : (GoogleConfig.webClientId.isNotEmpty
-            ? GoogleConfig.webClientId
-            : null);
     await GoogleSignIn.instance.initialize(
-      clientId: clientId,
-      serverClientId: GoogleConfig.webClientId.isNotEmpty
+      clientId: GoogleConfig.clientIdForPlatform,
+      // Web client as serverClientId on mobile (id token / backend-style flows).
+      serverClientId: (!kIsWeb && GoogleConfig.webClientId.isNotEmpty)
           ? GoogleConfig.webClientId
           : null,
     );

@@ -15,6 +15,12 @@
 
 ---
 
+## 2026-09-12 — Google Connect: platform clientId + restart
+
+- `GoogleConfig.isConfigured` / `clientIdForPlatform` — проверка **текущей** платформы (web vs iOS), не «любой» ID.
+- `GoogleCalendarSync` больше не подставляет iOS clientId на web; meta `google-signin-client_id` в `web/index.html`.
+- **Зачем:** после заполнения OAuth ID UI всё ещё показывал «Add OAuth…» из-за устаревшего run + неверного выбора clientId на web.
+
 ## 2026-09-12 — Finance Kebo depth + Backup + Google OAuth
 
 - **Finance Plan/Insights/Ledger**: Kebo cards (18px / `#1C1C1E` / `#3A3A3C`), lavender progress bars, day-grouped ledger rows — presentation 1:1 kebo; Drift data layer без смены.

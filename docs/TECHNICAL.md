@@ -143,7 +143,8 @@ Phone `SafeArea(bottom: false)` on shell content; titles after SafeArea.
 
 ## Google Calendar sync
 
-**Config:** `lib/core/google_config.dart` — OAuth client IDs filled (iOS / Android / Web).
+**Config:** `lib/core/google_config.dart` — OAuth client IDs filled (iOS / Android / Web).  
+`isConfigured` / `clientIdForPlatform` = ID **текущей** платформы. Web: meta `google-signin-client_id` in `web/index.html`.
 
 **Cloud setup (done for Cheterin / Nanda project)**
 
@@ -151,11 +152,11 @@ Phone `SafeArea(bottom: false)` on shell content; titles after SafeArea.
 2. OAuth consent: External / **Testing**; test user + scopes `userinfo.email` + `calendar`.
 3. Clients: iOS (`com.lumen.lumen`), Web (localhost origins), Android (package + debug SHA-1).
 4. iOS: `GIDClientID` + reversed client URL scheme in `ios/Runner/Info.plist`.
-5. Rebuild.
+5. Full restart after changing client IDs (const — hot reload недостаточно).
 
-**Engine:** `GoogleCalendarSync` — connect / disconnect / syncNow; pull primary (30d back / 90d forward); push `dirty` local events; last-write-wins (skip remote overwrite if local dirty).
+**Engine:** `GoogleCalendarSync` — connect / disconnect / syncNow; pull primary (30d back / 90d forward); push `dirty` local events; last-write-wins (skip remote overwrite if local dirty). Uses platform clientId (+ web as `serverClientId` on mobile).
 
-**UI:** `GoogleSyncCard` on **More**. Sign-in flow starts when IDs are present.
+**UI:** `GoogleSyncCard` on **More**. Shows setup hint only if **current** platform ID empty; иначе Connect / Sync.
 
 Local calendar works without Google.
 
